@@ -1,0 +1,467 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color: #17151d;
+  background: #eef8ff;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button {
+  font: inherit;
+}
+
+.home-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.8), transparent 28rem),
+    linear-gradient(135deg, #eaf8ff 0%, #f2fbff 100%);
+}
+
+.hero-card {
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #2196d3;
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px 22px;
+  background: #fff;
+  font-size: 1.25rem;
+}
+
+.brand-logo {
+  width: 66px;
+  height: 66px;
+  border-radius: 22px;
+  object-fit: contain;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(50, 38, 50, 0.14);
+}
+
+.hero-content {
+  padding: 28px 22px 26px;
+}
+
+.eyebrow {
+  display: none;
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hero-intro h1 {
+  max-width: 12ch;
+  margin: 0 0 14px;
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.35rem, 13vw, 3.55rem);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+}
+
+.hero-description {
+  max-width: 34rem;
+  margin: 0;
+  color: #fff;
+  font-size: 1.03rem;
+  line-height: 1.65;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.feature-card {
+  min-height: 176px;
+  padding: 20px 18px;
+  border-radius: 20px;
+  background: #fff;
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+  border-radius: 16px;
+  background: #f5f5f5;
+  font-size: 1.35rem;
+}
+
+.feature-card h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.feature-card p {
+  margin: 0;
+  color: #77727c;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.access-card {
+  margin-top: 18px;
+  padding: 28px 22px;
+  border-radius: 26px;
+  background: #f1fff3;
+}
+
+.access-card h2 {
+  margin: 0 0 12px;
+  font-size: clamp(1.6rem, 7vw, 2.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.access-card p {
+  margin: 0 0 24px;
+  color: #22202a;
+  line-height: 1.5;
+}
+
+.access-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.primary-button,
+.secondary-button {
+  width: 100%;
+  min-height: 56px;
+  border-radius: 16px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 800;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.primary-button {
+  color: #fff;
+  background: linear-gradient(135deg, #1298d8, #0569b2);
+  box-shadow: 0 12px 22px rgba(5, 105, 178, 0.28);
+}
+
+.secondary-button {
+  color: #27242d;
+  background: #fff;
+  border: 2px solid #dcd6ff;
+}
+
+.primary-button:hover,
+.secondary-button:hover {
+  transform: translateY(-2px);
+}
+
+.client-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: linear-gradient(180deg, #f1faff 0%, #dff2ff 100%);
+}
+
+.client-panel {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  display: grid;
+  align-content: center;
+  gap: 28px;
+  padding: 34px 24px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.9), transparent 20rem),
+    linear-gradient(180deg, #f8fdff 0%, #e7f6ff 100%);
+}
+
+.back-button {
+  position: absolute;
+  top: 28px;
+  left: 22px;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 14px;
+  color: #10131a;
+  background: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+.client-hero {
+  max-width: 440px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.client-logo {
+  width: 86px;
+  height: 86px;
+  margin-bottom: 18px;
+  object-fit: contain;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 14px 30px rgba(9, 105, 163, 0.12);
+}
+
+.client-hero h1 {
+  margin: 0 0 12px;
+  color: #127fba;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.1rem, 9vw, 3.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.client-hero p {
+  margin: 0;
+  color: #6d7580;
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.benefit-list {
+  width: min(100%, 420px);
+  display: grid;
+  gap: 16px;
+  margin: 0 auto;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.benefit-icon {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: #e3f5ff;
+  font-size: 1.25rem;
+}
+
+.benefit-item:nth-child(2) .benefit-icon {
+  background: #dff2ff;
+}
+
+.benefit-item:nth-child(3) .benefit-icon {
+  background: #edf9ff;
+}
+
+.benefit-item h2 {
+  margin: 0 0 3px;
+  font-size: 0.98rem;
+}
+
+.benefit-item p {
+  margin: 0;
+  color: #737b85;
+  font-size: 0.83rem;
+}
+
+.client-actions {
+  width: min(100%, 420px);
+  margin: 4px auto 0;
+  text-align: center;
+}
+
+.client-start-button {
+  width: 100%;
+  min-height: 58px;
+  border: 0;
+  border-radius: 16px;
+  color: #fff;
+  background: linear-gradient(135deg, #18a6e4, #0875c6);
+  box-shadow: 0 16px 28px rgba(8, 117, 198, 0.25);
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.client-actions p {
+  margin: 12px 0 0;
+  color: #7a828c;
+  font-size: 0.9rem;
+}
+
+.client-actions p button {
+  border: 0;
+  padding: 0;
+  color: #0875c6;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+@media (min-width: 760px) {
+  .home-page {
+    padding: 0;
+  }
+
+  .hero-card {
+    max-width: none;
+    width: 100%;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  .brand-header {
+    padding: 28px 42px;
+  }
+
+  .hero-content {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    grid-template-areas:
+      "intro features"
+      "access features";
+    gap: 28px;
+    align-items: center;
+    padding: 42px;
+  }
+
+  .hero-intro {
+    grid-area: intro;
+  }
+
+  .eyebrow {
+    display: block;
+  }
+
+  .hero-intro h1 {
+    font-size: clamp(4rem, 8vw, 6.6rem);
+  }
+
+  .hero-description {
+    font-size: 1.18rem;
+  }
+
+  .feature-grid {
+    grid-area: features;
+    grid-template-columns: 1fr;
+    margin-top: 0;
+  }
+
+  .feature-card {
+    min-height: 210px;
+    padding: 28px;
+    border-radius: 28px;
+  }
+
+  .feature-card h2 {
+    font-size: 1.35rem;
+  }
+
+  .feature-card p {
+    font-size: 1rem;
+  }
+
+  .access-card {
+    grid-area: access;
+    margin-top: 0;
+    padding: 34px;
+    border-radius: 32px;
+  }
+
+  .client-panel {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "hero benefits"
+      "hero actions";
+    align-items: center;
+    align-content: center;
+    gap: 34px 56px;
+    padding: 78px 8vw;
+  }
+
+  .back-button {
+    top: 34px;
+    left: 42px;
+  }
+
+  .client-hero {
+    grid-area: hero;
+    max-width: 520px;
+  }
+
+  .client-logo {
+    width: 112px;
+    height: 112px;
+  }
+
+  .client-hero h1 {
+    font-size: clamp(3.4rem, 6vw, 5.8rem);
+  }
+
+  .client-hero p {
+    font-size: 1.12rem;
+  }
+
+  .benefit-list {
+    grid-area: benefits;
+    width: min(100%, 500px);
+  }
+
+  .benefit-item {
+    padding: 18px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.62);
+  }
+
+  .client-actions {
+    grid-area: actions;
+    width: min(100%, 500px);
+    margin: 0;
+  }
+}
+
+@media (min-width: 1040px) {
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-header,
+  .hero-content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
