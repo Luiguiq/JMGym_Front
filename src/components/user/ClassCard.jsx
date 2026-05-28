@@ -1,9 +1,12 @@
+import { useNavigate } from 'react-router-dom';
+
 const visualStyles = {
   orange: 'from-orange-400 to-orange-600',
   blue: 'from-sky-400 to-blue-600',
 };
 
 function ClassCard({ classItem }) {
+  const navigate = useNavigate();
   const gradient = visualStyles[classItem.color] ?? visualStyles.blue;
 
   return (
@@ -27,7 +30,7 @@ function ClassCard({ classItem }) {
           <span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-extrabold text-slate-500">🔥 {classItem.level}</span>
           <span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-extrabold text-slate-500">👥 {classItem.reserved}/{classItem.capacity}</span>
         </div>
-        <button className="min-h-12 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 font-extrabold text-white md:min-h-14 md:text-lg" type="button">
+        <button className="min-h-12 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 font-extrabold text-white md:min-h-14 md:text-lg" type="button" onClick={() => navigate(`/cliente/clases/${classItem.id}`)}>
           Ver detalles
         </button>
       </div>

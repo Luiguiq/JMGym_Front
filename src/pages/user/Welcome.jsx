@@ -10,7 +10,7 @@ const benefits = [
 function Welcome() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-brand-50 to-brand-100">
-      <section className="relative grid min-h-screen content-center gap-7 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.9),transparent_20rem),linear-gradient(180deg,#f8fdff_0%,#e7f6ff_100%)] px-6 py-10 md:grid-cols-[minmax(360px,0.95fr)_minmax(460px,0.85fr)] md:grid-rows-[auto_auto] md:items-center md:gap-x-24 md:px-[8vw] md:py-20">
+      <section className="relative grid min-h-screen content-center gap-7 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.9),transparent_20rem),linear-gradient(180deg,#f8fdff_0%,#e7f6ff_100%)] px-6 py-10 md:grid-cols-[minmax(360px,0.95fr)_minmax(460px,0.85fr)] md:grid-rows-[auto_auto] md:items-center md:gap-x-24 md:px-[8vw] md:py-20 max-w-full overflow-x-hidden">
         <Link className="absolute left-5 top-7 grid h-11 w-11 place-items-center rounded-2xl bg-white/60 text-2xl text-slate-950 md:left-10 md:top-9" to="/">←</Link>
 
         <div className="mx-auto max-w-md text-center md:row-span-2 md:max-w-xl">
