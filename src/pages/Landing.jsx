@@ -9,7 +9,7 @@ const features = [
 function Landing() {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.8),transparent_28rem),linear-gradient(135deg,#eaf8ff_0%,#f2fbff_100%)]">
-      <section className="min-h-screen overflow-hidden bg-[#2196d3] md:grid md:grid-rows-[auto_1fr]">
+      <section className="min-h-screen bg-[#2196d3] md:grid md:grid-rows-[auto_1fr]">
         <header className="flex items-center gap-5 bg-white px-6 py-6 text-xl font-bold md:px-10 md:py-7">
           <img className="h-16 w-16 rounded-3xl bg-white object-contain shadow-[0_12px_28px_rgba(50,38,50,0.14)]" src={logoJmGym} alt="Logo de JMGym" />
           <strong>JMGym</strong>
@@ -37,7 +37,7 @@ function Landing() {
             <p className="mt-3 leading-relaxed text-slate-800">Ingresa segun tu perfil para acceder a las funciones correspondientes.</p>
             <div className="mt-6 grid gap-3">
               <Link className="grid min-h-14 place-items-center rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 font-extrabold text-white shadow-soft" to="/cliente/bienvenida">👤 Ingresar como Cliente</Link>
-              <button className="min-h-14 rounded-2xl border-2 border-indigo-100 bg-white font-extrabold text-slate-800" type="button">🛠️ Ingresar como Administrador</button>
+              <Link className="grid min-h-14 place-items-center rounded-2xl border-2 border-indigo-100 bg-white font-extrabold text-slate-800" to="/admin/login">🛠️ Ingresar como Administrador</Link>
             </div>
           </section>
         </div>

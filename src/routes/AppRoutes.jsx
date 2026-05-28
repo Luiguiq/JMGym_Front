@@ -1,7 +1,9 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 import AdminLayout from '../layouts/AdminLayout.jsx';
 import UserLayout from '../layouts/UserLayout.jsx';
 import Landing from '../pages/Landing.jsx';
+import AdminLogin from '../pages/admin/AdminLogin.jsx';
 import ClasesAdmin from '../pages/admin/ClasesAdmin.jsx';
 import CrearClase from '../pages/admin/CrearClase.jsx';
 import Dashboard from '../pages/admin/Dashboard.jsx';
@@ -16,6 +18,19 @@ import Perfil from '../pages/user/Perfil.jsx';
 import Register from '../pages/user/Register.jsx';
 import Welcome from '../pages/user/Welcome.jsx';
 
+function ProtectedRoute({ children }) {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/cliente/login" replace />;
+  return children;
+}
+
+function AdminRoute({ children }) {
+  const { isAuthenticated, user } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/admin/login" replace />;
+  if (user?.role !== 'admin') return <Navigate to="/cliente/home" replace />;
+  return children;
+}
+
 function AppRoutes() {
   return (
     <Routes>
@@ -26,14 +41,16 @@ function AppRoutes() {
         <Route path="bienvenida" element={<Welcome />} />
         <Route path="login" element={<Login />} />
         <Route path="registro" element={<Register />} />
-        <Route path="home" element={<Home />} />
-        <Route path="clases" element={<ListaClases />} />
-        <Route path="clases/:id" element={<DetalleClase />} />
-        <Route path="reservas" element={<MisReservas />} />
-        <Route path="perfil" element={<Perfil />} />
+        <Route path="home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="clases" element={<ProtectedRoute><ListaClases /></ProtectedRoute>} />
+        <Route path="clases/:id" element={<ProtectedRoute><DetalleClase /></ProtectedRoute>} />
+        <Route path="reservas" element={<ProtectedRoute><MisReservas /></ProtectedRoute>} />
+        <Route path="perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
       </Route>
 
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route path="/admin/login" element={<AdminLogin />} />
+
+      <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
         <Route index element={<Dashboard />} />
         <Route path="clases" element={<ClasesAdmin />} />
         <Route path="clases/crear" element={<CrearClase />} />
