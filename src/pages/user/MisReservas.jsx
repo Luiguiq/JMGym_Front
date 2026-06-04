@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { reservationService } from '../../services/reservationService.js';
 import ReservationCard from '../../components/user/ReservationCard.jsx';
-import BottomNav from '../../components/user/BottomNav.jsx';
 
 function MisReservas() {
   const [reservations, setReservations] = useState([]);
@@ -32,8 +31,6 @@ function MisReservas() {
           reservations.map((res) => <ReservationCard reservation={res} key={res.id} />)
         )}
       </div>
-
-      <BottomNav />
     </main>
   );
 }

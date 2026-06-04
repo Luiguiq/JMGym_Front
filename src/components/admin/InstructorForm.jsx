@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
+const UPLOAD_URL = API_BASE.replace('/api', '');
+
 export default function InstructorForm({ initial, onSave, onCancel }) {
   const [form, setForm] = useState({
     nombre_completo: '',
@@ -10,6 +13,9 @@ export default function InstructorForm({ initial, onSave, onCancel }) {
     video_presentacion: '',
     estado: 'ACTIVO',
   });
+  const [fotoFile, setFotoFile] = useState(null);
+  const [fotoPreview, setFotoPreview] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (initial) {
@@ -22,6 +28,9 @@ export default function InstructorForm({ initial, onSave, onCancel }) {
         video_presentacion: initial.video_presentacion || '',
         estado: initial.estado || 'ACTIVO',
       });
+      if (initial.foto) {
+        setFotoPreview(initial.foto.startsWith('http') ? initial.foto : `${UPLOAD_URL}${initial.foto}`);
+      }
     }
   }, [initial]);
 
@@ -30,9 +39,37 @@ export default function InstructorForm({ initial, onSave, onCancel }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleFotoChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFotoFile(file);
+    setFotoPreview(URL.createObjectURL(file));
+  };
+
+  const uploadFoto = async () => {
+    if (!fotoFile) return form.foto;
+    const formData = new FormData();
+    formData.append('file', fotoFile);
+    const res = await fetch(`${API_BASE}/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) throw new Error('Error al subir la imagen');
+    const data = await res.json();
+    return data.url;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(form);
+    setUploading(true);
+    try {
+      const fotoUrl = await uploadFoto();
+      onSave({ ...form, foto: fotoUrl });
+    } catch (err) {
+      onSave(form);
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -84,14 +121,18 @@ export default function InstructorForm({ initial, onSave, onCancel }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Foto (URL)</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Foto</label>
             <input
-              type="text"
-              name="foto"
-              value={form.foto}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-400"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={handleFotoChange}
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-brand-50 file:text-brand-700 file:font-medium hover:file:bg-brand-100"
             />
+            {fotoPreview && (
+              <div className="mt-2">
+                <img src={fotoPreview} alt="Vista previa" className="w-24 h-24 object-cover rounded-lg border" />
+              </div>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Video Presentación (URL)</label>
@@ -121,15 +162,17 @@ export default function InstructorForm({ initial, onSave, onCancel }) {
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200"
+              disabled={uploading}
+              className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 disabled:opacity-50"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-brand-400 rounded-lg hover:bg-brand-500"
+              disabled={uploading}
+              className="px-4 py-2 text-sm font-medium text-white bg-brand-400 rounded-lg hover:bg-brand-500 disabled:opacity-50"
             >
-              {initial ? 'Guardar Cambios' : 'Crear Instructor'}
+              {uploading ? 'Subiendo imagen...' : initial ? 'Guardar Cambios' : 'Crear Instructor'}
             </button>
           </div>
         </form>

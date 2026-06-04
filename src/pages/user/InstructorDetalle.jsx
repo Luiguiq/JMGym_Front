@@ -1,0 +1,291 @@
+import { useEffect, useState, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { instructorService } from '../../services/instructorService.js';
+import { classService } from '../../services/classService.js';
+
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
+const BACKEND_URL = API_BASE.replace('/api', '');
+
+function fotoUrl(path) {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  return `${BACKEND_URL}${path}`;
+}
+
+function calcYears(dateStr) {
+  if (!dateStr) return null;
+  const start = new Date(dateStr);
+  const now = new Date();
+  const diff = now.getFullYear() - start.getFullYear();
+  const m = now.getMonth() - start.getMonth();
+  return m < 0 || (m === 0 && now.getDate() < start.getDate()) ? diff - 1 : diff;
+}
+
+function dominantIntensity(classes) {
+  if (!classes.length) return null;
+  const counts = {};
+  classes.forEach((c) => {
+    const key = c.level?.toLowerCase() || '';
+    if (key) counts[key] = (counts[key] || 0) + 1;
+  });
+  return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+}
+
+const LEVEL_LABELS = {
+  'energia alta': { label: 'Alta', color: 'text-red-500', bg: 'bg-red-50' },
+  alta: { label: 'Alta', color: 'text-red-500', bg: 'bg-red-50' },
+  moderado: { label: 'Media', color: 'text-amber-500', bg: 'bg-amber-50' },
+  media: { label: 'Media', color: 'text-amber-500', bg: 'bg-amber-50' },
+  principiante: { label: 'Baja', color: 'text-green-500', bg: 'bg-green-50' },
+  baja: { label: 'Baja', color: 'text-green-500', bg: 'bg-green-50' },
+};
+
+export default function InstructorDetalle() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [instructor, setInstructor] = useState(null);
+  const [classes, setClasses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    Promise.all([
+      instructorService.getById(id),
+      classService.getByInstructor(id),
+    ])
+      .then(([instData, classData]) => {
+        setInstructor(instData);
+        setClasses(classData);
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  const experienceYears = useMemo(() => calcYears(instructor?.fecha_registro), [instructor]);
+  const intensity = useMemo(() => dominantIntensity(classes), [classes]);
+  const intensityMeta = LEVEL_LABELS[intensity] || { label: '—', color: 'text-slate-400', bg: 'bg-slate-50' };
+
+  const specialties = useMemo(() => {
+    if (!instructor?.especialidad) return [];
+    return instructor.especialidad.split(',').map((s) => s.trim()).filter(Boolean);
+  }, [instructor]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-brand-50 flex items-center justify-center p-8">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-500 font-medium">Cargando instructor...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="min-h-screen bg-brand-50 p-8 flex items-center justify-center">
+        <div className="bg-white p-6 rounded-3xl shadow-soft max-w-md w-full text-center border border-red-100">
+          <span className="text-4xl" aria-hidden="true">⚠️</span>
+          <h2 className="text-xl font-bold text-slate-800 mt-3">Hubo un error</h2>
+          <p className="text-red-500 mt-2 text-sm">{error}</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-5 px-6 py-2.5 bg-brand-600 text-white font-bold rounded-2xl text-sm"
+          >
+            Volver atrás
+          </button>
+        </div>
+      </main>
+    );
+  }
+
+  if (!instructor) {
+    return (
+      <main className="min-h-screen bg-brand-50 p-8 flex items-center justify-center">
+        <div className="bg-white p-6 rounded-3xl shadow-soft max-w-md w-full text-center">
+          <span className="text-4xl" aria-hidden="true">🔍</span>
+          <h2 className="text-xl font-bold text-slate-800 mt-3">Instructor no encontrado</h2>
+          <button
+            onClick={() => navigate('/cliente/clases')}
+            className="mt-5 px-6 py-2.5 bg-brand-600 text-white font-bold rounded-2xl text-sm"
+          >
+            Ver clases
+          </button>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] pb-28 text-slate-700">
+      <section className="mx-auto max-w-lg">
+        {/* Hero header */}
+        <div className="relative h-[33vh] min-h-[260px] overflow-hidden bg-sky-900">
+          {instructor.video_presentacion ? (
+            <iframe
+              src={instructor.video_presentacion.includes('youtube') || instructor.video_presentacion.includes('youtu.be')
+                ? instructor.video_presentacion + (instructor.video_presentacion.includes('?') ? '&' : '?') + 'autoplay=1&mute=1&loop=1&playlist=' + instructor.video_presentacion.split('/').pop()?.split('?')[0]
+                : instructor.video_presentacion
+              }
+              title="Video de presentación"
+              className="absolute inset-0 h-full w-full pointer-events-none"
+              style={{ filter: 'brightness(0.6)' }}
+              allow="autoplay; encrypted-media"
+            />
+          ) : instructor.foto ? (
+            <img
+              src={fotoUrl(instructor.foto)}
+              alt={instructor.nombre_completo}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-sky-950/80 via-sky-800/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-transparent" />
+
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute top-5 left-5 z-20 flex items-center gap-1.5 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/30"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+            Volver
+          </button>
+
+          <div className="absolute bottom-0 left-0 right-0 z-10 p-6 pb-5">
+            <h1 className="text-3xl font-bold text-white drop-shadow-lg md:text-4xl">
+              {instructor.nombre_completo}
+            </h1>
+            {instructor.especialidad && (
+              <p className="mt-1.5 text-base font-semibold text-white/80 drop-shadow">
+                {instructor.especialidad}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="px-4 -mt-5 relative z-20 space-y-5">
+          {/* Quick stats */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="rounded-2xl bg-white p-4 text-center shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
+              <span className="text-2xl">📅</span>
+              <p className="mt-1.5 text-xl font-extrabold text-slate-800">
+                {experienceYears !== null ? `${experienceYears}` : '—'}
+              </p>
+              <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
+                {experienceYears === 1 ? 'Año' : 'Años'}
+              </p>
+            </div>
+            <div className="rounded-2xl bg-white p-4 text-center shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
+              <span className="text-2xl">🏆</span>
+              <p className="mt-1.5 text-xl font-extrabold text-slate-800">{classes.length}</p>
+              <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
+                {classes.length === 1 ? 'Clase' : 'Clases'}
+              </p>
+            </div>
+            <div className="rounded-2xl bg-white p-4 text-center shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
+              <span className="text-2xl">🔥</span>
+              <p className={`mt-1.5 text-xl font-extrabold ${intensityMeta.color}`}>
+                {intensityMeta.label}
+              </p>
+              <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
+                Intensidad
+              </p>
+            </div>
+          </div>
+
+          {/* Specialty chips */}
+          {specialties.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {specialties.map((s) => (
+                <span
+                  key={s}
+                  className="rounded-full bg-brand-100 px-4 py-1.5 text-sm font-semibold text-brand-700"
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Bio */}
+          {instructor.biografia && (
+            <section className="rounded-2xl bg-white p-5 shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
+              <h2 className="text-base font-extrabold text-slate-800">Biografía</h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-500">
+                {instructor.biografia}
+              </p>
+            </section>
+          )}
+
+          {/* Próximas clases */}
+          <section>
+            <h2 className="text-base font-extrabold text-slate-800 mb-3">Próximas clases</h2>
+
+            {classes.length > 0 ? (
+              <div className="space-y-3">
+                {classes.map((cls) => {
+                  const classDate = cls.date
+                    ? new Date(cls.date + 'T00:00:00').toLocaleDateString('es-PE', {
+                        weekday: 'long',
+                        day: '2-digit',
+                        month: 'short',
+                      })
+                    : '';
+                  return (
+                    <button
+                      key={cls.id}
+                      onClick={() => navigate(`/cliente/clases/${cls.id}`)}
+                      className="w-full flex items-center gap-4 rounded-2xl bg-white p-4 text-left shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100 transition hover:shadow-md active:scale-[0.98]"
+                    >
+                      {cls.imagen_clase ? (
+                        <img
+                          src={fotoUrl(cls.imagen_clase)}
+                          alt={cls.name}
+                          className="h-14 w-14 shrink-0 rounded-xl object-cover"
+                        />
+                      ) : (
+                        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-2xl"
+                          style={{ backgroundColor: cls.color === 'orange' ? '#FFF7ED' : '#EFF6FF' }}
+                        >
+                          {cls.icon || '💪'}
+                        </span>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-slate-800 truncate">{cls.name}</p>
+                        <p className="mt-0.5 text-xs text-slate-400">
+                          {classDate} · {cls.time} · {cls.duration}
+                        </p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-sm font-bold text-sky-600">
+                          {cls.availableSpots} cupos
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="rounded-2xl bg-white p-8 text-center shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-sky-50">
+                  <span className="text-3xl">📋</span>
+                </div>
+                <h3 className="text-base font-bold text-slate-700">Sin clases programadas</h3>
+                <p className="mt-1 text-sm text-slate-400">
+                  Este instructor no tiene clases disponibles por el momento.
+                </p>
+                <button
+                  onClick={() => navigate('/cliente/clases')}
+                  className="mt-4 rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-brand-700"
+                >
+                  Explorar clases
+                </button>
+              </div>
+            )}
+          </section>
+        </div>
+      </section>
+    </main>
+  );
+}
