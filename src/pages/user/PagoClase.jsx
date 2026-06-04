@@ -37,7 +37,10 @@ function PagoClase() {
         setError('');
         try {
             // Ejecutamos la petición a tu API de FastAPI para crear la reserva en la BD
-            await reservationService.createReservation(id);
+            await reservationService.createReservation({
+                classId: Number(id),
+                seatId,
+            });
 
             // Si todo sale bien, lo mandamos a su panel de Mis Reservas
             navigate('/cliente/reservas', { replace: true });

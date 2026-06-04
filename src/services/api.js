@@ -31,7 +31,10 @@ export async function apiRequest(path, options = {}) {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'Error en la solicitud al servidor');
+    const detail = Array.isArray(error.detail)
+      ? error.detail.map((item) => item.msg).filter(Boolean).join(', ')
+      : error.detail;
+    throw new Error(error.message || detail || 'Error en la solicitud al servidor');
   }
 
   return response.json();
