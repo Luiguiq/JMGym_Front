@@ -47,12 +47,12 @@ function SeleccionEspacio() {
 
     const getSeatStyles = (seat) => {
         if (selectedSeat?.id_espacio === seat.id_espacio) {
-            return 'bg-fuchsia-800 text-white shadow-md shadow-fuchsia-300 font-bold border-2 border-fuchsia-800 transform scale-105';
+            return 'bg-sky-600 text-white shadow-md shadow-sky-200 font-bold border-2 border-sky-600 transform scale-105';
         }
 
         switch (seat.estado) {
             case 'DISPONIBLE':
-                return 'bg-fuchsia-100 text-slate-400 font-medium hover:bg-fuchsia-200 hover:scale-105 cursor-pointer border-2 border-transparent';
+                return 'bg-sky-50 text-sky-600 font-medium hover:bg-sky-100 hover:scale-105 cursor-pointer border-2 border-transparent';
             case 'EN_ESPERA':
             case 'RESERVADO':
                 return 'bg-orange-50 text-orange-500 font-bold border-2 border-orange-300 cursor-not-allowed opacity-80';
@@ -66,7 +66,7 @@ function SeleccionEspacio() {
     if (loading) {
         return (
             <main className="min-h-screen bg-slate-50 flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-fuchsia-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-10 h-10 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
             </main>
         );
     }
@@ -92,7 +92,7 @@ function SeleccionEspacio() {
                     <header className="px-6 pt-10 lg:pt-8 pb-4">
                         <button
                             onClick={() => navigate(-1)}
-                            className="flex items-center gap-2 text-slate-800 font-semibold mb-2 hover:text-fuchsia-700 transition-colors"
+                            className="flex items-center gap-2 text-slate-800 font-semibold mb-2 hover:text-sky-700 transition-colors"
                         >
                             <span className="text-xl">←</span>
                             <h1 className="text-2xl font-serif font-bold text-slate-800">Selecciona tu espacio</h1>
@@ -103,17 +103,17 @@ function SeleccionEspacio() {
                     </header>
 
                     <div className="px-6 md:px-10 mb-6">
-                        <div className="bg-fuchsia-100/50 rounded-2xl flex items-center justify-between p-4 md:p-6 border border-fuchsia-100">
-                            <div className="text-center flex-1 border-r border-fuchsia-200">
-                                <p className="text-[10px] md:text-xs font-bold text-fuchsia-800 uppercase tracking-wider">Clase</p>
+                        <div className="bg-sky-50/80 rounded-2xl flex items-center justify-between p-4 md:p-6 border border-sky-100">
+                            <div className="text-center flex-1 border-r border-sky-100">
+                                <p className="text-[10px] md:text-xs font-bold text-sky-700 uppercase tracking-wider">Clase</p>
                                 <p className="font-bold text-slate-800 line-clamp-1 px-1">{classInfo.name}</p>
                             </div>
-                            <div className="text-center flex-1 border-r border-fuchsia-200">
-                                <p className="text-[10px] md:text-xs font-bold text-fuchsia-800 uppercase tracking-wider">Hora</p>
+                            <div className="text-center flex-1 border-r border-sky-100">
+                                <p className="text-[10px] md:text-xs font-bold text-sky-700 uppercase tracking-wider">Hora</p>
                                 <p className="font-bold text-slate-800">{classInfo.time}</p>
                             </div>
                             <div className="text-center flex-1">
-                                <p className="text-[10px] md:text-xs font-bold text-fuchsia-800 uppercase tracking-wider">Cupos</p>
+                                <p className="text-[10px] md:text-xs font-bold text-sky-700 uppercase tracking-wider">Cupos</p>
                                 <p className="font-bold text-slate-800">{classInfo.availableSpots} libres</p>
                             </div>
                         </div>
@@ -121,7 +121,7 @@ function SeleccionEspacio() {
 
                     <div className="px-6 md:px-10 mb-6 flex flex-wrap justify-between gap-3 text-xs md:text-sm text-slate-600 font-medium">
                         <div className="flex items-center gap-1.5">
-                            <div className="w-3.5 h-3.5 md:w-4 md:h-4 rounded bg-fuchsia-100"></div> Disponible
+                            <div className="w-3.5 h-3.5 md:w-4 md:h-4 rounded bg-sky-50 border border-sky-100"></div> Disponible
                         </div>
                         <div className="flex items-center gap-1.5">
                             <div className="w-3.5 h-3.5 md:w-4 md:h-4 rounded border-2 border-orange-300 bg-orange-50"></div> En espera
@@ -130,7 +130,7 @@ function SeleccionEspacio() {
                             <div className="w-3.5 h-3.5 md:w-4 md:h-4 rounded border-2 border-green-300 bg-green-50"></div> Pagado
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-3.5 h-3.5 md:w-4 md:h-4 rounded bg-fuchsia-800"></div> Seleccionado
+                            <div className="w-3.5 h-3.5 md:w-4 md:h-4 rounded bg-sky-600"></div> Seleccionado
                         </div>
                     </div>
 
@@ -138,13 +138,13 @@ function SeleccionEspacio() {
                         <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 md:p-8 max-w-2xl mx-auto">
                             <div className="flex justify-center items-center gap-2 mb-6 md:mb-8">
                                 <span className="text-sm md:text-base">🏋️‍♀️</span>
-                                <p className="text-xs md:text-sm font-bold text-fuchsia-800 tracking-widest uppercase">Frente al instructor</p>
+                                <p className="text-xs md:text-sm font-bold text-sky-700 tracking-widest uppercase">Frente al instructor</p>
                                 <span className="text-sm md:text-base">🏋️‍♀️</span>
                             </div>
 
                             <div className={`grid gap-2 sm:gap-3 md:gap-4 ${
-                                seats.length >= 40 ? 'grid-cols-8' :
-                                    seats.length >= 30 ? 'grid-cols-6' :
+                                seats.length >= 40 ? 'grid-cols-5 sm:grid-cols-8' :
+                                    seats.length >= 30 ? 'grid-cols-5 sm:grid-cols-6' :
                                         'grid-cols-5'
                             }`}>
                                 {seats.map((seat) => (
@@ -153,7 +153,7 @@ function SeleccionEspacio() {
                                         onClick={() => handleSeatClick(seat)}
                                         disabled={seat.estado !== 'DISPONIBLE'}
                                         className={`
-                      w-full aspect-square rounded-xl flex items-center justify-center text-[10px] sm:text-xs md:text-sm transition-all duration-200
+                      w-full aspect-square rounded-lg flex items-center justify-center text-[10px] sm:text-xs md:text-sm transition-all duration-200
                       ${getSeatStyles(seat)}
                     `}
                                     >
@@ -178,10 +178,10 @@ function SeleccionEspacio() {
 
                         {selectedSeat ? (
                             <div className="animate-fade-in-up">
-                                <div className="bg-fuchsia-100/50 rounded-2xl p-4 flex justify-between items-center mb-6 border border-fuchsia-100">
+                                <div className="bg-sky-50/80 rounded-2xl p-4 flex justify-between items-center mb-6 border border-sky-100">
                                     <div>
-                                        <p className="text-[10px] md:text-xs font-bold text-fuchsia-800 uppercase tracking-wider mb-1">Espacio Seleccionado</p>
-                                        <p className="text-2xl md:text-3xl font-bold text-fuchsia-900">{selectedSeat.codigo_espacio}</p>
+                                        <p className="text-[10px] md:text-xs font-bold text-sky-700 uppercase tracking-wider mb-1">Espacio Seleccionado</p>
+                                        <p className="text-2xl md:text-3xl font-bold text-sky-900">{selectedSeat.codigo_espacio}</p>
                                     </div>
                                     <div className="w-8 h-8 md:w-10 md:h-10 bg-green-500 rounded-md md:rounded-xl flex items-center justify-center shadow-sm">
                                         <span className="text-white text-lg md:text-xl font-bold">✓</span>
@@ -195,13 +195,13 @@ function SeleccionEspacio() {
 
                                 <button
                                     onClick={handleContinue}
-                                    className="w-full bg-gradient-to-r from-fuchsia-700 to-pink-500 text-white font-bold md:text-lg py-4 rounded-2xl shadow-lg shadow-fuchsia-200 transform hover:scale-[1.02] transition-all"
+                                    className="w-full bg-gradient-to-r from-sky-500 to-brand-600 text-white font-bold md:text-lg py-4 rounded-2xl shadow-lg shadow-sky-200 transform hover:scale-[1.02] transition-all"
                                 >
                                     Continuar al pago →
                                 </button>
                             </div>
                         ) : (
-                            <div className="w-full bg-fuchsia-50 text-fuchsia-800 font-bold text-xs md:text-sm py-4 rounded-2xl text-center uppercase tracking-wide border border-fuchsia-100">
+                            <div className="w-full bg-sky-50 text-sky-700 font-bold text-xs md:text-sm py-4 rounded-2xl text-center uppercase tracking-wide border border-sky-100">
                                 Seleccione un espacio
                             </div>
                         )}

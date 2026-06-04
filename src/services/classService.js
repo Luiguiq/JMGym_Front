@@ -13,6 +13,7 @@ function mapClass(backendClass) {
     capacity: backendClass.cupos_totales,
     availableSpots: backendClass.cupos_disponibles,
     description: backendClass.descripcion,
+    clothingRules: backendClass.reglas_vestimenta,
     date: backendClass.fecha,
     status: backendClass.estado,
     price: backendClass.precio,

@@ -2,7 +2,21 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { classService } from '../../services/classService.js';
-import { reservationService } from '../../services/reservationService.js';
+import cardioImage from '../../assets/images/cardio.jpg';
+import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
+import zumbaImage from '../../assets/images/zumba.jpg';
+
+const classImages = [
+  { match: 'zumba', image: zumbaImage },
+  { match: 'cardio', image: cardioImage },
+  { match: 'tren superior', image: trenSuperiorImage },
+  { match: 'trensuperior', image: trenSuperiorImage },
+];
+
+function getClassImage(className = '') {
+  const normalizedName = className.toLowerCase().replace(/\s+/g, ' ').trim();
+  return classImages.find(({ match }) => normalizedName.includes(match))?.image;
+}
 
 function DetalleClase() {
   const { id } = useParams();
@@ -11,9 +25,6 @@ function DetalleClase() {
   const [classItem, setClassItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [reserving, setReserving] = useState(false);
-  const [reserved, setReserved] = useState(false);
-
   useEffect(() => {
     classService
         .getClassById(id)
@@ -82,197 +93,154 @@ function DetalleClase() {
     );
   }
 
-  // Lógica visual para renderizar los círculos de intensidad
   const renderIntensityDots = (level) => {
     let activeDots = 2; // Por defecto MEDIA (Moderado)
     if (level === 'Energia alta' || level === 'ALTA') activeDots = 3;
     if (level === 'Principiante' || level === 'BAJA') activeDots = 1;
 
     return (
-        <div className="flex items-center gap-1.5 mt-1">
+        <div className="flex items-center gap-1.5">
           {[1, 2, 3].map((dot) => (
               <div
                   key={dot}
                   className={`h-3 w-3 rounded-full transition-colors duration-300 ${
-                      dot <= activeDots ? 'bg-orange-500' : 'bg-slate-200'
+                      dot <= activeDots ? 'bg-sky-500' : 'bg-slate-200'
                   }`}
               />
           ))}
-          <span className="text-xs font-bold text-slate-500 ml-1.5 uppercase tracking-wide">
-          {classItem.level}
-        </span>
         </div>
     );
   };
 
-  return (
-      <main className="min-h-screen bg-gradient-to-b from-brand-50 to-brand-100 pb-24">
-        {/* Encabezado Superior de Navegación */}
-        <div className="max-w-3xl mx-auto px-6 pt-6">
-          <button
-              className="flex items-center gap-2 font-extrabold text-brand-600 hover:text-brand-700 transition group py-2"
-              onClick={() => navigate(-1)}
-              type="button"
-          >
-            <span className="text-xl transform group-hover:-translate-x-1 transition-transform">←</span>
-            Volver
-          </button>
-        </div>
+  const classImage = getClassImage(classItem.name);
+  const formattedDate = classItem.date
+      ? new Date(classItem.date + 'T00:00:00').toLocaleDateString('es-PE', { weekday: 'short', day: '2-digit', month: 'short' })
+      : 'Próximamente';
+  const clothingRules = classItem.clothingRules
+      ? classItem.clothingRules.split(/[\n;]/).map((rule) => rule.trim()).filter(Boolean)
+      : ['Ropa deportiva cómoda', 'Toalla personal', 'Llegar 10 minutos antes de la clase'];
 
-        <section className="max-w-3xl mx-auto px-6 mt-4">
-          {/* Tarjeta de Información Principal */}
-          <article className="overflow-hidden rounded-3xl bg-white shadow-soft border border-brand-100 p-6 md:p-8 mb-6">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-              <span className="inline-block px-3 py-1 bg-brand-50 text-brand-600 font-extrabold text-xs rounded-full uppercase tracking-wider mb-2">
-                Clase Programada
-              </span>
-                <h1 className="font-display text-3xl md:text-4xl font-bold text-slate-800 leading-tight">
+  return (
+      <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] pb-28 text-slate-700">
+        <section className="mx-auto max-w-5xl px-4 py-5 md:px-8 md:py-8">
+          <article className="overflow-hidden rounded-[2rem] bg-white shadow-[0_18px_48px_rgba(15,86,130,0.13)] ring-1 ring-sky-100 md:grid md:grid-cols-[0.95fr_1.05fr]">
+            <header className="relative min-h-[310px] overflow-hidden bg-sky-500 p-5 text-white md:min-h-full md:p-8">
+              {classImage ? (
+                  <img
+                      src={classImage}
+                      alt={`Persona realizando ${classItem.name}`}
+                      className="absolute inset-0 h-full w-full object-cover"
+                  />
+              ) : (
+                  <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-sky-400 to-brand-600 text-8xl" aria-hidden="true">
+                    {classItem.icon || '💪'}
+                  </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-sky-950/75 via-sky-800/35 to-sky-400/15" aria-hidden="true" />
+
+              <button
+                  className="relative z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-xl font-black text-sky-900 shadow-lg transition hover:bg-white"
+                  onClick={() => navigate(-1)}
+                  type="button"
+                  aria-label="Volver"
+              >
+                ←
+              </button>
+
+              <div className="relative z-10 mt-28 md:mt-44">
+                <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1.5 text-xs font-extrabold uppercase tracking-wide text-sky-700 shadow-sm">
+                  Intensidad
+                </span>
+                <h1 className="mt-4 font-display text-4xl font-bold leading-tight drop-shadow md:text-5xl">
                   {classItem.name}
                 </h1>
-              </div>
-              <span className="text-4xl md:text-5xl bg-slate-50 p-3 rounded-2xl" aria-hidden="true">
-              {classItem.icon || '💪'}
-            </span>
-            </div>
-
-            {/* Bloque de Horarios y Aforos */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-100">
-
-              {/* Fecha */}
-              <div className="flex items-center gap-3">
-                <span className="text-xl bg-slate-50 p-2 rounded-xl" aria-hidden="true">📅</span>
-                <div>
-                  <p className="text-xs text-slate-400 font-bold uppercase">Fecha</p>
-                  <p className="text-sm font-extrabold text-slate-700">
-                    {classItem.date
-                        ? new Date(classItem.date + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })
-                        : 'Próximamente'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Horario */}
-              <div className="flex items-center gap-3">
-                <span className="text-xl bg-slate-50 p-2 rounded-xl" aria-hidden="true">⏰</span>
-                <div>
-                  <p className="text-xs text-slate-400 font-bold uppercase">Horario</p>
-                  <p className="text-sm font-extrabold text-slate-700">{classItem.time || '00:00'}</p>
-                </div>
-              </div>
-
-              {/* Duración */}
-              <div className="flex items-center gap-3">
-                <span className="text-xl bg-slate-50 p-2 rounded-xl" aria-hidden="true">⏱️</span>
-                <div>
-                  <p className="text-xs text-slate-400 font-bold uppercase">Duración</p>
-                  <p className="text-sm font-extrabold text-slate-700">{classItem.duration || '0 min'}</p>
-                </div>
-              </div>
-
-              {/* Aforo */}
-              <div className="flex items-center gap-3">
-                <span className="text-xl bg-slate-50 p-2 rounded-xl" aria-hidden="true">👥</span>
-                <div>
-                  <p className="text-xs text-slate-400 font-bold uppercase">Aforo</p>
-                  <p className="text-sm font-extrabold text-slate-700">
-                    {classItem.reserved}/{classItem.capacity} cupos
-                  </p>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Intensidad y Precio */}
-            <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-xs text-slate-400 font-bold uppercase">Intensidad</p>
-                {renderIntensityDots(classItem.level)}
-              </div>
-              <div className="text-right">
-                <p className="text-xs text-slate-400 font-bold uppercase">Precio de Inscripción</p>
-                <p className="text-xl font-extrabold text-brand-600">
-                  S/ {classItem.price ? Number(classItem.price).toFixed(2) : '0.00'}
+                <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm font-semibold text-white/95 md:text-base">
+                  <span>Hoy, {classItem.time || '00:00'}</span>
+                  <span>•</span>
+                  <span>{classItem.duration || '0 min'}</span>
+                  <span>•</span>
+                  <span>S/ {classItem.price ? Number(classItem.price).toFixed(2) : '0.00'}</span>
                 </p>
+              </div>
+            </header>
+
+            <div className="relative bg-white p-5 md:p-8">
+              <div className="-mt-5 grid grid-cols-3 gap-2 rounded-3xl bg-white/95 p-3 text-center text-xs font-extrabold text-slate-500 shadow-[0_10px_28px_rgba(15,86,130,0.12)] ring-1 ring-sky-50 md:mt-0 md:text-sm">
+                <div>
+                  <span className="block text-sky-500">Duración</span>
+                  {classItem.duration || '0 min'}
+                </div>
+                <div>
+                  <span className="block text-sky-500">Cupos</span>
+                  {classItem.reserved}/{classItem.capacity}
+                </div>
+                <div>
+                  <span className="block text-sky-500">Fecha</span>
+                  {formattedDate}
+                </div>
+              </div>
+
+              <section className="mt-5 rounded-3xl bg-sky-50/80 p-5 shadow-sm ring-1 ring-sky-100">
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="text-sm font-extrabold uppercase tracking-wide text-slate-700">Intensidad</h2>
+                  <span className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-sky-700 ring-1 ring-sky-100">
+                    {classItem.level}
+                  </span>
+                </div>
+                <div className="mt-3">{renderIntensityDots(classItem.level)}</div>
+                <p className="mt-3 text-sm leading-relaxed text-slate-500">
+                  Moderada, ideal para principiantes y usuarios que quieren mantenerse activos.
+                </p>
+              </section>
+
+              <section className="mt-6">
+                <h2 className="text-lg font-extrabold text-slate-800">Sobre la clase</h2>
+                <p className="mt-2 text-sm leading-relaxed text-slate-500 md:text-base">
+                  {classItem.description || 'Entrenamiento dinámico diseñado para mejorar tu resistencia, coordinación y energía con una rutina guiada por el instructor.'}
+                </p>
+              </section>
+
+              <section className="mt-6">
+                <h2 className="text-lg font-extrabold text-slate-800">Regla de vestimenta ⚠️</h2>
+                <ul className="mt-2 space-y-1 text-sm leading-relaxed text-slate-500 md:text-base">
+                  {clothingRules.map((rule) => (
+                      <li key={rule}>• {rule}</li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="mt-6">
+                <h2 className="text-lg font-extrabold text-slate-800">Instructor</h2>
+                <div className="mt-3 flex items-center gap-4 rounded-3xl bg-gradient-to-r from-sky-50 to-white p-4 ring-1 ring-sky-100">
+                  <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-sky-500 text-3xl text-white shadow-lg shadow-sky-100" aria-hidden="true">
+                    👩‍🏫
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-slate-800">Prof. {classItem.trainer}</h3>
+                    <p className="mt-1 text-xs font-bold text-sky-600 md:text-sm">Staff certificado JMGym</p>
+                    <p className="mt-1 text-xs text-slate-400">10 años de experiencia · Clases grupales</p>
+                  </div>
+                </div>
+              </section>
+
+              <p className={`mt-6 text-center text-sm font-extrabold ${classItem.availableSpots > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                {classItem.availableSpots > 0
+                    ? `Quedan ${classItem.availableSpots} espacios disponibles para esta sesión`
+                    : 'Lo sentimos, esta clase ya completó su aforo total'}
+              </p>
+
+              <div className="sticky bottom-4 mt-5">
+                <button
+                    className="min-h-14 w-full rounded-2xl bg-gradient-to-r from-sky-500 to-brand-600 font-extrabold text-white shadow-[0_14px_28px_rgba(14,165,233,0.28)] transition hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 md:min-h-16 md:text-lg"
+                    onClick={handleReserve}
+                    disabled={classItem.availableSpots === 0}
+                    type="button"
+                >
+                  {classItem.availableSpots === 0 ? 'Sin cupos disponibles' : 'Seleccionar espacio →'}
+                </button>
               </div>
             </div>
           </article>
-
-          {/* Sección: Sobre la clase */}
-          <section className="bg-white rounded-3xl shadow-soft border border-brand-100 p-6 md:p-8 mb-6">
-            <h2 className="text-lg font-extrabold text-slate-800 flex items-center gap-2 mb-3">
-              <span className="text-brand-500" aria-hidden="true">✨</span> Sobre la clase
-            </h2>
-            <p className="text-slate-600 leading-relaxed text-sm md:text-base">
-              {classItem.description || 'No hay una descripción detallada disponible para esta clase en este momento.'}
-            </p>
-          </section>
-
-          {/* Sección: Reglas de vestimenta */}
-          <section className="bg-white rounded-3xl shadow-soft border border-brand-100 p-6 md:p-8 mb-6">
-            <h2 className="text-lg font-extrabold text-slate-800 flex items-center gap-2 mb-3">
-              <span className="text-orange-500" aria-hidden="true">👟</span> Reglas de vestimenta
-            </h2>
-            <p className="text-slate-600 leading-relaxed text-sm md:text-base">
-              {classItem.clothingRules ||
-                  classItem.reglas_vestimenta ||
-                  'Uso obligatorio de indumentaria deportiva completa, zapatillas limpias de salón y toalla personal para el entrenamiento.'}
-            </p>
-          </section>
-
-          {/* Sección: Instructora / Profesor */}
-          <section className="bg-white rounded-3xl shadow-soft border border-brand-100 p-6 md:p-8 mb-8">
-            <h2 className="text-lg font-extrabold text-slate-800 flex items-center gap-2 mb-4">
-              <span className="text-brand-500" aria-hidden="true">👑</span> Instructora a cargo
-            </h2>
-            <div className="flex items-center gap-4 bg-gradient-to-r from-brand-50 to-transparent p-4 rounded-2xl">
-              <div className="w-14 h-14 bg-brand-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-md shrink-0">
-                {classItem.trainer ? classItem.trainer.charAt(0) : '👩‍🏫'}
-              </div>
-              <div>
-                <h3 className="font-extrabold text-slate-800 text-base md:text-lg">
-                  Prof. {classItem.trainer}
-                </h3>
-                <p className="text-xs font-bold text-brand-600 bg-white px-2.5 py-0.5 rounded-full inline-block mt-1 border border-brand-100">
-                  Staff Certificado JMGym
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Indicador Dinámico de Disponibilidad */}
-          <div className="mb-4 text-center">
-            <p className={`text-sm font-extrabold ${classItem.availableSpots > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-              {classItem.availableSpots > 0
-                  ? `🔥 ¡Aprovecha! Quedan solo ${classItem.availableSpots} cupos disponibles para esta sesión`
-                  : '❌ Lo sentimos, esta clase ya completó su aforo total'}
-            </p>
-          </div>
-
-          {/* Botón de Acción / Confirmación */}
-          {reserved ? (
-              <div className="rounded-2xl bg-emerald-50 border border-emerald-200 px-4 py-4 font-bold text-emerald-700 text-center shadow-soft flex items-center justify-center gap-2">
-                <span>✅</span> ¡Clase agendada exitosamente! Puedes verla desde tu panel de reservas.
-              </div>
-          ) : (
-              <button
-                  className="min-h-14 w-full rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 font-extrabold text-white shadow-soft transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-lg active:translate-y-[0px] disabled:opacity-50 disabled:pointer-events-none disabled:transform-none md:min-h-16 md:text-lg"
-                  onClick={handleReserve}
-                  disabled={reserving || classItem.availableSpots === 0}
-                  type="button"
-              >
-                {reserving ? (
-                    <span className="flex items-center justify-center gap-2">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Procesando tu reserva...
-              </span>
-                ) : classItem.availableSpots === 0 ? (
-                    'Sin cupos disponibles'
-                ) : (
-                    'Reservar mi clase'
-                )}
-              </button>
-          )}
         </section>
       </main>
   );
