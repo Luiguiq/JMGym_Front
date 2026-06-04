@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { classService } from '../../services/classService.js';
+import { reservationService } from '../../services/reservationService.js';
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
 import zumbaImage from '../../assets/images/zumba.jpg';
@@ -25,6 +26,9 @@ function DetalleClase() {
   const [classItem, setClassItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [hasActiveReservation, setHasActiveReservation] = useState(false);
+  const [checkingReservation, setCheckingReservation] = useState(false);
+
   useEffect(() => {
     classService
         .getClassById(id)
@@ -34,6 +38,20 @@ function DetalleClase() {
         .catch((err) => setError(err.message))
         .finally(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    setCheckingReservation(true);
+    reservationService.getMyReservations()
+        .then((reservations) => {
+          const active = reservations.some(
+              (r) => Number(r.id_clase) === Number(id) && r.status === 'ACTIVA'
+          );
+          setHasActiveReservation(active);
+        })
+        .catch(() => {})
+        .finally(() => setCheckingReservation(false));
+  }, [isAuthenticated, id]);
 
   function handleReserve() {
     // Si no ha iniciado sesión, lo mandamos al login
@@ -226,20 +244,32 @@ function DetalleClase() {
                 </button>
               </section>
 
-              <p className={`mt-6 text-center text-sm font-extrabold ${classItem.availableSpots > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                {classItem.availableSpots > 0
-                    ? `Quedan ${classItem.availableSpots} espacios disponibles para esta sesión`
-                    : 'Lo sentimos, esta clase ya completó su aforo total'}
-              </p>
+              {hasActiveReservation ? (
+                  <p className="mt-6 text-center text-sm font-extrabold text-amber-600 bg-amber-50 rounded-2xl p-4 ring-1 ring-amber-200">
+                    Ya tienes una reserva activa para esta clase. No puedes reservar dos veces la misma sesión.
+                  </p>
+              ) : (
+                  <p className={`mt-6 text-center text-sm font-extrabold ${classItem.availableSpots > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                    {classItem.availableSpots > 0
+                        ? `Quedan ${classItem.availableSpots} espacios disponibles para esta sesión`
+                        : 'Lo sentimos, esta clase ya completó su aforo total'}
+                  </p>
+              )}
 
               <div className="sticky bottom-4 mt-5">
                 <button
                     className="min-h-14 w-full rounded-2xl bg-gradient-to-r from-sky-500 to-brand-600 font-extrabold text-white shadow-[0_14px_28px_rgba(14,165,233,0.28)] transition hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 md:min-h-16 md:text-lg"
                     onClick={handleReserve}
-                    disabled={classItem.availableSpots === 0}
+                    disabled={classItem.availableSpots === 0 || hasActiveReservation || checkingReservation}
                     type="button"
                 >
-                  {classItem.availableSpots === 0 ? 'Sin cupos disponibles' : 'Seleccionar espacio →'}
+                  {checkingReservation
+                      ? 'Verificando...'
+                      : hasActiveReservation
+                          ? 'Ya reservado'
+                          : classItem.availableSpots === 0
+                              ? 'Sin cupos disponibles'
+                      : 'Seleccionar espacio →'}
                 </button>
               </div>
             </div>
