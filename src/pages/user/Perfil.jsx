@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
-import BottomNav from '../../components/user/BottomNav.jsx';
 import ProfileOption from '../../components/user/ProfileOption.jsx';
 
 function Perfil() {
@@ -44,8 +43,6 @@ function Perfil() {
             </button>
           </div>
         </div>
-
-        <BottomNav />
       </section>
     </main>
   );

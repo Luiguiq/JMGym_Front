@@ -211,16 +211,19 @@ function DetalleClase() {
 
               <section className="mt-6">
                 <h2 className="text-lg font-extrabold text-slate-800">Instructor</h2>
-                <div className="mt-3 flex items-center gap-4 rounded-3xl bg-gradient-to-r from-sky-50 to-white p-4 ring-1 ring-sky-100">
+                <button
+                  onClick={() => navigate(`/cliente/instructores/${classItem.trainerId}`)}
+                  className="mt-3 w-full flex items-center gap-4 rounded-3xl bg-gradient-to-r from-sky-50 to-white p-4 ring-1 ring-sky-100 text-left transition hover:bg-sky-100 hover:shadow-md"
+                >
                   <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-sky-500 text-3xl text-white shadow-lg shadow-sky-100" aria-hidden="true">
                     👩‍🏫
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h3 className="font-extrabold text-slate-800">Prof. {classItem.trainer}</h3>
                     <p className="mt-1 text-xs font-bold text-sky-600 md:text-sm">Staff certificado JMGym</p>
-                    <p className="mt-1 text-xs text-slate-400">10 años de experiencia · Clases grupales</p>
+                    <p className="mt-1 text-xs text-slate-400">Ver perfil del instructor →</p>
                   </div>
-                </div>
+                </button>
               </section>
 
               <p className={`mt-6 text-center text-sm font-extrabold ${classItem.availableSpots > 0 ? 'text-emerald-600' : 'text-red-500'}`}>

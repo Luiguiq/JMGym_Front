@@ -74,6 +74,10 @@ export const classService = {
     const data = await apiRequest(`/classes/${classId}/seats`);
     return data;
   },
+  getByInstructor: async (instructorId) => {
+    const data = await apiRequest(`/classes/instructor/${instructorId}`);
+    return (data ?? []).map(mapClass);
+  },
   getAllClasses: async () => {
     const data = await apiRequest('/classes');
     return (data ?? []).map(mapClass);

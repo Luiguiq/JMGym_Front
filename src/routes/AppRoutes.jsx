@@ -13,6 +13,7 @@ import InstructoresAdmin from '../pages/admin/InstructoresAdmin.jsx';
 import ReservasAdmin from '../pages/admin/ReservasAdmin.jsx';
 import UsuariosAdmin from '../pages/admin/UsuariosAdmin.jsx';
 import DetalleClase from '../pages/user/DetalleClase.jsx';
+import InstructorDetalle from '../pages/user/InstructorDetalle.jsx';
 import Home from '../pages/user/Home.jsx';
 import ListaClases from '../pages/user/ListaClases.jsx';
 import Login from '../pages/user/Login.jsx';
@@ -48,6 +49,7 @@ function AppRoutes() {
         <Route path="home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="clases" element={<ProtectedRoute><ListaClases /></ProtectedRoute>} />
         <Route path="clases/:id" element={<ProtectedRoute><DetalleClase /></ProtectedRoute>} />
+        <Route path="instructores/:id" element={<ProtectedRoute><InstructorDetalle /></ProtectedRoute>} />
         <Route path="reservas" element={<ProtectedRoute><MisReservas /></ProtectedRoute>} />
         <Route path="perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
           <Route path="/cliente/clases/:id" element={<DetalleClase />} />

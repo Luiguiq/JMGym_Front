@@ -89,9 +89,9 @@ const ReservasAdmin = () => {
           className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
         >
           <option value="todas">Todos los estados</option>
-          <option value="confirmada">Confirmada</option>
-          <option value="pendiente">Pendiente</option>
-          <option value="cancelada">Cancelada</option>
+          <option value="ACTIVA">Activa</option>
+          <option value="CANCELADA">Cancelada</option>
+          <option value="FINALIZADA">Finalizada</option>
         </select>
         <select
           value={paymentFilter}
@@ -99,9 +99,10 @@ const ReservasAdmin = () => {
           className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
         >
           <option value="todos">Todos los pagos</option>
-          <option value="pagado">Pagado</option>
-          <option value="pendiente">Pendiente</option>
-          <option value="rechazado">Rechazado</option>
+          <option value="PAGADO">Pagado</option>
+          <option value="PENDIENTE">Pendiente</option>
+          <option value="VENCIDO">Vencido</option>
+          <option value="REEMBOLSADO">Reembolsado</option>
         </select>
       </div>
 
@@ -122,19 +123,19 @@ const ReservasAdmin = () => {
         <div className="bg-white rounded-xl border border-slate-200 p-4">
           <p className="text-slate-600 text-sm mb-1">Confirmadas</p>
           <p className="text-3xl font-bold text-green-600">
-            {reservations.filter((r) => r.status === 'confirmada').length}
+            {reservations.filter((r) => r.estado_reserva === 'ACTIVA').length}
           </p>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-4">
           <p className="text-slate-600 text-sm mb-1">Pendientes</p>
           <p className="text-3xl font-bold text-amber-600">
-            {reservations.filter((r) => r.status === 'pendiente').length}
+            {reservations.filter((r) => r.estado_pago === 'PENDIENTE').length}
           </p>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-4">
           <p className="text-slate-600 text-sm mb-1">Canceladas</p>
           <p className="text-3xl font-bold text-red-600">
-            {reservations.filter((r) => r.status === 'cancelada').length}
+            {reservations.filter((r) => r.estado_reserva === 'CANCELADA').length}
           </p>
         </div>
       </div>

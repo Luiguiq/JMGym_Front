@@ -8,15 +8,16 @@ const ReservationTable = ({
   onStatusChange 
 }) => {
   const statusColors = {
-    confirmada: { bg: 'bg-green-100', text: 'text-green-800', icon: CheckCircle },
-    cancelada: { bg: 'bg-red-100', text: 'text-red-800', icon: XCircle },
-    pendiente: { bg: 'bg-amber-100', text: 'text-amber-800', icon: Clock },
+    ACTIVA: { bg: 'bg-green-100', text: 'text-green-800', icon: CheckCircle },
+    CANCELADA: { bg: 'bg-red-100', text: 'text-red-800', icon: XCircle },
+    FINALIZADA: { bg: 'bg-slate-100', text: 'text-slate-800', icon: Clock },
   };
 
   const paymentStatusColors = {
-    pagado: 'bg-green-100 text-green-800',
-    pendiente: 'bg-amber-100 text-amber-800',
-    rechazado: 'bg-red-100 text-red-800',
+    PAGADO: 'bg-green-100 text-green-800',
+    PENDIENTE: 'bg-amber-100 text-amber-800',
+    VENCIDO: 'bg-red-100 text-red-800',
+    REEMBOLSADO: 'bg-blue-100 text-blue-800',
   };
 
   if (loading) {

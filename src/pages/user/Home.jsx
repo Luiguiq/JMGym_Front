@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext.jsx';
-import BottomNav from '../../components/user/BottomNav.jsx';
 import ClassCard from '../../components/user/ClassCard.jsx';
 import Navbar from '../../components/user/Navbar.jsx';
 import { classService } from '../../services/classService.js';
@@ -63,7 +62,6 @@ function Home() {
           </div>
         </section>
 
-        <BottomNav />
       </section>
     </main>
   );
