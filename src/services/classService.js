@@ -30,6 +30,13 @@ export const classService = {
     const data = await apiRequest(`/classes/${id}`);
     return mapClass(data);
   },
+  // Trae la lista de espacios (asientos) de una clase específica
+// Trae la lista de espacios (asientos) de una clase específica
+      getClassSeats: async (classId) => {
+        // Usamos apiRequest que es la función que ya tienes importada arriba
+        const data = await apiRequest(`/classes/${classId}/seats`);
+        return data;
+      },
   getAllClasses: async () => {
     const data = await apiRequest('/classes');
     return (data ?? []).map(mapClass);

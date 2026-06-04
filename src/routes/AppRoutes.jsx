@@ -17,7 +17,8 @@ import MisReservas from '../pages/user/MisReservas.jsx';
 import Perfil from '../pages/user/Perfil.jsx';
 import Register from '../pages/user/Register.jsx';
 import Welcome from '../pages/user/Welcome.jsx';
-
+import SeleccionEspacio from '../pages/user/SeleccionEspacio';
+import PagoClase from '../pages/user/PagoClase';
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) return <Navigate to="/cliente/login" replace />;
@@ -46,6 +47,9 @@ function AppRoutes() {
         <Route path="clases/:id" element={<ProtectedRoute><DetalleClase /></ProtectedRoute>} />
         <Route path="reservas" element={<ProtectedRoute><MisReservas /></ProtectedRoute>} />
         <Route path="perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
+          <Route path="/cliente/clases/:id" element={<DetalleClase />} />
+          <Route path="/cliente/seleccion-espacio/:id" element={<SeleccionEspacio />} />
+        <Route path="/cliente/pago/:id" element={<PagoClase />} />
       </Route>
 
       <Route path="/admin/login" element={<AdminLogin />} />
@@ -56,6 +60,7 @@ function AppRoutes() {
         <Route path="clases/crear" element={<CrearClase />} />
         <Route path="clases/:id/editar" element={<EditarClase />} />
         <Route path="reservas" element={<ReservasAdmin />} />
+
       </Route>
     </Routes>
   );
