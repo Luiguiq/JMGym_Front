@@ -6,9 +6,12 @@ import Landing from '../pages/Landing.jsx';
 import AdminLogin from '../pages/admin/AdminLogin.jsx';
 import ClasesAdmin from '../pages/admin/ClasesAdmin.jsx';
 import CrearClase from '../pages/admin/CrearClase.jsx';
+import CrearAdmin from '../pages/admin/CrearAdmin.jsx';
 import Dashboard from '../pages/admin/Dashboard.jsx';
 import EditarClase from '../pages/admin/EditarClase.jsx';
+import InstructoresAdmin from '../pages/admin/InstructoresAdmin.jsx';
 import ReservasAdmin from '../pages/admin/ReservasAdmin.jsx';
+import UsuariosAdmin from '../pages/admin/UsuariosAdmin.jsx';
 import DetalleClase from '../pages/user/DetalleClase.jsx';
 import Home from '../pages/user/Home.jsx';
 import ListaClases from '../pages/user/ListaClases.jsx';
@@ -60,6 +63,9 @@ function AppRoutes() {
         <Route path="clases/crear" element={<CrearClase />} />
         <Route path="clases/:id/editar" element={<EditarClase />} />
         <Route path="reservas" element={<ReservasAdmin />} />
+        <Route path="instructores" element={<InstructoresAdmin />} />
+        <Route path="usuarios" element={<UsuariosAdmin />} />
+        <Route path="crear-admin" element={<CrearAdmin />} />
 
       </Route>
     </Routes>

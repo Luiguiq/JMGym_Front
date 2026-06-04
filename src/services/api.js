@@ -19,9 +19,13 @@ export async function apiRequest(path, options = {}) {
   });
 
   if (response.status === 401) {
+    const storedUser = localStorage.getItem('user');
+    let user = null;
+    try { user = storedUser ? JSON.parse(storedUser) : null; } catch {}
+    const loginPath = user?.role === 'admin' ? '/admin/login' : '/cliente/login';
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    window.location.href = '/cliente/login';
+    window.location.href = loginPath;
     throw new Error('Sesión expirada');
   }
 

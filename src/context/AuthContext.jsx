@@ -67,7 +67,7 @@ export function AuthProvider({ children }) {
     const user = {
       id: data.user.id,
       name: data.user.nombre ?? '',
-      email: data.user.correo_institucional ?? '',
+      email: data.user.email ?? '',
       role: 'admin',
       estado: data.user.estado,
     };
