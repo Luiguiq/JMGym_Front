@@ -61,7 +61,11 @@ export default function InstructorDetalle() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const experienceYears = useMemo(() => calcYears(instructor?.fecha_registro), [instructor]);
+  const experienceYears = useMemo(() => {
+    const y = calcYears(instructor?.fecha_registro);
+    if (!y || y < 1) return 1;
+    return y;
+  }, [instructor]);
   const intensity = useMemo(() => dominantIntensity(classes), [classes]);
   const intensityMeta = LEVEL_LABELS[intensity] || { label: '—', color: 'text-slate-400', bg: 'bg-slate-50' };
 
@@ -134,11 +138,17 @@ export default function InstructorDetalle() {
             />
           ) : instructor.foto ? (
             <img
-              src={fotoUrl(instructor.foto)}
+              src={fotoUrl(instructor.foto) || '/public/default-instructor.jpg'}
               alt={instructor.nombre_completo}
               className="absolute inset-0 h-full w-full object-cover"
             />
-          ) : null}
+          ) : (
+          <img
+            src="/default-instructor.jpg"
+            alt="Instructor"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-sky-950/80 via-sky-800/30 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-transparent" />
 
@@ -211,9 +221,13 @@ export default function InstructorDetalle() {
           {/* Bio */}
           {instructor.biografia && (
             <section className="rounded-2xl bg-white p-5 shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
-              <h2 className="text-base font-extrabold text-slate-800">Biografía</h2>
+              <h2 className="text-base font-extrabold text-slate-800">
+                Sobre el instructor
+              </h2>
+
               <p className="mt-2 text-sm leading-relaxed text-slate-500">
-                {instructor.biografia}
+                {instructor.biografia ||
+                  `${instructor.nombre_completo} forma parte del equipo JMGym y está especializado en ${instructor.especialidad?.toLowerCase()}.`}
               </p>
             </section>
           )}
@@ -224,7 +238,7 @@ export default function InstructorDetalle() {
 
             {classes.length > 0 ? (
               <div className="space-y-3">
-                {classes.map((cls) => {
+                {classes.slice(0,3).map((cls) => {
                   const classDate = cls.date
                     ? new Date(cls.date + 'T00:00:00').toLocaleDateString('es-PE', {
                         weekday: 'long',
@@ -284,6 +298,14 @@ export default function InstructorDetalle() {
               </div>
             )}
           </section>
+        </div>
+        <div className="pt-2">
+          <button
+            onClick={() => navigate('/cliente/clases')}
+            className="w-full rounded-2xl bg-brand-600 py-4 font-bold text-white"
+          >
+            Explorar más clases
+          </button>
         </div>
       </section>
     </main>
