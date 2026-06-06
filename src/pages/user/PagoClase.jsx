@@ -39,7 +39,8 @@ function PagoClase() {
             // Ejecutamos la petición a tu API de FastAPI para crear la reserva en la BD
             await reservationService.createReservation({
                 classId: Number(id),
-                seatId,
+                seatId: Number(seatId),
+                paymentMethod: method,
             });
 
             // Si todo sale bien, lo mandamos a su panel de Mis Reservas
@@ -182,11 +183,21 @@ function PagoClase() {
                     </div>
 
                     <button
-                        onClick={handleConfirm}
                         disabled={processing}
-                        className="w-full bg-gradient-to-r from-sky-500 to-brand-600 text-white font-bold text-lg py-4 rounded-[20px] shadow-lg shadow-sky-200/60 transform hover:scale-[1.02] transition-all disabled:opacity-70 disabled:transform-none"
+                        onClick={handleConfirm}
+                        className="
+                            w-full
+                            rounded-2xl
+                            bg-brand-600
+                            py-4
+                            font-bold
+                            text-white
+                            disabled:opacity-50
+                        "
                     >
-                        {processing ? 'Procesando reserva...' : 'Confirmar reserva y pagar →'}
+                        {processing
+                            ? 'Procesando...'
+                            : 'Confirmar reserva'}
                     </button>
                 </div>
 
