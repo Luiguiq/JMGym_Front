@@ -16,7 +16,9 @@ function ReservationCard({ reservation }) {
       ? 'Activa'
       : reservation.estado_reserva === 'CANCELADA'
         ? 'Cancelada'
-        : reservation.estado_reserva;
+        : reservation.estado_reserva === 'FINALIZADA'
+          ? 'Finalizada'
+          : reservation.estado_reserva;
 
   const statusColor =
     reservation.estado_reserva === 'ACTIVA'
