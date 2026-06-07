@@ -8,10 +8,10 @@ function UserLayout() {
   const showNav = !noNavRoutes.includes(location.pathname);
 
   return (
-    <>
+    <div className="min-h-screen overflow-x-hidden bg-[#f7fbff] text-black">
       <Outlet />
       {showNav && <BottomNav />}
-    </>
+    </div>
   );
 }
 

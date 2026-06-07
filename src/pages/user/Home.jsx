@@ -1,8 +1,18 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import ClassCard from '../../components/user/ClassCard.jsx';
 import Navbar from '../../components/user/Navbar.jsx';
 import { classService } from '../../services/classService.js';
+
+function StatCard({ value, label }) {
+  return (
+    <div className="rounded-[24px] bg-white/12 p-4 ring-1 ring-white/10">
+      <p className="text-2xl font-black leading-none text-white">{value}</p>
+      <p className="mt-2 text-sm text-white/80">{label}</p>
+    </div>
+  );
+}
 
 function Home() {
   const { user } = useAuth();
@@ -19,49 +29,92 @@ function Home() {
   }, []);
 
   const nextClass = todayClasses[0];
+  const totalAvailableSpots = todayClasses.reduce(
+    (acc, classItem) => acc + Number(classItem.availableSpots ?? 0),
+    0
+  );
 
   return (
-    <main className="min-h-screen bg-brand-50">
-      <section className="relative min-h-screen bg-[linear-gradient(180deg,#fbfdff_0%,#edf8ff_100%)] px-7 py-6 pb-28 md:grid md:grid-cols-[minmax(360px,0.72fr)_minmax(520px,0.9fr)] md:grid-rows-[auto_auto_auto] md:content-center md:gap-x-28 md:gap-y-7 md:bg-[radial-gradient(circle_at_18%_14%,rgba(255,255,255,0.95),transparent_28rem),linear-gradient(180deg,#f7fcff_0%,#e8f7ff_100%)] md:px-[8vw] md:py-12 md:pb-28 max-w-full overflow-x-hidden">
-        <div className="md:col-span-2"><Navbar /></div>
+    <main className="min-h-screen bg-[#f7fbff] pb-28">
+      <section className="mx-auto max-w-6xl px-4 py-5 sm:px-6 lg:px-8">
+        <Navbar />
 
-        <section className="mt-9 md:mt-0 md:self-end" aria-labelledby="client-home-title">
-          <h1 id="client-home-title" className="text-3xl font-extrabold leading-tight tracking-tight text-slate-800 md:text-7xl">Bienvenida, {user?.name ?? 'usuaria'} 👋</h1>
-          <p className="mt-2 text-slate-500 md:text-xl">Reserva tu proxima clase de baile</p>
-        </section>
+        <div className="mt-6 grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
+          <article className="overflow-hidden rounded-[34px] bg-[#004aab] p-6 text-white shadow-[0_20px_60px_rgba(0,74,171,.18)] sm:p-8">
+            <p className="text-sm font-semibold text-white/85 sm:text-base">
+              Bienvenida, {user?.name ?? 'usuaria'}
+            </p>
 
-        <section className="relative mt-6 overflow-hidden rounded-3xl bg-gradient-to-br from-brand-500 via-brand-600 to-sky-400 p-6 text-white shadow-soft md:col-start-1 md:mt-0 md:self-start md:p-9" aria-label="Proxima clase">
-          {loading ? (
-            <p className="text-white/80">Cargando...</p>
-          ) : error ? (
-            <p className="text-white/80">No se pudo cargar la proxima clase</p>
-          ) : nextClass ? (
-            <>
-              <span className="text-white/90 md:text-lg">Proxima clase</span>
-              <h2 className="mt-3 font-display text-3xl font-bold md:text-5xl">{nextClass.name}</h2>
-              <p className="mt-2 md:text-lg">Hoy · {nextClass.time} · Espacios disponibles: {nextClass.availableSpots}</p>
-            </>
-          ) : (
-            <p className="text-white/80">No hay clases programadas para hoy</p>
-          )}
-          <span className="absolute right-5 top-2 rotate-[-10deg] text-7xl text-white/20 md:text-8xl" aria-hidden="true">♪</span>
-        </section>
+            <h1 className="mt-2 max-w-xl font-display text-4xl font-bold leading-tight sm:text-5xl">
+              Reserva tu próxima clase de baile en pocos pasos
+            </h1>
 
-        <section className="mt-7 md:col-start-2 md:row-span-2 md:row-start-2 md:mt-0" aria-labelledby="today-classes-title">
-          <h2 id="today-classes-title" className="mb-4 text-sm font-extrabold uppercase tracking-wide text-slate-500 md:text-base">Clases de hoy</h2>
-          <div className="grid gap-4 md:gap-5">
-            {loading ? (
-              <p className="text-slate-400">Cargando clases...</p>
-            ) : error ? (
-              <p className="text-red-500">{error}</p>
-            ) : todayClasses.length === 0 ? (
-              <p className="text-slate-400">No hay clases disponibles hoy</p>
-            ) : (
-              todayClasses.map((classItem) => <ClassCard classItem={classItem} key={classItem.id} />)
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/85 sm:text-base">
+              Elige tu clase, selecciona un espacio y finaliza tu reserva con una experiencia simple, clara y responsiva.
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                to="/cliente/clases"
+                className="rounded-full bg-white px-5 py-3 text-sm font-bold text-[#004aab] transition hover:bg-slate-100"
+              >
+                Ver clases
+              </Link>
+              <Link
+                to="/cliente/reservas"
+                className="rounded-full border border-white/25 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/15"
+              >
+                Mis reservas
+              </Link>
+            </div>
+
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              <StatCard value={todayClasses.length} label="Clases disponibles" />
+              <StatCard value={totalAvailableSpots} label="Cupos libres" />
+              <StatCard value={nextClass?.time ?? '--:--'} label="Próxima hora" />
+            </div>
+
+            {nextClass && (
+              <div className="mt-6 rounded-[28px] bg-white/10 p-5 ring-1 ring-white/10">
+                <p className="text-sm font-semibold text-white/80">Clase destacada</p>
+                <h2 className="mt-1 font-display text-3xl font-bold">{nextClass.name}</h2>
+                <p className="mt-2 text-sm text-white/85">
+                  Hoy · {nextClass.time} · {nextClass.availableSpots} espacios disponibles
+                </p>
+              </div>
             )}
-          </div>
-        </section>
+          </article>
 
+          <article className="rounded-[34px] bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,.08)] ring-1 ring-slate-100 sm:p-8">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="font-display text-3xl font-bold text-black sm:text-4xl">
+                  Clases de hoy
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  Las opciones que puedes revisar y reservar.
+                </p>
+              </div>
+              <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-600">
+                {todayClasses.length} clases
+              </span>
+            </div>
+
+            <div className="mt-5 grid gap-4">
+              {loading ? (
+                <p className="text-slate-400">Cargando clases...</p>
+              ) : error ? (
+                <p className="text-red-500">{error}</p>
+              ) : todayClasses.length === 0 ? (
+                <p className="text-slate-400">No hay clases disponibles hoy</p>
+              ) : (
+                todayClasses.map((classItem) => (
+                  <ClassCard classItem={classItem} key={classItem.id} />
+                ))
+              )}
+            </div>
+          </article>
+        </div>
       </section>
     </main>
   );
