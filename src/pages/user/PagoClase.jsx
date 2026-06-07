@@ -46,8 +46,20 @@ function PagoClase() {
             // Si todo sale bien, lo mandamos a su panel de Mis Reservas
             navigate('/cliente/reservas', { replace: true });
         } catch (err) {
-            setError(err.message || 'Error al procesar la reserva');
-            setProcessing(false);
+            const message = err?.message || '';
+
+            if (
+                message.includes(
+                'Ya tienes una reserva activa para esa fecha'
+                )
+            ) {
+                setError(
+                '⚠ Ya tienes una reserva para ese día'
+                );
+                return;
+            }
+
+            setError(message);
         }
     };
 
@@ -181,7 +193,11 @@ function PagoClase() {
                             </p>
                         </div>
                     </div>
-
+                    {error && (
+                    <div className="mb-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-amber-800">
+                        {error}
+                    </div>
+                    )}
                     <button
                         disabled={processing}
                         onClick={handleConfirm}

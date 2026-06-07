@@ -8,12 +8,18 @@ function MisReservas() {
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('activas');
 
-  useEffect(() => {
+  const loadReservations = () => {
+    setLoading(true);
+
     reservationService
       .getMyReservations()
       .then(setReservations)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadReservations();
   }, []);
 
   const activeReservations = useMemo(() => {
@@ -88,6 +94,7 @@ function MisReservas() {
             <ReservationCard
               reservation={res}
               key={res.id}
+              onRefresh={loadReservations}
             />
           ))
         )}

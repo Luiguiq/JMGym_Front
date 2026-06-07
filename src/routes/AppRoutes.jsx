@@ -18,6 +18,7 @@ import Home from '../pages/user/Home.jsx';
 import ListaClases from '../pages/user/ListaClases.jsx';
 import Login from '../pages/user/Login.jsx';
 import MisReservas from '../pages/user/MisReservas.jsx';
+import DetalleReserva from '../pages/user/DetalleReserva.jsx';
 import Perfil from '../pages/user/Perfil.jsx';
 import Register from '../pages/user/Register.jsx';
 import Welcome from '../pages/user/Welcome.jsx';
@@ -51,6 +52,14 @@ function AppRoutes() {
         <Route path="clases/:id" element={<ProtectedRoute><DetalleClase /></ProtectedRoute>} />
         <Route path="instructores/:id" element={<ProtectedRoute><InstructorDetalle /></ProtectedRoute>} />
         <Route path="reservas" element={<ProtectedRoute><MisReservas /></ProtectedRoute>} />
+        <Route
+          path="reservas/:id"
+          element={
+            <ProtectedRoute>
+              <DetalleReserva />
+            </ProtectedRoute>
+          }
+        />
         <Route path="perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
           <Route path="/cliente/clases/:id" element={<DetalleClase />} />
           <Route path="/cliente/seleccion-espacio/:id" element={<SeleccionEspacio />} />

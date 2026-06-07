@@ -27,7 +27,8 @@ function DetalleClase() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [hasActiveReservation, setHasActiveReservation] = useState(false);
-  const [checkingReservation, setCheckingReservation] = useState(false);
+const [hasDateConflict, setHasDateConflict] = useState(false);
+const [checkingReservation, setCheckingReservation] = useState(false);
 
   useEffect(() => {
     classService
@@ -43,15 +44,36 @@ function DetalleClase() {
     if (!isAuthenticated) return;
     setCheckingReservation(true);
     reservationService.getMyReservations()
-        .then((reservations) => {
-          const active = reservations.some(
-              (r) => Number(r.id_clase) === Number(id) && r.status === 'ACTIVA'
+      .then((reservations) => {
+
+        const active = reservations.some(
+          (r) =>
+            Number(r.id_clase) === Number(id) &&
+            r.status === 'ACTIVA'
+        );
+
+        setHasActiveReservation(active);
+
+        const conflict = reservations.some((r) => {
+
+          const activeStatuses = [
+            'ACTIVA',
+            'PENDIENTE',
+            'CONFIRMADA'
+          ];
+
+          return (
+            activeStatuses.includes(r.status) &&
+            r.fecha_clase === classItem?.date &&
+            Number(r.id_clase) !== Number(id)
           );
-          setHasActiveReservation(active);
-        })
+        });
+
+        setHasDateConflict(conflict);
+      })
         .catch(() => {})
         .finally(() => setCheckingReservation(false));
-  }, [isAuthenticated, id]);
+  }, [isAuthenticated, id, classItem]);
 
   function handleReserve() {
     // Si no ha iniciado sesión, lo mandamos al login
@@ -245,31 +267,48 @@ function DetalleClase() {
               </section>
 
               {hasActiveReservation ? (
-                  <p className="mt-6 text-center text-sm font-extrabold text-amber-600 bg-amber-50 rounded-2xl p-4 ring-1 ring-amber-200">
-                    Ya tienes una reserva activa para esta clase. No puedes reservar dos veces la misma sesión.
-                  </p>
+                <p className="mt-6 text-center text-sm font-extrabold text-amber-600 bg-amber-50 rounded-2xl p-4 ring-1 ring-amber-200">
+                  Ya tienes una reserva activa para esta clase.
+                </p>
+              ) : hasDateConflict ? (
+                <p className="mt-6 text-center text-sm font-extrabold text-amber-600 bg-amber-50 rounded-2xl p-4 ring-1 ring-amber-200">
+                  Ya tienes una reserva activa para ese día.
+                </p>
               ) : (
-                  <p className={`mt-6 text-center text-sm font-extrabold ${classItem.availableSpots > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                    {classItem.availableSpots > 0
-                        ? `Quedan ${classItem.availableSpots} espacios disponibles para esta sesión`
-                        : 'Lo sentimos, esta clase ya completó su aforo total'}
-                  </p>
+                <p
+                  className={`mt-6 text-center text-sm font-extrabold ${
+                    classItem.availableSpots > 0
+                      ? 'text-emerald-600'
+                      : 'text-red-500'
+                  }`}
+                >
+                  {classItem.availableSpots > 0
+                    ? `Quedan ${classItem.availableSpots} espacios disponibles para esta sesión`
+                    : 'Lo sentimos, esta clase ya completó su aforo total'}
+                </p>
               )}
 
               <div className="sticky bottom-4 mt-5">
                 <button
                     className="min-h-14 w-full rounded-2xl bg-gradient-to-r from-sky-500 to-brand-600 font-extrabold text-white shadow-[0_14px_28px_rgba(14,165,233,0.28)] transition hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 md:min-h-16 md:text-lg"
                     onClick={handleReserve}
-                    disabled={classItem.availableSpots === 0 || hasActiveReservation || checkingReservation}
+                    disabled={
+                      classItem.availableSpots === 0 ||
+                      hasActiveReservation ||
+                      hasDateConflict ||
+                      checkingReservation
+                    }
                     type="button"
                 >
                   {checkingReservation
-                      ? 'Verificando...'
-                      : hasActiveReservation
-                          ? 'Ya reservado'
-                          : classItem.availableSpots === 0
-                              ? 'Sin cupos disponibles'
-                      : 'Seleccionar espacio →'}
+                    ? 'Verificando...'
+                    : hasActiveReservation
+                        ? 'Ya reservado'
+                        : hasDateConflict
+                            ? 'Reserva no disponible'
+                            : classItem.availableSpots === 0
+                                ? 'Sin cupos disponibles'
+                                : 'Seleccionar espacio →'}
                 </button>
               </div>
             </div>

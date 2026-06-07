@@ -1,7 +1,38 @@
 import { useNavigate } from 'react-router-dom';
+import { reservationService } from '../../services/reservationService.js';
 
-function ReservationCard({ reservation }) {
+function ReservationCard({ reservation, onRefresh }) {
   const navigate = useNavigate();
+
+  const handleCancel = async () => {
+
+    const confirmacion = window.confirm(
+      '¿Deseas cancelar esta reserva?'
+    );
+
+    if (!confirmacion) return;
+
+    try {
+
+      await reservationService.cancelReservation(
+        reservation.id
+      );
+
+      alert('Reserva cancelada correctamente');
+
+      if (onRefresh) {
+        onRefresh();
+      }
+
+    } catch (error) {
+
+      alert(
+        error.message ||
+        'No se pudo cancelar la reserva'
+      );
+
+    }
+  };
 
   const fecha = reservation.fecha_clase
     ? new Date(reservation.fecha_clase + 'T00:00:00').toLocaleDateString('es-PE', {
@@ -96,11 +127,26 @@ function ReservationCard({ reservation }) {
 
       <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
         <button
-          onClick={() => navigate(`/cliente/reservas/${reservation.id}`)}
+          onClick={() =>
+            navigate(`/cliente/reservas/${reservation.id}`)
+          }
           className="text-xs font-bold text-brand-600 bg-brand-50 px-4 py-2 rounded-xl hover:bg-brand-100 transition"
         >
           Ver detalle
         </button>
+
+        {reservation.estado_reserva === 'ACTIVA' &&
+          reservation.estado_pago === 'PENDIENTE' && (
+
+            <button
+              onClick={handleCancel}
+              className="text-xs font-bold text-red-600 bg-red-50 px-4 py-2 rounded-xl hover:bg-red-100 transition"
+            >
+              Cancelar reserva
+            </button>
+
+        )}
+
       </div>
     </article>
   );

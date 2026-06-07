@@ -46,6 +46,9 @@ const ReservationTable = ({
               <th className="text-left px-6 py-3 font-semibold text-slate-900">Usuario</th>
               <th className="text-left px-6 py-3 font-semibold text-slate-900">Clase</th>
               <th className="text-left px-6 py-3 font-semibold text-slate-900">Fecha</th>
+              <th className="text-left px-6 py-3 font-semibold text-slate-900">
+                Validación
+              </th>
               <th className="text-left px-6 py-3 font-semibold text-slate-900">Estado</th>
               <th className="text-left px-6 py-3 font-semibold text-slate-900">Pago</th>
               <th className="text-center px-6 py-3 font-semibold text-slate-900">Acciones</th>
@@ -61,6 +64,17 @@ const ReservationTable = ({
                   <td className="px-6 py-4 font-medium text-slate-900">{reservation.userName}</td>
                   <td className="px-6 py-4 text-slate-600">{reservation.className}</td>
                   <td className="px-6 py-4 text-slate-600">{reservation.date}</td>
+                  <td className="px-6 py-4">
+                    {reservation.validationConflict ? (
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                        ⚠ Conflicto
+                      </span>
+                    ) : (
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                        ✓ Válida
+                      </span>
+                    )}
+                  </td>
                   <td className="px-6 py-4">
                     <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold w-fit ${statusConfig.bg} ${statusConfig.text}`}>
                       <StatusIcon size={14} />
