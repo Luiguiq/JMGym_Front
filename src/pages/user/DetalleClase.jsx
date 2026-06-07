@@ -19,6 +19,43 @@ function getClassImage(className = '') {
   return classImages.find(({ match }) => normalizedName.includes(match))?.image;
 }
 
+function getAvailabilityInfo(spots) {
+
+  if (spots <= 0) {
+    return {
+      label: 'Clase completa',
+      color: 'text-red-600',
+      bg: 'bg-red-50',
+      icon: '🔴'
+    };
+  }
+
+  if (spots <= 5) {
+    return {
+      label: 'Últimos espacios',
+      color: 'text-red-600',
+      bg: 'bg-red-50',
+      icon: '🔴'
+    };
+  }
+
+  if (spots <= 15) {
+    return {
+      label: 'Pocos espacios',
+      color: 'text-amber-600',
+      bg: 'bg-amber-50',
+      icon: '🟡'
+    };
+  }
+
+  return {
+    label: 'Muchos espacios disponibles',
+    color: 'text-emerald-600',
+    bg: 'bg-emerald-50',
+    icon: '🟢'
+  };
+}
+
 function DetalleClase() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -153,6 +190,45 @@ const [checkingReservation, setCheckingReservation] = useState(false);
   };
 
   const classImage = getClassImage(classItem.name);
+  const benefitsMap = {
+    zumba: [
+      '🔥 Quema calorías',
+      '💃 Mejora coordinación',
+      '❤️ Mejora resistencia cardiovascular',
+    ],
+
+    cardiofit: [
+      '❤️ Aumenta resistencia',
+      '🔥 Alto gasto calórico',
+      '⚡ Mejora capacidad aeróbica',
+    ],
+
+    cardio: [
+      '❤️ Aumenta resistencia',
+      '🔥 Alto gasto calórico',
+      '⚡ Mejora capacidad aeróbica',
+    ],
+
+    'tren superior': [
+      '💪 Incrementa fuerza muscular',
+      '🏋️ Mejora estabilidad',
+      '📈 Favorece hipertrofia',
+    ],
+  };
+
+  const normalizedName = classItem.name
+    ?.toLowerCase()
+    .trim();
+
+  const benefits =
+    benefitsMap[normalizedName] || [
+      '💪 Mejora condición física',
+      '🔥 Incrementa actividad física',
+      '⚡ Favorece el bienestar general',
+    ];
+  const availabilityInfo = getAvailabilityInfo(
+    classItem.availableSpots
+  );
   const formattedDate = classItem.date
       ? new Date(classItem.date + 'T00:00:00').toLocaleDateString('es-PE', { weekday: 'short', day: '2-digit', month: 'short' })
       : 'Próximamente';
@@ -164,7 +240,7 @@ const [checkingReservation, setCheckingReservation] = useState(false);
       <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] pb-28 text-slate-700">
         <section className="mx-auto max-w-5xl px-4 py-5 md:px-8 md:py-8">
           <article className="overflow-hidden rounded-[2rem] bg-white shadow-[0_18px_48px_rgba(15,86,130,0.13)] ring-1 ring-sky-100 md:grid md:grid-cols-[0.95fr_1.05fr]">
-            <header className="relative min-h-[310px] overflow-hidden bg-sky-500 p-5 text-white md:min-h-full md:p-8">
+            <header className="relative min-h-[420px] overflow-hidden bg-sky-500 p-6 text-white md:min-h-[520px] md:p-10">
               {classImage ? (
                   <img
                       src={classImage}
@@ -187,11 +263,11 @@ const [checkingReservation, setCheckingReservation] = useState(false);
                 ←
               </button>
 
-              <div className="relative z-10 mt-28 md:mt-44">
+              <div className="relative z-10 mt-44 md:mt-64">
                 <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1.5 text-xs font-extrabold uppercase tracking-wide text-sky-700 shadow-sm">
                   Intensidad
                 </span>
-                <h1 className="mt-4 font-display text-4xl font-bold leading-tight drop-shadow md:text-5xl">
+                <h1 className="mt-4 font-display text-5xl font-black leading-tight drop-shadow md:text-6xl">
                   {classItem.name}
                 </h1>
                 <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm font-semibold text-white/95 md:text-base">
@@ -205,18 +281,30 @@ const [checkingReservation, setCheckingReservation] = useState(false);
             </header>
 
             <div className="relative bg-white p-5 md:p-8">
-              <div className="-mt-5 grid grid-cols-3 gap-2 rounded-3xl bg-white/95 p-3 text-center text-xs font-extrabold text-slate-500 shadow-[0_10px_28px_rgba(15,86,130,0.12)] ring-1 ring-sky-50 md:mt-0 md:text-sm">
-                <div>
-                  <span className="block text-sky-500">Duración</span>
-                  {classItem.duration || '0 min'}
+              <div className="-mt-10 relative z-20 grid grid-cols-2 md:grid-cols-4 gap-3 rounded-[28px] bg-white p-4 shadow-[0_18px_40px_rgba(0,0,0,.08)]">
+                <div className="text-center">
+                  <p className="text-xs text-slate-400">Fecha</p>
+                  <p className="font-bold text-slate-800">
+                    📅 {formattedDate}
+                  </p>
                 </div>
-                <div>
-                  <span className="block text-sky-500">Cupos</span>
-                  {classItem.reserved}/{classItem.capacity}
+                <div className="text-center">
+                  <p className="text-xs text-slate-400">Hora</p>
+                  <p className="font-bold text-slate-800">
+                    🕗 {classItem.time}
+                  </p>
                 </div>
-                <div>
-                  <span className="block text-sky-500">Fecha</span>
-                  {formattedDate}
+                <div className="text-center">
+                  <p className="text-xs text-slate-400">Duración</p>
+                  <p className="font-bold text-slate-800">
+                    ⏱ {classItem.duration}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-slate-400">Precio</p>
+                  <p className="font-black text-[#004aab]">
+                    S/ {Number(classItem.price || 0).toFixed(2)}
+                  </p>
                 </div>
               </div>
 
@@ -235,6 +323,18 @@ const [checkingReservation, setCheckingReservation] = useState(false);
 
               <section className="mt-6">
                 <h2 className="text-lg font-extrabold text-slate-800">Sobre la clase</h2>
+                <div className="mt-5 grid gap-3 md:grid-cols-3">
+                  {benefits.map((benefit) => (
+                    <div
+                      key={benefit}
+                      className="rounded-2xl bg-sky-50 p-4"
+                    >
+                      <p className="font-bold text-sky-700">
+                        {benefit}
+                      </p>
+                    </div>
+                  ))}
+                </div>
                 <p className="mt-2 text-sm leading-relaxed text-slate-500 md:text-base">
                   {classItem.description || 'Entrenamiento dinámico diseñado para mejorar tu resistencia, coordinación y energía con una rutina guiada por el instructor.'}
                 </p>
@@ -255,42 +355,64 @@ const [checkingReservation, setCheckingReservation] = useState(false);
                   onClick={() => navigate(`/cliente/instructores/${classItem.trainerId}`)}
                   className="mt-3 w-full flex items-center gap-4 rounded-3xl bg-gradient-to-r from-sky-50 to-white p-4 ring-1 ring-sky-100 text-left transition hover:bg-sky-100 hover:shadow-md"
                 >
-                  <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-sky-500 text-3xl text-white shadow-lg shadow-sky-100" aria-hidden="true">
+                  <div className="grid h-20 w-20 shrink-0 place-items-center rounded-3xl bg-gradient-to-br from-[#004aab] to-sky-500 text-4xl text-white shadow-xl">
                     👩‍🏫
                   </div>
                   <div className="flex-1">
                     <h3 className="font-extrabold text-slate-800">Prof. {classItem.trainer}</h3>
-                    <p className="mt-1 text-xs font-bold text-sky-600 md:text-sm">Staff certificado JMGym</p>
+                    <p className="mt-1 text-sm font-bold text-sky-600">Staff certificado JMGym</p>
                     <p className="mt-1 text-xs text-slate-400">Ver perfil del instructor →</p>
                   </div>
                 </button>
               </section>
 
-              {hasActiveReservation ? (
-                <p className="mt-6 text-center text-sm font-extrabold text-amber-600 bg-amber-50 rounded-2xl p-4 ring-1 ring-amber-200">
-                  Ya tienes una reserva activa para esta clase.
+              <section className={`mt-6 rounded-3xl p-5 ${availabilityInfo.bg}`}>
+                <h3 className={`font-extrabold text-lg ${availabilityInfo.color}`}>
+                  {availabilityInfo.icon} {availabilityInfo.label}
+                </h3>
+                <p className="mt-2 text-sm text-slate-600">
+                  Actualmente quedan {classItem.availableSpots} espacios disponibles para esta sesión.
                 </p>
-              ) : hasDateConflict ? (
-                <p className="mt-6 text-center text-sm font-extrabold text-amber-600 bg-amber-50 rounded-2xl p-4 ring-1 ring-amber-200">
-                  Ya tienes una reserva activa para ese día.
-                </p>
-              ) : (
-                <p
-                  className={`mt-6 text-center text-sm font-extrabold ${
-                    classItem.availableSpots > 0
-                      ? 'text-emerald-600'
-                      : 'text-red-500'
-                  }`}
-                >
-                  {classItem.availableSpots > 0
-                    ? `Quedan ${classItem.availableSpots} espacios disponibles para esta sesión`
-                    : 'Lo sentimos, esta clase ya completó su aforo total'}
-                </p>
-              )}
+              </section>
+              
+              <div className="mt-6 space-y-3">
+                {hasActiveReservation && (
+                  <div className="rounded-3xl bg-amber-50 p-4 ring-1 ring-amber-200">
+                    <h3 className="font-extrabold text-amber-700">
+                      ⚠ Ya reservaste esta clase
+                    </h3>
+
+                    <p className="mt-1 text-sm text-amber-700">
+                      No puedes reservar dos veces la misma sesión.
+                    </p>
+                  </div>
+                )}
+                {hasDateConflict && (
+                  <div className="rounded-3xl bg-amber-50 p-4 ring-1 ring-amber-200">
+                    <h3 className="font-extrabold text-amber-700">
+                      ⚠ Conflicto de fecha
+                    </h3>
+
+                    <p className="mt-1 text-sm text-amber-700">
+                      Ya tienes otra reserva activa programada para ese día.
+                    </p>
+                  </div>
+                )}
+              </div>
 
               <div className="sticky bottom-4 mt-5">
                 <button
-                    className="min-h-14 w-full rounded-2xl bg-gradient-to-r from-sky-500 to-brand-600 font-extrabold text-white shadow-[0_14px_28px_rgba(14,165,233,0.28)] transition hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 md:min-h-16 md:text-lg"
+                    className={`
+                      min-h-14 w-full rounded-2xl font-extrabold text-white
+                      transition md:min-h-16 md:text-lg
+                      ${
+                        hasActiveReservation ||
+                        hasDateConflict ||
+                        classItem.availableSpots === 0
+                          ? 'bg-slate-300 cursor-not-allowed'
+                          : 'bg-gradient-to-r from-sky-500 to-brand-600 shadow-[0_14px_28px_rgba(14,165,233,0.28)] hover:scale-[1.01] active:scale-[0.99]'
+                      }
+                    `}
                     onClick={handleReserve}
                     disabled={
                       classItem.availableSpots === 0 ||
@@ -301,14 +423,14 @@ const [checkingReservation, setCheckingReservation] = useState(false);
                     type="button"
                 >
                   {checkingReservation
-                    ? 'Verificando...'
+                    ? 'Verificando disponibilidad...'
                     : hasActiveReservation
-                        ? 'Ya reservado'
+                        ? 'Clase ya reservada'
                         : hasDateConflict
-                            ? 'Reserva no disponible'
+                            ? 'Conflicto de horario'
                             : classItem.availableSpots === 0
-                                ? 'Sin cupos disponibles'
-                                : 'Seleccionar espacio →'}
+                                ? 'Clase completa'
+                                : 'Continuar con la reserva →'}
                 </button>
               </div>
             </div>
