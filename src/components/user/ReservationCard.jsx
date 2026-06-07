@@ -81,58 +81,185 @@ function ReservationCard({ reservation, onRefresh }) {
           <h3 className="font-extrabold text-slate-800 text-lg capitalize">
             {reservation.className || `Reserva #${reservation.codigo_reserva || ''}`}
           </h3>
-          <p className="text-sm text-slate-500 mt-1 flex items-center gap-1.5 font-medium">
-            <span aria-hidden="true">📅</span> {fecha}
-          </p>
-          {reservation.hora_inicio && (
-            <p className="text-sm text-slate-500 mt-0.5">
-              🕐 {reservation.hora_inicio.slice(0, 5)} {reservation.duracion_minutos ? `· ${reservation.duracion_minutos} min` : ''}
-            </p>
-          )}
-          {reservation.instructor_nombre && (
-            <p className="text-sm text-slate-500 mt-0.5">
-              👩‍🏫 {reservation.instructor_nombre}
-            </p>
-          )}
-          {reservation.codigo_espacio && (
-            <p className="text-sm text-slate-500 mt-0.5">
-              💺 Espacio: {reservation.codigo_espacio}
-            </p>
-          )}
+          <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+
+            <span className="
+              inline-flex
+              items-center
+              gap-1.5
+              rounded-full
+              bg-slate-50
+              px-3
+              py-1
+              text-slate-600
+              font-medium
+            ">
+              📅 {fecha}
+            </span>
+
+            {reservation.hora_inicio && (
+              <span className="
+                inline-flex
+                items-center
+                gap-1.5
+                rounded-full
+                bg-slate-50
+                px-3
+                py-1
+                text-slate-600
+                font-medium
+              ">
+                🕐 {reservation.hora_inicio.slice(0, 5)}
+              </span>
+            )}
+
+            {reservation.codigo_espacio && (
+              <span className="
+                inline-flex
+                items-center
+                gap-1.5
+                rounded-full
+                bg-sky-50
+                px-3
+                py-1
+                font-bold
+                text-[#004aab]
+              ">
+                💺 {reservation.codigo_espacio}
+              </span>
+            )}
+
+          </div>
           {reservation.monto > 0 && (
-            <p className="text-sm font-bold text-slate-700 mt-1">
-              S/ {Number(reservation.monto).toFixed(2)}
-            </p>
-          )}
-          {reservation.codigo_reserva && (
-            <p className="text-xs text-slate-400 mt-1 font-mono">
-              N° {reservation.codigo_reserva}
-            </p>
+
+            <div
+              className="
+                mt-4
+                inline-flex
+                items-center
+                gap-2
+                rounded-2xl
+                bg-sky-50
+                border
+                border-sky-100
+                px-4
+                py-2
+              "
+            >
+
+              <span className="text-lg">
+                💳
+              </span>
+
+              <div>
+
+                <p className="
+                  text-[10px]
+                  uppercase
+                  font-bold
+                  tracking-wider
+                  text-slate-500
+                ">
+                  Total
+                </p>
+
+                <p className="
+                  text-xl
+                  font-black
+                  text-[#004aab]
+                  leading-none
+                ">
+                  S/ {Number(reservation.monto).toFixed(2)}
+                </p>
+
+              </div>
+
+            </div>
+
           )}
         </div>
 
         <div className="flex flex-col items-end gap-2 shrink-0">
+
           <span
-            className={`font-bold px-3 py-1.5 rounded-xl text-xs uppercase tracking-wider shadow-sm border ${statusColor}`}
+            className={`
+              inline-flex
+              items-center
+              justify-center
+              rounded-full
+              px-3
+              py-1
+              text-[11px]
+              font-extrabold
+              uppercase
+              tracking-wide
+              border
+              ${statusColor}
+            `}
           >
-            {statusLabel}
+            <>
+              {reservation.estado_reserva === 'ACTIVA' && '✅ '}
+              {reservation.estado_reserva === 'CANCELADA' && '❌ '}
+              {reservation.estado_reserva === 'FINALIZADA' && '🏁 '}
+              {statusLabel}
+            </>
           </span>
+
           <span
-            className={`font-bold px-3 py-1.5 rounded-xl text-xs uppercase tracking-wider shadow-sm border ${pagoColor}`}
+            className={`
+              inline-flex
+              items-center
+              justify-center
+              rounded-full
+              px-3
+              py-1
+              text-[11px]
+              font-extrabold
+              uppercase
+              tracking-wide
+              border
+              ${pagoColor}
+            `}
           >
-            {pagoLabel}
+            <>
+              {reservation.estado_pago === 'PAGADO' && '💳 '}
+              {reservation.estado_pago === 'PENDIENTE' && '⏳ '}
+              {reservation.estado_pago === 'VENCIDO' && '⚠️ '}
+              {pagoLabel}
+            </>
           </span>
+
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+      <div
+        className="
+          mt-4
+          flex
+          gap-3
+          border-t
+          border-slate-100
+          pt-4y
+        "
+      >
+
         <button
           onClick={() =>
             navigate(`/cliente/reservas/${reservation.id}`)
           }
-          className="text-xs font-bold text-brand-600 bg-brand-50 px-4 py-2 rounded-xl hover:bg-brand-100 transition"
+          className="
+            flex-1
+            rounded-xl
+            bg-brand-50
+            py-2.5
+            text-xs
+            font-bold
+            text-[#004aab]
+            transition
+            hover:bg-brand-100
+          "
         >
-          Ver detalle
+          🔍 Ver detalle
         </button>
 
         {reservation.estado_reserva === 'ACTIVA' &&
@@ -140,9 +267,19 @@ function ReservationCard({ reservation, onRefresh }) {
 
             <button
               onClick={handleCancel}
-              className="text-xs font-bold text-red-600 bg-red-50 px-4 py-2 rounded-xl hover:bg-red-100 transition"
+              className="
+                flex-1
+                rounded-xl
+                bg-red-50
+                py-2.5
+                text-xs
+                font-bold
+                text-red-600
+                transition
+                hover:bg-red-100
+              "
             >
-              Cancelar reserva
+              ❌ Cancelar
             </button>
 
         )}
