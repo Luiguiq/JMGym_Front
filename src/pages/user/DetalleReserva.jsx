@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { reservationService } from '../../services/reservationService.js';
+import PageLoader from '../../components/common/PageLoader.jsx';
 
 function getReservationStatusStyle(status) {
 
@@ -57,28 +58,9 @@ function DetalleReserva() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-brand-50 flex items-center justify-center">
-
-        <div className="text-center">
-
-          <div className="
-            w-12
-            h-12
-            border-4
-            border-[#004aab]
-            border-t-transparent
-            rounded-full
-            animate-spin
-            mx-auto
-          " />
-
-          <p className="mt-4 text-slate-500">
-            Cargando reserva...
-          </p>
-
-        </div>
-
-      </main>
+      <PageLoader
+        text="Cargando información..."
+      />
     );
   }
 
@@ -325,35 +307,6 @@ function DetalleReserva() {
               </div>
 
             )}
-
-            {/* Cancelar */}
-
-            {(reservation.estado_reserva === 'ACTIVA' ||
-              reservation.estado_reserva === 'PENDIENTE') && (
-
-              <div className="mt-8">
-
-                <button
-                  className="
-                    w-full
-                    rounded-2xl
-                    bg-red-50
-                    border
-                    border-red-200
-                    py-4
-                    font-bold
-                    text-red-700
-                    transition
-                    hover:bg-red-100
-                  "
-                >
-                  Cancelar reserva
-                </button>
-
-              </div>
-
-            )}
-
           </div>
 
         </div>

@@ -6,8 +6,38 @@ import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 const highlights = [
   { title: 'Rápido', text: 'Inicia sesión en pocos segundos' },
   { title: 'Claro', text: 'Interfaz simple y entendible' },
-  { title: 'Responsive', text: 'Funciona bien en móvil y desktop' },
+  { title: 'Seguro', text: 'Acceso protegido para tu cuenta' },
 ];
+
+function AuthField({
+  icon,
+  label,
+  type = 'text',
+  placeholder,
+  value,
+  onChange,
+  autoComplete,
+}) {
+  return (
+    <label className="grid gap-2 font-semibold text-slate-600">
+      <span>{label}</span>
+      <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+        <span aria-hidden="true" className="shrink-0">
+          {icon}
+        </span>
+        <input
+          className="w-full bg-transparent outline-none placeholder:text-slate-300"
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          autoComplete={autoComplete}
+          required
+        />
+      </div>
+    </label>
+  );
+}
 
 function Login() {
   const navigate = useNavigate();
@@ -53,7 +83,9 @@ function Login() {
             </div>
 
             <div>
-              <h1 className="font-display text-5xl font-bold leading-none sm:text-6xl">JMGym</h1>
+              <h1 className="font-display text-5xl font-bold leading-none sm:text-6xl">
+                JMGym
+              </h1>
               <p className="mt-3 max-w-md text-lg text-white/85">
                 Tu espacio de reservas de baile, simple y claro.
               </p>
@@ -74,7 +106,7 @@ function Login() {
         </aside>
 
         <form
-          className="rounded-[36px] bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,.08)] ring-1 ring-slate-100 sm:p-8 lg:p-12"
+          className="rounded-[36px] bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,.08)] ring-1 ring-slate-100 sm:p-8 lg:p-12 flex flex-col gap-5"
           onSubmit={handleSubmit}
         >
           <div>
@@ -92,48 +124,43 @@ function Login() {
             </div>
           )}
 
-          <label className="grid gap-2 font-semibold text-slate-600">
-            Correo electrónico
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
-              <span aria-hidden="true">✉️</span>
-              <input
-                className="w-full bg-transparent outline-none"
-                type="email"
-                placeholder="tu@correo.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-          </label>
+          <AuthField
+            icon="✉️"
+            label="Correo electrónico"
+            type="email"
+            placeholder="tu@correo.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+          />
 
-          <label className="grid gap-2 font-semibold text-slate-600">
-            Contraseña
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
-              <span aria-hidden="true">🔒</span>
-              <input
-                className="w-full bg-transparent outline-none"
-                type="password"
-                placeholder="Tu contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </label>
+          <AuthField
+            icon="🔒"
+            label="Contraseña"
+            type="password"
+            placeholder="Tu contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+          />
 
           <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500">
             <label className="flex items-center gap-2">
-              <input className="h-5 w-5 accent-brand-600" type="checkbox" defaultChecked />
+              <input
+                className="h-5 w-5 accent-brand-600"
+                type="checkbox"
+                defaultChecked
+              />
               Recordar sesión
             </label>
+
             <button className="font-bold text-brand-600" type="button">
               ¿Olvidaste tu contraseña?
             </button>
           </div>
 
           <button
-            className="min-h-14 rounded-2xl bg-brand-600 font-bold text-white shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-16"
+            className="w-full flex items-center justify-center min-h-14 rounded-2xl bg-brand-600 font-bold text-white shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-16"
             type="submit"
             disabled={loading}
           >
@@ -141,7 +168,7 @@ function Login() {
           </button>
 
           <Link
-            className="grid min-h-14 place-items-center rounded-2xl border-2 border-brand-600 font-bold text-brand-600 transition hover:bg-brand-50 sm:min-h-16"
+            className="w-full flex items-center justify-center min-h-14 rounded-2xl border-2 border-brand-600 font-bold text-brand-600 transition hover:bg-brand-50 sm:min-h-16"
             to="/cliente/registro"
           >
             Crear cuenta nueva

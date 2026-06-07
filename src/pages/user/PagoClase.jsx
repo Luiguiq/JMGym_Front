@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { classService } from '../../services/classService.js';
 import { reservationService } from '../../services/reservationService.js';
 import yapeLogo from '../../assets/images/yapelogo.png';
+import PageLoader from '../../components/common/PageLoader.jsx';
 
 function PagoClase() {
     const { id } = useParams();
@@ -66,11 +67,11 @@ function PagoClase() {
 
     if (loading) {
         return (
-            <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
-            </main>
+            <PageLoader
+            text="Cargando información..."
+            />
         );
-    }
+        }
 
     if (!classInfo) return null;
 

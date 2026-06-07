@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { instructorService } from '../../services/instructorService.js';
 import { classService } from '../../services/classService.js';
+import PageLoader from '../../components/common/PageLoader.jsx';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
 const BACKEND_URL = API_BASE.replace('/api', '');
@@ -76,12 +77,9 @@ export default function InstructorDetalle() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-brand-50 flex items-center justify-center p-8">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-500 font-medium">Cargando instructor...</p>
-        </div>
-      </main>
+      <PageLoader
+        text="Cargando información..."
+      />
     );
   }
 

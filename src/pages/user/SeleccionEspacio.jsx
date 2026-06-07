@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { classService } from '../../services/classService.js';
+import PageLoader from '../../components/common/PageLoader.jsx';
 
 function SeleccionEspacio() {
     const { id } = useParams();
@@ -72,11 +73,11 @@ function SeleccionEspacio() {
 
     if (loading) {
         return (
-            <main className="min-h-screen bg-slate-50 flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
-            </main>
+            <PageLoader
+            text="Cargando información..."
+            />
         );
-    }
+        }
 
     if (!classInfo) {
         return (

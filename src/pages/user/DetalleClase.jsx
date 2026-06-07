@@ -6,6 +6,7 @@ import { reservationService } from '../../services/reservationService.js';
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
 import zumbaImage from '../../assets/images/zumba.jpg';
+import PageLoader from '../../components/common/PageLoader.jsx';
 
 const classImages = [
   { match: 'zumba', image: zumbaImage },
@@ -125,12 +126,9 @@ const [checkingReservation, setCheckingReservation] = useState(false);
 
   if (loading) {
     return (
-        <main className="min-h-screen bg-brand-50 flex items-center justify-center p-8">
-          <div className="text-center">
-            <div className="w-12 h-12 border-4 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-slate-500 font-medium">Cargando detalles de la clase...</p>
-          </div>
-        </main>
+      <PageLoader
+        text="Cargando información..."
+      />
     );
   }
 
