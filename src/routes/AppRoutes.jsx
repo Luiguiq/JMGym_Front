@@ -16,6 +16,7 @@ import EditarClase from '../pages/admin/EditarClase.jsx';
 import InstructoresAdmin from '../pages/admin/InstructoresAdmin.jsx';
 import ReservasAdmin from '../pages/admin/ReservasAdmin.jsx';
 import UsuariosAdmin from '../pages/admin/UsuariosAdmin.jsx';
+import NotificacionesAdmin from '../pages/admin/NotificacionesAdmin.jsx';
 import DetalleClase from '../pages/user/DetalleClase.jsx';
 import InstructorDetalle from '../pages/user/InstructorDetalle.jsx';
 import Home from '../pages/user/Home.jsx';
@@ -27,6 +28,7 @@ import Perfil from '../pages/user/Perfil.jsx';
 import Register from '../pages/user/Register.jsx';;
 import SeleccionEspacio from '../pages/user/SeleccionEspacio';
 import PagoClase from '../pages/user/PagoClase';
+import Notificaciones from '../pages/user/Notificaciones.jsx';
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) return <Navigate to="/cliente/login" replace />;
@@ -67,6 +69,7 @@ function AppRoutes() {
           }
         />
         <Route path="perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
+        <Route path="notificaciones" element={<ProtectedRoute><Notificaciones /></ProtectedRoute>} />
           <Route path="/cliente/clases/:id" element={<DetalleClase />} />
           <Route path="/cliente/seleccion-espacio/:id" element={<SeleccionEspacio />} />
         <Route path="/cliente/pago/:id" element={<PagoClase />} />
@@ -83,6 +86,7 @@ function AppRoutes() {
         <Route path="instructores" element={<InstructoresAdmin />} />
         <Route path="usuarios" element={<UsuariosAdmin />} />
         <Route path="crear-admin" element={<CrearAdmin />} />
+        <Route path="notificaciones" element={<NotificacionesAdmin />} />
 
       </Route>
     </Routes>

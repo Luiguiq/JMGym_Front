@@ -10,7 +10,7 @@ const NavbarAdmin = ({ onMenuClick, sidebarOpen }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/admin/login');
+    navigate('/');
   };
 
   return (

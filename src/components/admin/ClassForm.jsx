@@ -1,8 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X } from 'lucide-react';
+import { X, ImageIcon } from 'lucide-react';
 import { instructorService } from '../../services/instructorService.js';
 import { genreService } from '../../services/genreService.js';
+import { classService } from '../../services/classService.js';
+import cardioImage from '../../assets/images/cardio.jpg';
+import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
+import zumbaImage from '../../assets/images/zumba.jpg';
 
 const INTENSIDADES = ['BAJA', 'MEDIA', 'ALTA'];
 const ESTADOS = ['ACTIVA', 'CANCELADA', 'COMPLETA', 'FINALIZADA'];
@@ -73,6 +77,46 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
   });
 
   const [errors, setErrors] = useState({});
+  const [showImagePicker, setShowImagePicker] = useState(false);
+  const [availableImages, setAvailableImages] = useState([]);
+  const [loadingImages, setLoadingImages] = useState(false);
+
+  const loadAvailableImages = useCallback(async () => {
+    setLoadingImages(true);
+    const urls = [];
+
+    // Imágenes locales por defecto
+    const defaultImages = [
+      { url: cardioImage, label: 'Cardio' },
+      { url: trenSuperiorImage, label: 'Tren Superior' },
+      { url: zumbaImage, label: 'Zumba' },
+    ];
+    urls.push(...defaultImages);
+
+    // Imágenes de clases existentes del backend
+    try {
+      const allClasses = await classService.getAllClasses();
+      const existing = allClasses
+        .filter((c) => c.imagen_clase && !urls.some((u) => u.url === c.imagen_clase))
+        .map((c) => ({ url: c.imagen_clase, label: c.name }));
+      urls.push(...existing);
+    } catch {
+      // Si falla el backend, solo mostramos las locales
+    }
+
+    setAvailableImages(urls);
+    setLoadingImages(false);
+  }, []);
+
+  const handleOpenImagePicker = () => {
+    loadAvailableImages();
+    setShowImagePicker(true);
+  };
+
+  const handleSelectImage = (url) => {
+    setFormData((prev) => ({ ...prev, imagen_clase: url }));
+    setShowImagePicker(false);
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -314,16 +358,96 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
 
           {/* Imagen */}
           <div>
-            <label className="block text-sm font-semibold text-slate-900 mb-2">URL de Imagen (opcional)</label>
-            <input
-              type="text"
-              name="imagen_clase"
-              value={formData.imagen_clase}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-              placeholder="https://ejemplo.com/imagen.jpg"
-            />
+            <label className="block text-sm font-semibold text-slate-900 mb-2">Imagen de la Clase (opcional)</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                name="imagen_clase"
+                value={formData.imagen_clase}
+                onChange={handleChange}
+                className="flex-1 min-w-0 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                placeholder="https://ejemplo.com/imagen.jpg"
+              />
+              <button
+                type="button"
+                onClick={handleOpenImagePicker}
+                className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg font-medium text-slate-700 hover:bg-slate-50 transition-colors shrink-0"
+              >
+                <ImageIcon size={18} />
+                <span className="hidden sm:inline">Elegir</span>
+              </button>
+            </div>
+            {formData.imagen_clase && (
+              <div className="mt-3 relative inline-block">
+                <img
+                  src={formData.imagen_clase}
+                  alt="Vista previa"
+                  className="h-28 w-48 rounded-xl object-cover border border-slate-200"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+              </div>
+            )}
           </div>
+
+          {/* Image Picker Modal */}
+          {showImagePicker && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+              <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl max-h-[80vh] flex flex-col">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
+                  <h3 className="text-lg font-bold text-slate-900">Elegir imagen</h3>
+                  <button onClick={() => setShowImagePicker(false)} className="p-1 hover:bg-slate-100 rounded-lg transition-colors">
+                    <X size={20} className="text-slate-500" />
+                  </button>
+                </div>
+                <div className="overflow-y-auto p-5">
+                  {loadingImages ? (
+                    <div className="flex items-center justify-center py-10">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-brand-500" />
+                    </div>
+                  ) : availableImages.length === 0 ? (
+                    <p className="text-center text-slate-400 py-10">No hay imágenes disponibles</p>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {availableImages.map((img, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => handleSelectImage(img.url)}
+                          className={`group relative rounded-xl overflow-hidden border-2 transition-all ${
+                            formData.imagen_clase === img.url
+                              ? 'border-[#004aab] ring-2 ring-blue-200'
+                              : 'border-slate-200 hover:border-brand-400'
+                          }`}
+                        >
+                          <div className="aspect-[4/3] bg-slate-100">
+                            <img
+                              src={img.url}
+                              alt={img.label}
+                              className="h-full w-full object-cover"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.parentElement.innerHTML = '<div class="flex h-full items-center justify-center text-slate-300 text-sm font-medium">Sin vista</div>';
+                              }}
+                            />
+                          </div>
+                          <div className="px-2 py-1.5 text-left">
+                            <p className="text-[11px] font-semibold text-slate-700 truncate">{img.label}</p>
+                          </div>
+                          {formData.imagen_clase === img.url && (
+                            <div className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#004aab]">
+                              <svg width="10" height="10" viewBox="0 0 12 12" fill="white">
+                                <path d="M4 8.5L2 6.5L1 7.5L4 10.5L10 3.5L9 2.5Z" />
+                              </svg>
+                            </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Botones */}
           <div className="flex gap-3 pt-4 border-t border-slate-200">

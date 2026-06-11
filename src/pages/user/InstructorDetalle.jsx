@@ -13,6 +13,27 @@ function fotoUrl(path) {
   return `${BACKEND_URL}${path}`;
 }
 
+function getYouTubeEmbedUrl(url) {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (trimmed.includes('youtube.com/embed/')) return trimmed;
+  let videoId = '';
+  const matchWatch = trimmed.match(/(?:youtube\.com\/watch\?v=|youtube\.com\/v\/|m\.youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/);
+  if (matchWatch) videoId = matchWatch[1];
+  if (!videoId) {
+    const matchShort = trimmed.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+    if (matchShort) videoId = matchShort[1];
+  }
+  if (!videoId) {
+    const matchShorts = trimmed.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
+    if (matchShorts) videoId = matchShorts[1];
+  }
+  if (videoId) {
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
+  }
+  return trimmed;
+}
+
 function calcYears(dateStr) {
   if (!dateStr) return null;
   const start = new Date(dateStr);
@@ -48,6 +69,7 @@ export default function InstructorDetalle() {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [videoError, setVideoError] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -120,19 +142,16 @@ export default function InstructorDetalle() {
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] pb-28 text-slate-700">
-      <section className="mx-auto max-w-lg">
+      <section className="mx-auto max-w-2xl lg:max-w-3xl">
         {/* Hero header */}
         <div className="relative h-[33vh] min-h-[260px] overflow-hidden bg-sky-900">
-          {instructor.video_presentacion ? (
+          {instructor.video_presentacion && !videoError ? (
             <iframe
-              src={instructor.video_presentacion.includes('youtube') || instructor.video_presentacion.includes('youtu.be')
-                ? instructor.video_presentacion + (instructor.video_presentacion.includes('?') ? '&' : '?') + 'autoplay=1&mute=1&loop=1&playlist=' + instructor.video_presentacion.split('/').pop()?.split('?')[0]
-                : instructor.video_presentacion
-              }
+              src={getYouTubeEmbedUrl(instructor.video_presentacion)}
               title="Video de presentación"
-              className="absolute inset-0 h-full w-full pointer-events-none"
-              style={{ filter: 'brightness(0.6)' }}
+              className="absolute inset-0 h-full w-full"
               allow="autoplay; encrypted-media"
+              onError={() => setVideoError(true)}
             />
           ) : instructor.foto ? (
             <img
@@ -282,21 +301,19 @@ export default function InstructorDetalle() {
 
           {/* Bio */}
           <section className="rounded-3xl bg-white p-5 shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
-            <section className="rounded-2xl bg-white p-5 shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
-              <h2 className="text-base font-extrabold text-slate-800">
-                Conoce a tu instructor
-                <p className="text-xs text-slate-400 mt-1">
-                  Profesional certificado del equipo JMGym
-                </p>
-              </h2>
-              
-              <p className="mt-2 text-sm leading-relaxed text-slate-500">
-                {instructor.biografia
-                  ? instructor.biografia
-                  : `${instructor.nombre_completo} forma parte del equipo profesional de JMGym. Especialista en ${instructor.especialidad?.toLowerCase()}, acompaña a los alumnos en el desarrollo de sus objetivos físicos mediante entrenamientos seguros, dinámicos y adaptados a diferentes niveles de experiencia.`
-                }
+            <h2 className="text-base font-extrabold text-slate-800">
+              Conoce a tu instructor
+              <p className="text-xs text-slate-400 mt-1">
+                Profesional certificado del equipo JMGym
               </p>
-            </section>
+            </h2>
+            
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">
+              {instructor.biografia
+                ? instructor.biografia
+                : `${instructor.nombre_completo} forma parte del equipo profesional de JMGym. Especialista en ${instructor.especialidad?.toLowerCase()}, acompaña a los alumnos en el desarrollo de sus objetivos físicos mediante entrenamientos seguros, dinámicos y adaptados a diferentes niveles de experiencia.`
+              }
+            </p>
           </section>
 
           {/* Próximas clases */}

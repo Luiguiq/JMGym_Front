@@ -48,6 +48,7 @@ function PagoClase() {
             // Si todo sale bien, lo mandamos a su panel de Mis Reservas
             navigate('/cliente/reservas', { replace: true });
         } catch (err) {
+            setProcessing(false);
             const message = err?.message || '';
 
             if (
@@ -76,21 +77,21 @@ function PagoClase() {
     if (!classInfo) return null;
 
     return (
-        <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] font-sans pb-8 flex justify-center">
-            <div className="w-full max-w-md bg-transparent min-h-screen relative flex flex-col">
+        <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] font-sans pb-28 flex justify-center">
+            <div className="w-full max-w-lg bg-transparent min-h-screen relative flex flex-col lg:max-w-xl">
 
                 {/* Encabezado */}
-                <header className="px-6 pt-10 pb-6">
+                <header className="px-4 pt-5 pb-4 sm:px-6 sm:pt-10 sm:pb-6">
                     <button
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-3 text-slate-800 font-semibold transition hover:text-sky-700"
+                        className="flex items-center gap-2 sm:gap-3 text-slate-800 font-semibold transition hover:text-sky-700"
                     >
-                        <span className="text-xl">←</span>
-                        <h1 className="text-2xl font-serif font-bold text-slate-800">Método de pago</h1>
+                        <span className="text-lg sm:text-xl">←</span>
+                        <h1 className="text-xl font-serif font-bold text-slate-800 sm:text-2xl">Método de pago</h1>
                     </button>
                 </header>
 
-                <div className="px-6 flex-1">
+                <div className="px-4 sm:px-6 flex-1">
                     {error && <div className="mb-4 p-3 bg-red-50 text-red-600 font-bold text-sm rounded-xl">{error}</div>}
 
                     {/* Tarjeta Blanca: Resumen de Reserva */}
@@ -98,9 +99,11 @@ function PagoClase() {
                         className="
                             bg-white
                             rounded-[28px]
-                            p-6
+                            p-5
                             shadow-[0_8px_30px_rgba(15,86,130,0.08)]
-                            mb-8
+                            mb-6
+                            sm:p-6
+                            sm:mb-8
                             border
                             border-sky-100
                         "
@@ -136,8 +139,9 @@ function PagoClase() {
                         <div className="
                             mt-6
                             grid
-                            grid-cols-2
+                            grid-cols-1
                             gap-3
+                            sm:grid-cols-2
                         ">
                             <div className="
                                 rounded-2xl
@@ -415,7 +419,7 @@ function PagoClase() {
                 </div>
 
                 {/* Footer Area */}
-                <div className="px-6 pb-8">
+                <div className="px-4 pb-6 sm:px-6 sm:pb-8">
                     {error && (
                     <div className="mb-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-amber-800">
                         {error}
@@ -480,6 +484,7 @@ function PagoClase() {
                             bg-white
                             p-6
                             shadow-2xl
+                            lg:max-w-lg
                         "
                     >
                         {/* Título */}

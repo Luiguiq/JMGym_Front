@@ -18,6 +18,10 @@ function mapReservation(item) {
     fecha_limite_pago: item.fecha_limite_pago,
     fecha_clase: item.fecha_clase,
     qr_checkin: item.qr_checkin,
+    qr_url: item.qr_url ?? item.qr_checkin ?? null,
+    motivo_cancelacion: item.motivo_cancelacion ?? null,
+    detalle_cancelacion: item.detalle_cancelacion ?? null,
+    fecha_cancelacion: item.fecha_cancelacion ?? null,
     className: item.clase?.nombre_clase ?? '',
     hora_inicio: item.clase?.hora_inicio ?? '',
     hora_fin: item.clase?.hora_fin ?? '',
@@ -39,8 +43,11 @@ export const reservationService = {
     }),
   getAllReservations: () =>
     apiRequest('/reservations').then((d) => (d ?? []).map(mapReservation)),
-  cancelReservation: (id) =>
-    apiRequest(`/reservations/${id}/cancel`, { method: 'PATCH' }),
+  cancelReservation: (id, motivo, detalle) =>
+    apiRequest(`/reservations/${id}/cancel`, {
+      method: 'PATCH',
+      body: JSON.stringify({ motivo, detalle }),
+    }),
   deleteReservation: (id) =>
     apiRequest(`/reservations/${id}`, { method: 'DELETE' }),
 };
