@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { classService } from '../../services/classService.js';
+import { instructorService } from '../../services/instructorService.js';
 import { reservationService } from '../../services/reservationService.js';
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
 import zumbaImage from '../../assets/images/zumba.jpg';
 import PageLoader from '../../components/common/PageLoader.jsx';
+
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
+const BACKEND_URL = API_BASE.replace('/api', '');
 
 const classImages = [
   { match: 'zumba', image: zumbaImage },
@@ -62,6 +66,7 @@ function DetalleClase() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [classItem, setClassItem] = useState(null);
+  const [instructorData, setInstructorData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [hasActiveReservation, setHasActiveReservation] = useState(false);
@@ -73,6 +78,11 @@ const [checkingReservation, setCheckingReservation] = useState(false);
         .getClassById(id)
         .then((data) => {
           setClassItem(data);
+          if (data.trainerId) {
+            instructorService.getById(data.trainerId)
+              .then(setInstructorData)
+              .catch(() => {});
+          }
         })
         .catch((err) => setError(err.message))
         .finally(() => setLoading(false));
@@ -187,7 +197,7 @@ const [checkingReservation, setCheckingReservation] = useState(false);
     );
   };
 
-  const classImage = getClassImage(classItem.name);
+  const classImage = classItem.imagen_clase || getClassImage(classItem.name);
   const benefitsMap = {
     zumba: [
       '🔥 Quema calorías',
@@ -353,8 +363,18 @@ const [checkingReservation, setCheckingReservation] = useState(false);
                   onClick={() => navigate(`/cliente/instructores/${classItem.trainerId}`)}
                   className="mt-3 w-full flex items-center gap-4 rounded-3xl bg-gradient-to-r from-sky-50 to-white p-4 ring-1 ring-sky-100 text-left transition hover:bg-sky-100 hover:shadow-md"
                 >
-                  <div className="grid h-20 w-20 shrink-0 place-items-center rounded-3xl bg-gradient-to-br from-[#004aab] to-sky-500 text-4xl text-white shadow-xl">
-                    👩‍🏫
+                  <div className="h-20 w-20 shrink-0 overflow-hidden rounded-3xl shadow-xl">
+                    {instructorData?.foto ? (
+                      <img
+                        src={instructorData.foto.startsWith('http') ? instructorData.foto : `${BACKEND_URL}${instructorData.foto}`}
+                        alt={classItem.trainer}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#004aab] to-sky-500 text-4xl text-white">
+                        {classItem.trainer?.charAt(0) || '👩‍🏫'}
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1">
                     <h3 className="font-extrabold text-slate-800">Prof. {classItem.trainer}</h3>
