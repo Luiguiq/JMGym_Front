@@ -2,6 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { reservationService } from '../../services/reservationService.js';
 
+const MOTIVOS_LABEL = {
+  CAMBIO_HORARIO: 'Cambio de horario',
+  SALUD: 'Problemas de salud',
+  ECONOMICO: 'Motivo económico',
+  CAMBIO_SECTOR: 'Cambio de sector',
+  OTRO: 'Otro motivo',
+};
+
 function ReservationCard({ reservation, onRefresh }) {
   const navigate = useNavigate();
 
@@ -10,6 +18,8 @@ function ReservationCard({ reservation, onRefresh }) {
   const [feedback, setFeedback] = useState('');
   const [cancelMotivo, setCancelMotivo] = useState('OTRO');
   const [cancelDetalle, setCancelDetalle] = useState('');
+
+  const isHistory = !['ACTIVA'].includes(reservation.estado_reserva);
 
   const motivosCancelacion = [
     { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
@@ -38,7 +48,9 @@ function ReservationCard({ reservation, onRefresh }) {
         ? 'Cancelada'
         : reservation.estado_reserva === 'FINALIZADA'
           ? 'Finalizada'
-          : reservation.estado_reserva;
+          : reservation.estado_reserva === 'COMPLETADA'
+            ? 'Completada'
+            : reservation.estado_reserva;
 
   const statusColor =
     reservation.estado_reserva === 'ACTIVA'
@@ -47,6 +59,15 @@ function ReservationCard({ reservation, onRefresh }) {
         ? 'bg-red-50 text-red-600 border-red-200'
         : 'bg-slate-50 text-slate-600 border-slate-200';
 
+  const statusIcon =
+    reservation.estado_reserva === 'ACTIVA'
+      ? '✅'
+      : reservation.estado_reserva === 'CANCELADA'
+        ? '❌'
+        : reservation.estado_reserva === 'FINALIZADA'
+          ? '🏁'
+          : '✅';
+
   const pagoLabel =
     reservation.estado_pago === 'PAGADO'
       ? 'Pagado'
@@ -54,7 +75,9 @@ function ReservationCard({ reservation, onRefresh }) {
         ? 'Pendiente'
         : reservation.estado_pago === 'VENCIDO'
           ? 'Vencido'
-          : reservation.estado_pago;
+          : reservation.estado_pago === 'REEMBOLSADO'
+            ? 'Reembolsado'
+            : reservation.estado_pago;
 
   const pagoColor =
     reservation.estado_pago === 'PAGADO'
@@ -62,6 +85,15 @@ function ReservationCard({ reservation, onRefresh }) {
       : reservation.estado_pago === 'PENDIENTE'
         ? 'bg-amber-50 text-amber-600 border-amber-200'
         : 'bg-red-50 text-red-600 border-red-200';
+
+  const pagoIcon =
+    reservation.estado_pago === 'PAGADO'
+      ? '💳'
+      : reservation.estado_pago === 'PENDIENTE'
+        ? '⏳'
+        : reservation.estado_pago === 'VENCIDO'
+          ? '⚠️'
+          : '🔙';
 
   const handleOpenCancel = () => {
     if (!canCancel || canceling) return;
@@ -99,12 +131,20 @@ function ReservationCard({ reservation, onRefresh }) {
 
   return (
     <>
-      <article className="rounded-3xl bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+      <article className={`rounded-3xl bg-white p-5 border border-slate-100 ${
+        isHistory ? 'shadow-sm' : 'shadow-[0_8px_30px_rgb(0,0,0,0.04)]'
+      }`}>
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
             <h3 className="font-extrabold text-slate-800 text-lg capitalize">
               {reservation.className || `Reserva #${reservation.codigo_reserva || ''}`}
             </h3>
+
+            {reservation.instructor_nombre && (
+              <p className="text-xs text-slate-400 font-medium mt-0.5">
+                Prof. {reservation.instructor_nombre}
+              </p>
+            )}
 
             <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 px-3 py-1 text-slate-600 font-medium">
@@ -124,39 +164,54 @@ function ReservationCard({ reservation, onRefresh }) {
               )}
             </div>
 
-            {reservation.monto > 0 && (
+            {reservation.monto > 0 && !isHistory && (
               <div className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-sky-50 border border-sky-100 px-4 py-2">
                 <span className="text-lg">💳</span>
                 <div>
-                  <p className="text-[10px] uppercase font-bold tracking-wider text-slate-500">
-                    Total
-                  </p>
+                  <p className="text-[10px] uppercase font-bold tracking-wider text-slate-500">Total</p>
                   <p className="text-xl font-black text-[#004aab] leading-none">
                     S/ {Number(reservation.monto).toFixed(2)}
                   </p>
                 </div>
               </div>
             )}
+
+            {reservation.monto > 0 && isHistory && (
+              <p className="mt-2 text-xs font-bold text-slate-400">
+                S/ {Number(reservation.monto).toFixed(2)}
+              </p>
+            )}
+
+            {/* Cancel reason for history */}
+            {reservation.estado_reserva === 'CANCELADA' && reservation.motivo_cancelacion && (
+              <div className="mt-3 rounded-xl bg-red-50 border border-red-100 px-3 py-2">
+                <p className="text-[10px] uppercase font-bold tracking-wider text-red-400">Motivo de cancelación</p>
+                <p className="text-xs font-semibold text-red-700">
+                  {MOTIVOS_LABEL[reservation.motivo_cancelacion] || reservation.motivo_cancelacion}
+                  {reservation.detalle_cancelacion && `: ${reservation.detalle_cancelacion}`}
+                </p>
+              </div>
+            )}
+
+            {/* Completed/Finalized badge */}
+            {(reservation.estado_reserva === 'FINALIZADA' || reservation.estado_reserva === 'COMPLETADA') && (
+              <div className="mt-3 rounded-xl bg-emerald-50 border border-emerald-100 px-3 py-2">
+                <p className="text-[10px] uppercase font-bold tracking-wider text-emerald-400">Asistencia confirmada</p>
+                <p className="text-xs font-semibold text-emerald-700">Asististe a esta clase</p>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col items-end gap-2 shrink-0">
             <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide border ${statusColor}`}>
-              <>
-                {reservation.estado_reserva === 'ACTIVA' && '✅ '}
-                {reservation.estado_reserva === 'CANCELADA' && '❌ '}
-                {reservation.estado_reserva === 'FINALIZADA' && '🏁 '}
-                {statusLabel}
-              </>
+              {statusIcon} {statusLabel}
             </span>
 
-            <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide border ${pagoColor}`}>
-              <>
-                {reservation.estado_pago === 'PAGADO' && '💳 '}
-                {reservation.estado_pago === 'PENDIENTE' && '⏳ '}
-                {reservation.estado_pago === 'VENCIDO' && '⚠️ '}
-                {pagoLabel}
-              </>
-            </span>
+            {reservation.estado_pago && (
+              <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide border ${pagoColor}`}>
+                {pagoIcon} {pagoLabel}
+              </span>
+            )}
           </div>
         </div>
 
@@ -199,9 +254,7 @@ function ReservationCard({ reservation, onRefresh }) {
                 <div className="mx-auto mb-3 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-amber-100 text-2xl sm:text-3xl">
                   ⚠️
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black text-slate-900">
-                  Cancelar reserva
-                </h3>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900">Cancelar reserva</h3>
                 <p className="mt-1.5 text-xs sm:text-sm text-slate-500">
                   Esta reserva está pendiente de pago. Puedes cancelarla ahora y liberar el espacio.
                 </p>
@@ -229,9 +282,7 @@ function ReservationCard({ reservation, onRefresh }) {
               </div>
 
               <div className="mt-4 sm:mt-5">
-                <label className="text-xs sm:text-sm font-bold text-slate-700 block mb-2">
-                  Motivo de cancelación
-                </label>
+                <label className="text-xs sm:text-sm font-bold text-slate-700 block mb-2">Motivo de cancelación</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {motivosCancelacion.map((m) => (
                     <label
@@ -276,7 +327,6 @@ function ReservationCard({ reservation, onRefresh }) {
                 >
                   Mantener reserva
                 </button>
-
                 <button
                   onClick={handleCancel}
                   disabled={canceling}

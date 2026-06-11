@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
-import NotificationBell from './NotificationBell.jsx';
 
 function Navbar() {
   return (
@@ -16,7 +15,6 @@ function Navbar() {
           <p className="text-[10px] text-slate-500 sm:text-xs">Reserva clara y rápida</p>
         </div>
       </Link>
-      <NotificationBell />
     </header>
   );
 }

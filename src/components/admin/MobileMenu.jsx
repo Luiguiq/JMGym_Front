@@ -1,6 +1,5 @@
 import { X } from 'lucide-react';
 import Sidebar from './Sidebar';
-import AdminBottomNav from './AdminBottomNav';
 
 const MobileMenu = ({ isOpen, onClose }) => {
   return (
@@ -30,8 +29,6 @@ const MobileMenu = ({ isOpen, onClose }) => {
           <Sidebar onClose={onClose} />
         </div>
       </div>
-
-      <AdminBottomNav />
     </>
   );
 };

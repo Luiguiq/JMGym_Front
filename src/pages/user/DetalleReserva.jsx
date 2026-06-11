@@ -3,42 +3,56 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { reservationService } from '../../services/reservationService.js';
 import PageLoader from '../../components/common/PageLoader.jsx';
 
+const MOTIVOS_LABEL = {
+  CAMBIO_HORARIO: 'Cambio de horario',
+  SALUD: 'Problemas de salud',
+  ECONOMICO: 'Motivo económico',
+  CAMBIO_SECTOR: 'Cambio de sector',
+  OTRO: 'Otro motivo',
+};
+
 function getReservationStatusStyle(status) {
-
   switch (status?.toUpperCase()) {
-
     case 'ACTIVA':
       return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-
     case 'CANCELADA':
       return 'bg-red-50 text-red-700 border-red-200';
-
     case 'COMPLETADA':
     case 'FINALIZADA':
       return 'bg-slate-100 text-slate-700 border-slate-200';
-
     default:
       return 'bg-amber-50 text-amber-700 border-amber-200';
   }
 }
 
 function getPaymentStatusStyle(status) {
-
   switch (status?.toUpperCase()) {
-
     case 'PAGADO':
       return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-
     case 'PENDIENTE':
       return 'bg-amber-50 text-amber-700 border-amber-200';
-
+    case 'REEMBOLSADO':
+      return 'bg-purple-50 text-purple-700 border-purple-200';
     default:
       return 'bg-slate-100 text-slate-700 border-slate-200';
   }
 }
 
-function DetalleReserva() {
+const STATUS_ICON = {
+  ACTIVA: '✅',
+  CANCELADA: '❌',
+  FINALIZADA: '🏁',
+  COMPLETADA: '✅',
+};
 
+const PAGO_ICON = {
+  PAGADO: '💳',
+  PENDIENTE: '⏳',
+  VENCIDO: '⚠️',
+  REEMBOLSADO: '🔙',
+};
+
+function DetalleReserva() {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -60,271 +74,212 @@ function DetalleReserva() {
   ];
 
   const canCancel = reservation?.estado_reserva === 'ACTIVA';
+  const isCanceled = reservation?.estado_reserva === 'CANCELADA';
+  const isCompleted = reservation?.estado_reserva === 'FINALIZADA' || reservation?.estado_reserva === 'COMPLETADA';
 
   useEffect(() => {
-
     reservationService
       .getMyReservationDetail(id)
       .then(setReservation)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-
   }, [id]);
 
+  const handleCancel = async () => {
+    setCanceling(true);
+    try {
+      await reservationService.cancelReservation(id, cancelMotivo, cancelDetalle || null);
+      setShowCancelModal(false);
+      setReservation((prev) => ({
+        ...prev,
+        estado_reserva: 'CANCELADA',
+        status: 'CANCELADA',
+        motivo_cancelacion: cancelMotivo,
+        detalle_cancelacion: cancelDetalle || null,
+        fecha_cancelacion: new Date().toISOString(),
+      }));
+    } catch (err) {
+      setShowCancelModal(false);
+      alert(err?.message || 'Error al cancelar la reserva');
+    } finally {
+      setCanceling(false);
+    }
+  };
+
   if (loading) {
-    return (
-      <PageLoader
-        text="Cargando información..."
-      />
-    );
+    return <PageLoader text="Cargando información..." />;
   }
 
   if (error) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        {error}
+      <main className="min-h-screen flex items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-4xl mb-3">⚠️</p>
+          <p className="text-red-500 font-bold">{error}</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-4 rounded-xl bg-[#004aab] px-6 py-2.5 text-sm font-bold text-white"
+          >
+            Volver
+          </button>
+        </div>
       </main>
     );
   }
 
   if (!reservation) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        Reserva no encontrada
+      <main className="min-h-screen flex items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-4xl mb-3">🔍</p>
+          <p className="text-slate-600 font-bold">Reserva no encontrada</p>
+          <button
+            onClick={() => navigate('/cliente/reservas')}
+            className="mt-4 rounded-xl bg-[#004aab] px-6 py-2.5 text-sm font-bold text-white"
+          >
+            Mis reservas
+          </button>
+        </div>
       </main>
     );
   }
 
   return (
-
-    <main className="
-      min-h-screen
-      bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)]
-      px-5
-      py-6
-      pb-24
-    ">
-
+    <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] px-5 py-6 pb-24">
       <div className="max-w-3xl mx-auto lg:max-w-4xl">
-
-        {/* Header */}
-
         <button
           onClick={() => navigate(-1)}
-          className="
-            mb-5
-            flex
-            items-center
-            gap-2
-            font-bold
-            text-slate-700
-          "
+          className="mb-5 flex items-center gap-2 font-bold text-slate-700 hover:text-slate-900 transition"
         >
           ← Volver
         </button>
 
-        {/* Ticket */}
-
-        <div className="
-          overflow-hidden
-          rounded-[32px]
-          bg-white
-          shadow-[0_15px_40px_rgba(15,86,130,.12)]
-          border
-          border-sky-100
-        ">
-
+        <div className="overflow-hidden rounded-[32px] bg-white shadow-[0_15px_40px_rgba(15,86,130,.12)] border border-sky-100">
           {/* Hero */}
-
-          <div className="
-            bg-[#004aab]
-            text-white
-            p-8
-            text-center
-          ">
-
-            <p className="
-              text-xs
-              uppercase
-              tracking-[4px]
-              opacity-80
-            ">
-              Reserva
-            </p>
-
-            <h1 className="
-              mt-3
-              text-4xl
-              font-black
-            ">
-              #{reservation.codigo_reserva}
-            </h1>
-
-            <p className="
-              mt-2
-              text-sky-100
-            ">
-              Comprobante de reserva
-            </p>
-
+          <div className={`p-8 text-center ${
+            isCanceled ? 'bg-red-600' : isCompleted ? 'bg-slate-700' : 'bg-[#004aab]'
+          } text-white`}>
+            <p className="text-xs uppercase tracking-[4px] opacity-80">Reserva</p>
+            <h1 className="mt-3 text-4xl font-black">#{reservation.codigo_reserva}</h1>
+            <p className="mt-2 text-white/70">Comprobante de reserva</p>
           </div>
 
-          {/* Clase */}
-
           <div className="p-6">
+            <h2 className="text-3xl font-black text-slate-900">{reservation.className}</h2>
 
-            <h2 className="
-              text-3xl
-              font-black
-              text-slate-900
-            ">
-              {reservation.className}
-            </h2>
-
-            <p className="
-              mt-1
-              text-slate-500
-            ">
-              Prof. {reservation.instructor_nombre}
-            </p>
+            {reservation.instructor_nombre && (
+              <p className="mt-1 text-slate-500">Prof. {reservation.instructor_nombre}</p>
+            )}
 
             {/* Estados */}
-
-            <div className="
-              flex
-              flex-wrap
-              gap-3
-              mt-5
-            ">
-
-              <span
-                className={`
-                  px-4
-                  py-2
-                  rounded-full
-                  border
-                  text-sm
-                  font-bold
-                  ${getReservationStatusStyle(
-                    reservation.estado_reserva
-                  )}
-                `}
-              >
-                {reservation.estado_reserva}
+            <div className="flex flex-wrap gap-3 mt-5">
+              <span className={`px-4 py-2 rounded-full border text-sm font-bold ${getReservationStatusStyle(reservation.estado_reserva)}`}>
+                {STATUS_ICON[reservation.estado_reserva] || ''} {reservation.estado_reserva}
               </span>
 
-              <span
-                className={`
-                  px-4
-                  py-2
-                  rounded-full
-                  border
-                  text-sm
-                  font-bold
-                  ${getPaymentStatusStyle(
-                    reservation.estado_pago
-                  )}
-                `}
-              >
-                {reservation.estado_pago}
-              </span>
-
+              {reservation.estado_pago && (
+                <span className={`px-4 py-2 rounded-full border text-sm font-bold ${getPaymentStatusStyle(reservation.estado_pago)}`}>
+                  {PAGO_ICON[reservation.estado_pago] || ''} {reservation.estado_pago}
+                </span>
+              )}
             </div>
 
-            {/* Datos */}
-
-            <div className="
-              mt-6
-              grid
-              grid-cols-1
-              gap-4
-              sm:grid-cols-2
-            ">
-
-              <div className="rounded-2xl bg-sky-50 p-4">
-                <p className="text-xs text-slate-500 uppercase">
-                  Fecha
+            {/* Cancel reason */}
+            {isCanceled && reservation.motivo_cancelacion && (
+              <div className="mt-4 rounded-2xl bg-red-50 border border-red-200 p-4">
+                <p className="text-xs uppercase font-bold tracking-wider text-red-500 mb-1">Motivo de cancelación</p>
+                <p className="font-bold text-red-700">
+                  {MOTIVOS_LABEL[reservation.motivo_cancelacion] || reservation.motivo_cancelacion}
                 </p>
+                {reservation.detalle_cancelacion && (
+                  <p className="mt-1 text-sm text-red-600">{reservation.detalle_cancelacion}</p>
+                )}
+              </div>
+            )}
 
+            {/* Completed info */}
+            {isCompleted && (
+              <div className="mt-4 rounded-2xl bg-emerald-50 border border-emerald-200 p-4">
+                <p className="text-xs uppercase font-bold tracking-wider text-emerald-500 mb-1">Asistencia</p>
+                <p className="font-bold text-emerald-700">Asististe a esta clase</p>
+              </div>
+            )}
+
+            {/* Datos */}
+            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl bg-sky-50 p-4">
+                <p className="text-xs text-slate-500 uppercase">Fecha</p>
                 <p className="font-black text-slate-800">
                   📅 {reservation.fecha_clase}
                 </p>
               </div>
 
               <div className="rounded-2xl bg-sky-50 p-4">
-                <p className="text-xs text-slate-500 uppercase">
-                  Hora
-                </p>
-
+                <p className="text-xs text-slate-500 uppercase">Hora</p>
                 <p className="font-black text-slate-800">
                   🕗 {reservation.hora_inicio}
                 </p>
               </div>
 
               <div className="rounded-2xl bg-sky-50 p-4">
-                <p className="text-xs text-slate-500 uppercase">
-                  Espacio
-                </p>
-
-                <p className="
-                  font-black
-                  text-[#004aab]
-                ">
-                  {reservation.codigo_espacio}
-                </p>
+                <p className="text-xs text-slate-500 uppercase">Espacio</p>
+                <p className="font-black text-[#004aab]">{reservation.codigo_espacio}</p>
               </div>
 
               <div className="rounded-2xl bg-sky-50 p-4">
-                <p className="text-xs text-slate-500 uppercase">
-                  Monto
-                </p>
-
-                <p className="
-                  font-black
-                  text-[#004aab]
-                ">
-                  S/ {Number(reservation.monto).toFixed(2)}
-                </p>
+                <p className="text-xs text-slate-500 uppercase">Monto</p>
+                <p className="font-black text-[#004aab]">S/ {Number(reservation.monto).toFixed(2)}</p>
               </div>
 
+              {reservation.metodo_pago && (
+                <div className="rounded-2xl bg-sky-50 p-4">
+                  <p className="text-xs text-slate-500 uppercase">Método de pago</p>
+                  <p className="font-black text-slate-800">{reservation.metodo_pago}</p>
+                </div>
+              )}
+
+              {reservation.fecha_reserva && (
+                <div className="rounded-2xl bg-sky-50 p-4">
+                  <p className="text-xs text-slate-500 uppercase">Reservado el</p>
+                  <p className="font-black text-slate-800">
+                    📅 {new Date(reservation.fecha_reserva + 'T00:00:00').toLocaleDateString('es-PE', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* QR */}
-
             {reservation.qr_url && (
-
-              <div className="
-                mt-6
-                rounded-3xl
-                border
-                border-sky-100
-                p-6
-                text-center
-              ">
-
-                <h3 className="
-                  font-black
-                  text-slate-800
-                  mb-4
-                ">
-                  Código QR
-                </h3>
-
+              <div className="mt-6 rounded-3xl border border-sky-100 p-6 text-center">
+                <h3 className="font-black text-slate-800 mb-4">Código QR</h3>
                 <img
                   src={reservation.qr_url}
                   alt="QR Reserva"
-                  className="
-                    w-48
-                    h-48
-                    mx-auto
-                  "
+                  className="w-48 h-48 mx-auto rounded-2xl"
                 />
-
+                <p className="mt-3 text-xs text-slate-400">Presenta este código al ingresar a la clase</p>
               </div>
+            )}
 
+            {/* Pending payment info */}
+            {reservation.estado_reserva === 'ACTIVA' && reservation.estado_pago === 'PENDIENTE' && reservation.fecha_limite_pago && (
+              <div className="mt-6 rounded-3xl bg-amber-50 border border-amber-200 p-4 text-center">
+                <p className="text-xs uppercase font-bold tracking-wider text-amber-600">Fecha límite de pago</p>
+                <p className="font-black text-amber-800 text-lg">
+                  📅 {new Date(reservation.fecha_limite_pago + 'T00:00:00').toLocaleDateString('es-PE', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </p>
+              </div>
             )}
           </div>
-
         </div>
 
         {/* Cancel button */}
@@ -338,7 +293,6 @@ function DetalleReserva() {
             </button>
           </div>
         )}
-
       </div>
 
       {showCancelModal && (
@@ -349,9 +303,7 @@ function DetalleReserva() {
                 <div className="mx-auto mb-3 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-amber-100 text-2xl sm:text-3xl">
                   ⚠️
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black text-slate-900">
-                  Cancelar reserva
-                </h3>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900">Cancelar reserva</h3>
                 <p className="mt-1.5 text-xs sm:text-sm text-slate-500">
                   Esta acción liberará tu espacio. Selecciona el motivo de cancelación.
                 </p>
@@ -383,9 +335,7 @@ function DetalleReserva() {
               </div>
 
               <div className="mt-4 sm:mt-5">
-                <label className="text-xs sm:text-sm font-bold text-slate-700 block mb-2">
-                  Motivo de cancelación
-                </label>
+                <label className="text-xs sm:text-sm font-bold text-slate-700 block mb-2">Motivo de cancelación</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {motivosCancelacion.map((m) => (
                     <label
@@ -430,21 +380,8 @@ function DetalleReserva() {
                 >
                   Mantener reserva
                 </button>
-
                 <button
-                  onClick={async () => {
-                    setCanceling(true);
-                    try {
-                      await reservationService.cancelReservation(id, cancelMotivo, cancelDetalle || null);
-                      setShowCancelModal(false);
-                      setReservation((prev) => ({ ...prev, estado_reserva: 'CANCELADA', status: 'CANCELADA' }));
-                    } catch (err) {
-                      setShowCancelModal(false);
-                      alert(err?.message || 'Error al cancelar la reserva');
-                    } finally {
-                      setCanceling(false);
-                    }
-                  }}
+                  onClick={handleCancel}
                   disabled={canceling}
                   className="flex-1 rounded-2xl bg-[#004aab] py-2.5 sm:py-3 font-bold text-white text-xs sm:text-sm transition hover:opacity-90 disabled:opacity-60"
                 >
@@ -455,9 +392,7 @@ function DetalleReserva() {
           </div>
         </div>
       )}
-
     </main>
-
   );
 }
 

@@ -68,7 +68,7 @@ const Sidebar = ({ onClose }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/admin/login');
+    navigate('/');
   };
 
   const isActive = (path) =>

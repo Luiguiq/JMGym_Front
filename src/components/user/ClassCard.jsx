@@ -30,7 +30,7 @@ function getIntensityMeta(level = '') {
 
 function ClassCard({ classItem }) {
   const navigate = useNavigate();
-  const image = getClassImage(classItem.name);
+  const image = classItem.imagen_clase || getClassImage(classItem.name);
   const availability = getAvailabilityMeta(Number(classItem.availableSpots || 0));
   const intensity = getIntensityMeta(classItem.level);
   const formattedDate = classItem.date

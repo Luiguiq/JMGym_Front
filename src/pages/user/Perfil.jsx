@@ -22,7 +22,7 @@ function Perfil() {
 
   function handleLogout() {
     logout();
-    navigate('/cliente/login');
+    navigate('/');
   }
 
   return (
