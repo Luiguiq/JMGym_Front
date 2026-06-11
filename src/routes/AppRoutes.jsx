@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import AdminLayout from '../layouts/AdminLayout.jsx';
 import UserLayout from '../layouts/UserLayout.jsx';
 import Landing from '../pages/Landing.jsx';
+import SedeDetalle from '../pages/SedeDetalle.jsx';
 import AdminLogin from '../pages/admin/AdminLogin.jsx';
 import ClasesAdmin from '../pages/admin/ClasesAdmin.jsx';
 import CrearClase from '../pages/admin/CrearClase.jsx';
@@ -40,6 +41,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/sede" element={<SedeDetalle />} />
 
       <Route path="/cliente" element={<UserLayout />}>
         <Route index element={<Navigate to="login" replace />} />
