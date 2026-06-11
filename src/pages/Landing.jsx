@@ -4,6 +4,7 @@ import PublicHeader from '../components/common/PublicHeader.jsx';
 import logoJmGym from '../assets/logos/logo-jmgym.jpeg';
 import cardioImage from '../assets/images/cardio.jpg';
 import heroBackgroundImage from '../assets/images/jmworkoutparatras.jpg';
+import sedeBackgroundImage from '../assets/images/jmworkoutport2.jpg';
 import trenSuperiorImage from '../assets/images/trensuperior.jpg';
 import zumbaImage from '../assets/images/zumba.jpg';
 
@@ -56,7 +57,7 @@ const gymAddress = 'Av. Conde de Lemos 420, Callao 07006';
 function Landing() {
   return (
     <main className="min-h-screen bg-[#07111f] text-white">
-      <PublicHeader logoHref="#inicio" />
+      <PublicHeader />
 
       <section
         id="inicio"
@@ -133,13 +134,18 @@ function Landing() {
         </div>
       </section>
 
-      <section id="sede" className="bg-white px-5 py-20 text-slate-950 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.9fr_1.1fr]">
+      <section
+        id="sede"
+        className="relative overflow-hidden bg-[#07111f] bg-cover bg-center px-5 py-20 text-white lg:px-8"
+        style={{ backgroundImage: `linear-gradient(110deg, rgba(7,17,31,.9), rgba(8,47,73,.58), rgba(7,17,31,.9)), url(${sedeBackgroundImage})` }}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(34,211,238,.24),transparent_30%),radial-gradient(circle_at_88%_20%,rgba(37,99,235,.2),transparent_28%)]" />
+        <div className="relative z-10 mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.9fr_1.1fr]">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.24em] text-brand-700">Nuestra sede</p>
+            <p className="text-sm font-black uppercase tracking-[0.24em] text-cyan-200">Nuestra sede</p>
             <h2 className="mt-4 max-w-xl text-5xl font-black tracking-[-0.05em] lg:text-6xl">Decide hoy, entrena esta semana</h2>
           </div>
-          <article className="rounded-[36px] bg-slate-950 p-8 text-white shadow-[0_24px_70px_rgba(15,23,42,.18)] lg:p-10">
+          <article className="rounded-[36px] border border-white/10 bg-slate-950/88 p-8 text-white shadow-[0_24px_90px_rgba(0,0,0,.32)] backdrop-blur lg:p-10">
             <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <span className="rounded-full bg-cyan-300 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-slate-950">Sede principal</span>

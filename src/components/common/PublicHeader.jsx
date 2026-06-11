@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 
-function PublicHeader({ subtitle = 'Fitness club', logoHref = '/' }) {
+function PublicHeader({ subtitle = 'Fitness club' }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -11,7 +11,7 @@ function PublicHeader({ subtitle = 'Fitness club', logoHref = '/' }) {
     <>
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[#07111f]/85 text-white backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
-          <a href={logoHref} className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3">
             <img
               src={logoJmGym}
               alt="Logo JMGym"
@@ -21,7 +21,7 @@ function PublicHeader({ subtitle = 'Fitness club', logoHref = '/' }) {
               <strong className="block text-xl font-black leading-none">JMGym</strong>
               <span className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">{subtitle}</span>
             </div>
-          </a>
+          </Link>
 
           <button
             type="button"
@@ -63,10 +63,11 @@ function PublicHeader({ subtitle = 'Fitness club', logoHref = '/' }) {
             isMenuOpen ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-6 scale-[.98] opacity-0'
           }`}
         >
-          <a className="transition duration-200 hover:-translate-y-1 hover:text-cyan-200" href="/#inicio" onClick={closeMenu}>JMGym</a>
+          <Link className="transition duration-200 hover:-translate-y-1 hover:text-cyan-200" to="/" onClick={closeMenu}>Inicio</Link>
+          <Link className="transition duration-200 hover:-translate-y-1 hover:text-cyan-200" to="/nosotros" onClick={closeMenu}>Nosotros</Link>
           <Link className="transition duration-200 hover:-translate-y-1 hover:text-cyan-200" to="/sede" onClick={closeMenu}>Sedes</Link>
-          <a className="transition duration-200 hover:-translate-y-1 hover:text-cyan-200" href="/#servicios" onClick={closeMenu}>Corporativos</a>
-          <a className="transition duration-200 hover:-translate-y-1 hover:text-cyan-200" href="/#acceso" onClick={closeMenu}>Contacto</a>
+          <Link className="transition duration-200 hover:-translate-y-1 hover:text-cyan-200" to="/servicios" onClick={closeMenu}>Servicios</Link>
+          <Link className="transition duration-200 hover:-translate-y-1 hover:text-cyan-200" to="/contacto" onClick={closeMenu}>Contacto</Link>
           <a className="transition duration-200 hover:-translate-y-1 hover:text-cyan-200" href="/#acceso" onClick={closeMenu}>Pase gratis</a>
         </nav>
       </div>

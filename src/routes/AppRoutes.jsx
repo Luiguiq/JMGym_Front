@@ -2,8 +2,11 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import AdminLayout from '../layouts/AdminLayout.jsx';
 import UserLayout from '../layouts/UserLayout.jsx';
+import Contacto from '../pages/Contacto.jsx';
 import Landing from '../pages/Landing.jsx';
+import Nosotros from '../pages/Nosotros.jsx';
 import SedeDetalle from '../pages/SedeDetalle.jsx';
+import Servicios from '../pages/Servicios.jsx';
 import AdminLogin from '../pages/admin/AdminLogin.jsx';
 import ClasesAdmin from '../pages/admin/ClasesAdmin.jsx';
 import CrearClase from '../pages/admin/CrearClase.jsx';
@@ -41,7 +44,10 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/nosotros" element={<Nosotros />} />
       <Route path="/sede" element={<SedeDetalle />} />
+      <Route path="/servicios" element={<Servicios />} />
+      <Route path="/contacto" element={<Contacto />} />
 
       <Route path="/cliente" element={<UserLayout />}>
         <Route index element={<Navigate to="login" replace />} />

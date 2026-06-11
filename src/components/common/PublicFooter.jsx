@@ -19,7 +19,8 @@ function PublicFooter() {
           <div className="mt-5 grid gap-3 text-white/64">
             <a href="/sede" className="hover:text-white">Sede</a>
             <a href="/#programas" className="hover:text-white">Programas</a>
-            <a href="/#servicios" className="hover:text-white">Servicios</a>
+            <a href="/servicios" className="hover:text-white">Servicios</a>
+            <a href="/contacto" className="hover:text-white">Contacto</a>
             <a href="/#acceso" className="hover:text-white">Acceso</a>
           </div>
         </div>
