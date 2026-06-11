@@ -4,44 +4,27 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 
 const highlights = [
-  { title: 'Rápido', text: 'Inicia sesión en pocos segundos' },
-  { title: 'Claro', text: 'Interfaz simple y entendible' },
-  { title: 'Seguro', text: 'Acceso protegido para tu cuenta' },
+  {
+    icon: '⚡',
+    title: 'Reserva rápida',
+    text: 'Encuentra y reserva clases en pocos pasos.',
+  },
+  {
+    icon: '📍',
+    title: 'Control claro',
+    text: 'Selecciona tu espacio y continúa sin confusión.',
+  },
+  {
+    icon: '📱',
+    title: 'Acceso flexible',
+    text: 'Funciona bien en móvil, tablet y escritorio.',
+  },
 ];
-
-function AuthField({
-  icon,
-  label,
-  type = 'text',
-  placeholder,
-  value,
-  onChange,
-  autoComplete,
-}) {
-  return (
-    <label className="grid gap-2 font-semibold text-slate-600">
-      <span>{label}</span>
-      <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
-        <span aria-hidden="true" className="shrink-0">
-          {icon}
-        </span>
-        <input
-          className="w-full bg-transparent outline-none placeholder:text-slate-300"
-          type={type}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          autoComplete={autoComplete}
-          required
-        />
-      </div>
-    </label>
-  );
-}
 
 function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -63,86 +46,181 @@ function Login() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7fbff] px-4 py-6 sm:px-6 lg:px-8">
-      <section className="mx-auto grid min-h-[calc(100vh-3rem)] max-w-6xl items-center gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <aside className="relative overflow-hidden rounded-[36px] bg-[#004aab] p-8 text-white shadow-[0_20px_60px_rgba(0,74,171,.18)] sm:p-10 lg:min-h-[680px] lg:p-12">
+    <main className="min-h-dvh overflow-x-hidden bg-[#eef7fd] p-3 sm:p-4 lg:p-5">
+      <section
+        className="
+          mx-auto
+          grid
+          min-h-[calc(100dvh-1.5rem)]
+          max-w-7xl
+          overflow-hidden
+          rounded-[32px]
+          bg-white
+          shadow-[0_24px_70px_rgba(15,23,42,.08)]
+          lg:grid-cols-[0.92fr_1.08fr]
+        "
+      >
+        <aside
+          className="
+            flex
+            flex-col
+            justify-between
+            gap-6
+            bg-gradient-to-br
+            from-[#004aab]
+            via-[#0a58ca]
+            to-[#1576ff]
+            p-6
+            text-white
+            sm:p-8
+            lg:p-10
+          "
+        >
           <Link
-            className="absolute left-5 top-5 grid h-11 w-11 place-items-center rounded-2xl bg-white/15 text-2xl font-black text-white transition hover:bg-white/20"
-            to="/cliente/bienvenida"
+            className="
+              grid
+              h-12
+              w-12
+              place-items-center
+              rounded-2xl
+              bg-white/15
+              text-2xl
+              font-black
+              text-white
+              transition
+              hover:bg-white/20
+            "
+            to="/"
+            aria-label="Volver al inicio"
           >
             ←
           </Link>
 
-          <div className="mt-10 flex h-full flex-col justify-center gap-8 text-center lg:text-left">
-            <div className="flex justify-center lg:justify-start">
+          <div className="grid gap-6">
+            <div className="flex items-center gap-4">
               <img
-                className="h-24 w-24 rounded-3xl bg-white object-contain shadow-[0_12px_28px_rgba(0,0,0,.12)] sm:h-28 sm:w-28"
+                className="
+                  h-20
+                  w-20
+                  rounded-3xl
+                  bg-white
+                  object-contain
+                  shadow-[0_12px_28px_rgba(0,0,0,.12)]
+                  sm:h-24
+                  sm:w-24
+                "
                 src={logoJmGym}
                 alt="Logo de JMGym"
               />
+
+              <div>
+                <h1 className="font-display text-4xl font-bold leading-none sm:text-5xl lg:text-6xl">
+                  JMGym
+                </h1>
+                <p className="mt-2 text-sm text-white/85 sm:text-base">
+                  Tu espacio de reservas de baile, simple y claro.
+                </p>
+              </div>
             </div>
 
-            <div>
-              <h1 className="font-display text-5xl font-bold leading-none sm:text-6xl">
-                JMGym
-              </h1>
-              <p className="mt-3 max-w-md text-lg text-white/85">
-                Tu espacio de reservas de baile, simple y claro.
+            <div className="max-w-xl">
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-white/75">
+                Bienvenido
+              </p>
+              <h2 className="mt-4 max-w-[12ch] font-display text-4xl font-bold leading-[0.95] sm:text-5xl lg:text-6xl">
+                Inicia sesión y reserva
+              </h2>
+              <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/85 sm:text-base lg:text-lg">
+                Encuentra clases, selecciona espacios y administra tus reservas
+                desde una sola plataforma.
               </p>
             </div>
+          </div>
 
-            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-              {highlights.map((item) => (
-                <article
-                  key={item.title}
-                  className="rounded-[22px] bg-white/10 p-4 text-left ring-1 ring-white/10"
-                >
-                  <h2 className="font-bold text-white">{item.title}</h2>
-                  <p className="mt-1 text-sm text-white/80">{item.text}</p>
-                </article>
-              ))}
-            </div>
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            {highlights.map((item) => (
+              <article
+                key={item.title}
+                className="
+                  rounded-[24px]
+                  bg-white/10
+                  p-4
+                  ring-1
+                  ring-white/10
+                  backdrop-blur-sm
+                  sm:p-5
+                "
+              >
+                <div className="mb-3 text-2xl">
+                  {item.icon}
+                </div>
+                <h3 className="font-bold text-white">
+                  {item.title}
+                </h3>
+                <p className="mt-1 text-sm leading-relaxed text-white/80">
+                  {item.text}
+                </p>
+              </article>
+            ))}
           </div>
         </aside>
 
         <form
-          className="rounded-[36px] bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,.08)] ring-1 ring-slate-100 sm:p-8 lg:p-12 flex flex-col gap-5"
+          className="
+            flex
+            flex-col
+            justify-center
+            gap-5
+            p-6
+            sm:p-8
+            lg:p-10
+          "
           onSubmit={handleSubmit}
         >
           <div>
-            <h2 className="font-display text-4xl font-bold text-black sm:text-5xl">
-              Inicia sesión
+            <h2 className="font-display text-4xl font-bold text-slate-900 sm:text-5xl">
+              Acceder
             </h2>
-            <p className="mt-2 max-w-md text-slate-500">
-              Ingresa tus datos para continuar.
+            <p className="mt-2 text-slate-500">
+              Continúa con tu cuenta.
             </p>
           </div>
 
           {error && (
-            <div className="rounded-2xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600">
+            <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">
               {error}
             </div>
           )}
 
-          <AuthField
-            icon="✉️"
-            label="Correo electrónico"
-            type="email"
-            placeholder="tu@correo.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-          />
+          <label className="grid gap-2 font-semibold text-slate-700">
+            Correo electrónico
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+              <span aria-hidden="true">✉️</span>
+              <input
+                className="w-full bg-transparent outline-none"
+                type="email"
+                placeholder="tu@correo.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+          </label>
 
-          <AuthField
-            icon="🔒"
-            label="Contraseña"
-            type="password"
-            placeholder="Tu contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-          />
+          <label className="grid gap-2 font-semibold text-slate-700">
+            Contraseña
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+              <span aria-hidden="true">🔒</span>
+              <input
+                className="w-full bg-transparent outline-none"
+                type="password"
+                placeholder="Tu contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+          </label>
 
           <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500">
             <label className="flex items-center gap-2">
@@ -154,13 +232,28 @@ function Login() {
               Recordar sesión
             </label>
 
-            <button className="font-bold text-brand-600" type="button">
+            <button
+              className="font-bold text-brand-600 transition hover:text-brand-700"
+              type="button"
+            >
               ¿Olvidaste tu contraseña?
             </button>
           </div>
 
           <button
-            className="w-full flex items-center justify-center min-h-14 rounded-2xl bg-brand-600 font-bold text-white shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-16"
+            className="
+              min-h-14
+              rounded-2xl
+              bg-brand-600
+              font-bold
+              text-white
+              shadow-soft
+              transition
+              hover:bg-brand-700
+              disabled:cursor-not-allowed
+              disabled:opacity-70
+              sm:min-h-16
+            "
             type="submit"
             disabled={loading}
           >
@@ -168,7 +261,19 @@ function Login() {
           </button>
 
           <Link
-            className="w-full flex items-center justify-center min-h-14 rounded-2xl border-2 border-brand-600 font-bold text-brand-600 transition hover:bg-brand-50 sm:min-h-16"
+            className="
+              grid
+              min-h-14
+              place-items-center
+              rounded-2xl
+              border-2
+              border-brand-600
+              font-bold
+              text-brand-600
+              transition
+              hover:bg-brand-50
+              sm:min-h-16
+            "
             to="/cliente/registro"
           >
             Crear cuenta nueva

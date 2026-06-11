@@ -2,46 +2,331 @@ import { Link } from 'react-router-dom';
 import logoJmGym from '../assets/logos/logo-jmgym.jpeg';
 
 const features = [
-  { icon: '🏋️', title: 'Entrenamiento', text: 'Rutinas personalizadas para todos los niveles.' },
-  { icon: '🧘', title: 'Bienestar', text: 'Espacios comodos y ambiente relajado.' },
+  {
+    icon: '⚡',
+    title: 'Reserva rápida',
+    text: 'Encuentra clases en pocos pasos.',
+  },
+  {
+    icon: '🧘',
+    title: 'Experiencia cómoda',
+    text: 'Interfaz simple y fácil de entender.',
+  },
+  {
+    icon: '📱',
+    title: 'Multiplataforma',
+    text: 'Úsalo desde móvil, tablet o escritorio.',
+  },
 ];
 
 function Landing() {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.8),transparent_28rem),linear-gradient(135deg,#eaf8ff_0%,#f2fbff_100%)]">
-      <section className="min-h-screen bg-[#2196d3] md:grid md:grid-rows-[auto_1fr]">
-        <header className="flex items-center gap-5 bg-white px-6 py-6 text-xl font-bold md:px-10 md:py-7">
-          <img className="h-16 w-16 rounded-3xl bg-white object-contain shadow-[0_12px_28px_rgba(50,38,50,0.14)]" src={logoJmGym} alt="Logo de JMGym" />
-          <strong>JMGym</strong>
+    <main className="h-screen overflow-hidden bg-[#eaf3fb]">
+
+      <section className="mx-auto flex h-full max-w-7xl flex-col px-5 py-4 lg:px-10">
+
+        {/* HEADER */}
+        <header
+          className="
+            flex
+            items-center
+            gap-4
+            rounded-[28px]
+            bg-white
+            px-5
+            py-3
+            shadow-[0_10px_30px_rgba(15,23,42,.06)]
+          "
+        >
+          <img
+            src={logoJmGym}
+            alt="Logo JMGym"
+            className="
+              h-14
+              w-14
+              rounded-2xl
+              object-contain
+            "
+          />
+
+          <div>
+            <h1 className="text-3xl font-black text-slate-900">
+              JMGym
+            </h1>
+
+            <p className="text-sm text-slate-500">
+              Reserva clases fácilmente
+            </p>
+          </div>
         </header>
 
-        <div className="px-6 py-8 md:grid md:grid-cols-[1.05fr_0.95fr] md:grid-areas-none md:items-center md:gap-7 md:p-10">
-          <div>
-            <p className="hidden text-xs font-extrabold uppercase tracking-[0.18em] text-white/70 md:block">Splash screen principal</p>
-            <h1 className="max-w-[12ch] font-display text-5xl font-bold uppercase leading-[0.9] tracking-tight text-white md:text-8xl">Rompe tus limites</h1>
-            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-white md:text-xl">Unete a una experiencia fitness moderna, simple y disenada para todas las edades.</p>
-          </div>
+        {/* HERO */}
+        <div
+          className="
+            mt-4
+            grid
+            flex-1
+            gap-6
+            overflow-hidden
+            lg:grid-cols-[1.05fr_.95fr]
+          "
+        >
 
-          <div className="mt-6 grid grid-cols-2 gap-3 md:mt-0 md:grid-cols-1 lg:grid-cols-2">
-            {features.map((feature) => (
-              <article className="min-h-44 rounded-3xl bg-white p-5 md:min-h-52 md:p-7" key={feature.title}>
-                <div className="mb-5 grid h-12 w-12 place-items-center rounded-2xl bg-slate-100 text-2xl">{feature.icon}</div>
-                <h2 className="font-extrabold md:text-xl">{feature.title}</h2>
-                <p className="mt-2 leading-relaxed text-slate-500">{feature.text}</p>
-              </article>
-            ))}
-          </div>
+          {/* IZQUIERDA */}
+          <section
+            className="
+              rounded-[34px]
+              bg-gradient-to-br
+              from-[#0a4fb9]
+              via-[#1364d2]
+              to-[#2490e5]
+              p-8
+              text-white
+              lg:p-10
+            "
+          >
 
-          <section className="mt-5 rounded-[26px] bg-emerald-50 p-6 md:col-start-1 md:mt-7 md:p-9" aria-labelledby="access-title">
-            <h2 id="access-title" className="text-3xl font-extrabold tracking-tight md:text-4xl">Selecciona tu acceso</h2>
-            <p className="mt-3 leading-relaxed text-slate-800">Ingresa segun tu perfil para acceder a las funciones correspondientes.</p>
-            <div className="mt-6 grid gap-3">
-              <Link className="grid min-h-14 place-items-center rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 font-extrabold text-white shadow-soft" to="/cliente/bienvenida">👤 Ingresar como Cliente</Link>
-              <Link className="grid min-h-14 place-items-center rounded-2xl border-2 border-indigo-100 bg-white font-extrabold text-slate-800" to="/admin/login">🛠️ Ingresar como Administrador</Link>
+            <div className="flex h-full flex-col">
+
+              <div>
+                <span
+                  className="
+                    inline-flex
+                    rounded-full
+                    bg-white/10
+                    px-4
+                    py-2
+                    text-xs
+                    font-black
+                    tracking-[0.22em]
+                  "
+                >
+                  SISTEMA DE RESERVAS
+                </span>
+
+                <h2
+                  className="
+                    mt-6
+                    max-w-[10ch]
+                    font-display
+                    text-5xl
+                    font-black
+                    leading-[0.9]
+                    md:text-6xl
+                  "
+                >
+                  Reserva tus clases
+                </h2>
+
+                <p
+                  className="
+                    mt-5
+                    max-w-xl
+                    text-base
+                    leading-relaxed
+                    text-white/92
+                  "
+                >
+                  Consulta horarios, reserva espacios y administra
+                  tus actividades desde cualquier dispositivo.
+                </p>
+              </div>
+
+              {/* BENEFICIOS */}
+              <div
+                className="
+                  mt-auto
+                  grid
+                  gap-3
+                  pt-8
+                  sm:grid-cols-3
+                "
+              >
+                {features.map((item) => (
+                  <article
+                    key={item.title}
+                    className="
+                      rounded-[24px]
+                      bg-white/10
+                      p-5
+                      backdrop-blur-sm
+                    "
+                  >
+                    <div
+                      className="
+                        mb-3
+                        grid
+                        h-12
+                        w-12
+                        place-items-center
+                        rounded-2xl
+                        bg-white/10
+                        text-xl
+                      "
+                    >
+                      {item.icon}
+                    </div>
+
+                    <h3
+                      className="
+                        text-lg
+                        font-extrabold
+                      "
+                    >
+                      {item.title}
+                    </h3>
+
+                    <p
+                      className="
+                        mt-2
+                        text-sm
+                        text-white/80
+                      "
+                    >
+                      {item.text}
+                    </p>
+
+                  </article>
+                ))}
+              </div>
+
             </div>
+
           </section>
+
+          {/* DERECHA */}
+          <aside
+            className="
+              flex
+              items-center
+            "
+          >
+
+            <div
+              className="
+                w-full
+                rounded-[34px]
+                bg-white
+                p-8
+                shadow-[0_20px_60px_rgba(15,23,42,.08)]
+                lg:p-10
+              "
+            >
+
+              <span
+                className="
+                  text-xs
+                  font-black
+                  tracking-[0.24em]
+                  text-brand-700
+                "
+              >
+                COMENZAR
+              </span>
+
+              <h2
+                className="
+                  mt-4
+                  text-5xl
+                  font-black
+                  text-slate-900
+                "
+              >
+                Selecciona tu acceso
+              </h2>
+
+              <p
+                className="
+                  mt-4
+                  text-lg
+                  text-slate-600
+                "
+              >
+                Elige el perfil con el que deseas ingresar.
+              </p>
+
+              <div className="mt-8 grid gap-4">
+
+                <Link
+                  to="/cliente/login"
+                  className="
+                    flex
+                    items-center
+                    justify-between
+                    rounded-[26px]
+                    bg-brand-700
+                    px-8
+                    py-6
+                    text-white
+                    transition
+                    hover:scale-[1.01]
+                  "
+                >
+                  <div>
+                    <h3 className="text-2xl font-black">
+                      👤 Cliente
+                    </h3>
+
+                    <p className="text-white/80">
+                      Reservar y gestionar clases
+                    </p>
+                  </div>
+
+                  <span className="text-3xl">
+                    →
+                  </span>
+                </Link>
+
+                <Link
+                  to="/admin/login"
+                  className="
+                    flex
+                    items-center
+                    justify-between
+                    rounded-[26px]
+                    border-2
+                    border-slate-200
+                    bg-slate-50
+                    px-8
+                    py-6
+                    transition
+                    hover:bg-slate-100
+                  "
+                >
+                  <div>
+
+                    <h3
+                      className="
+                        text-2xl
+                        font-black
+                        text-slate-900
+                      "
+                    >
+                      🛠 Administrador
+                    </h3>
+
+                    <p className="text-slate-500">
+                      Gestión del sistema
+                    </p>
+
+                  </div>
+
+                  <span className="text-3xl">
+                    →
+                  </span>
+
+                </Link>
+
+              </div>
+
+            </div>
+
+          </aside>
+
         </div>
+
       </section>
+
     </main>
   );
 }

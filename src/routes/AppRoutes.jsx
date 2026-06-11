@@ -20,8 +20,7 @@ import Login from '../pages/user/Login.jsx';
 import MisReservas from '../pages/user/MisReservas.jsx';
 import DetalleReserva from '../pages/user/DetalleReserva.jsx';
 import Perfil from '../pages/user/Perfil.jsx';
-import Register from '../pages/user/Register.jsx';
-import Welcome from '../pages/user/Welcome.jsx';
+import Register from '../pages/user/Register.jsx';;
 import SeleccionEspacio from '../pages/user/SeleccionEspacio';
 import PagoClase from '../pages/user/PagoClase';
 function ProtectedRoute({ children }) {
@@ -43,8 +42,7 @@ function AppRoutes() {
       <Route path="/" element={<Landing />} />
 
       <Route path="/cliente" element={<UserLayout />}>
-        <Route index element={<Navigate to="bienvenida" replace />} />
-        <Route path="bienvenida" element={<Welcome />} />
+        <Route index element={<Navigate to="login" replace />} />
         <Route path="login" element={<Login />} />
         <Route path="registro" element={<Register />} />
         <Route path="home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
