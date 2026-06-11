@@ -3,9 +3,28 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 
+const highlights = [
+  {
+    icon: '⚡',
+    title: 'Reserva rápida',
+    text: 'Encuentra y reserva clases en pocos pasos.',
+  },
+  {
+    icon: '📍',
+    title: 'Control claro',
+    text: 'Selecciona tu espacio y continúa sin confusión.',
+  },
+  {
+    icon: '📱',
+    title: 'Acceso flexible',
+    text: 'Funciona bien en móvil, tablet y escritorio.',
+  },
+];
+
 function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -27,54 +46,238 @@ function Login() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 md:grid md:place-items-center md:bg-gradient-to-b md:from-brand-50 md:to-brand-100">
-      <section className="min-h-screen bg-slate-50 md:grid md:w-full md:grid-cols-[minmax(360px,0.85fr)_minmax(460px,0.75fr)] md:items-center md:gap-x-28 md:bg-[radial-gradient(circle_at_20%_25%,rgba(255,255,255,0.9),transparent_26rem),linear-gradient(180deg,#f7fcff_0%,#e8f7ff_100%)] md:px-[8vw] md:py-16 max-w-full overflow-x-hidden">
-        <header className="relative grid justify-items-center rounded-b-[34px] bg-gradient-to-br from-brand-500 to-brand-600 px-6 py-9 text-center text-white md:min-h-[560px] md:content-center md:rounded-[38px] md:shadow-soft">
-          <Link className="absolute left-5 top-5 grid h-11 w-11 place-items-center rounded-2xl bg-white/15 text-2xl" to="/cliente/bienvenida">←</Link>
-          <img className="mb-4 h-24 w-24 rounded-2xl bg-white object-contain shadow-xl md:h-28 md:w-28" src={logoJmGym} alt="Logo de JMGym" />
-          <h1 className="font-display text-4xl font-bold md:text-7xl">JMGym</h1>
-          <p className="mt-2 text-white/90 md:text-xl">¡Bienvenida de vuelta!</p>
-        </header>
+    <main className="min-h-dvh overflow-x-hidden bg-[#eef7fd] p-3 sm:p-4 lg:p-5">
+      <section
+        className="
+          mx-auto
+          grid
+          min-h-[calc(100dvh-1.5rem)]
+          max-w-7xl
+          overflow-hidden
+          rounded-[32px]
+          bg-white
+          shadow-[0_24px_70px_rgba(15,23,42,.08)]
+          lg:grid-cols-[0.92fr_1.08fr]
+        "
+      >
+        <aside
+          className="
+            flex
+            flex-col
+            justify-between
+            gap-6
+            bg-gradient-to-br
+            from-[#004aab]
+            via-[#0a58ca]
+            to-[#1576ff]
+            p-6
+            text-white
+            sm:p-8
+            lg:p-10
+          "
+        >
+          <Link
+            className="
+              grid
+              h-12
+              w-12
+              place-items-center
+              rounded-2xl
+              bg-white/15
+              text-2xl
+              font-black
+              text-white
+              transition
+              hover:bg-white/20
+            "
+            to="/"
+            aria-label="Volver al inicio"
+          >
+            ←
+          </Link>
 
-        <form className="mx-auto grid w-full max-w-xl gap-5 px-6 py-8 md:m-0 md:max-w-[620px] md:p-0" onSubmit={handleSubmit}>
+          <div className="grid gap-6">
+            <div className="flex items-center gap-4">
+              <img
+                className="
+                  h-20
+                  w-20
+                  rounded-3xl
+                  bg-white
+                  object-contain
+                  shadow-[0_12px_28px_rgba(0,0,0,.12)]
+                  sm:h-24
+                  sm:w-24
+                "
+                src={logoJmGym}
+                alt="Logo de JMGym"
+              />
+
+              <div>
+                <h1 className="font-display text-4xl font-bold leading-none sm:text-5xl lg:text-6xl">
+                  JMGym
+                </h1>
+                <p className="mt-2 text-sm text-white/85 sm:text-base">
+                  Tu espacio de reservas de baile, simple y claro.
+                </p>
+              </div>
+            </div>
+
+            <div className="max-w-xl">
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-white/75">
+                Bienvenido
+              </p>
+              <h2 className="mt-4 max-w-[12ch] font-display text-4xl font-bold leading-[0.95] sm:text-5xl lg:text-6xl">
+                Inicia sesión y reserva
+              </h2>
+              <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/85 sm:text-base lg:text-lg">
+                Encuentra clases, selecciona espacios y administra tus reservas
+                desde una sola plataforma.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            {highlights.map((item) => (
+              <article
+                key={item.title}
+                className="
+                  rounded-[24px]
+                  bg-white/10
+                  p-4
+                  ring-1
+                  ring-white/10
+                  backdrop-blur-sm
+                  sm:p-5
+                "
+              >
+                <div className="mb-3 text-2xl">
+                  {item.icon}
+                </div>
+                <h3 className="font-bold text-white">
+                  {item.title}
+                </h3>
+                <p className="mt-1 text-sm leading-relaxed text-white/80">
+                  {item.text}
+                </p>
+              </article>
+            ))}
+          </div>
+        </aside>
+
+        <form
+          className="
+            flex
+            flex-col
+            justify-center
+            gap-5
+            p-6
+            sm:p-8
+            lg:p-10
+          "
+          onSubmit={handleSubmit}
+        >
           <div>
-            <h2 className="font-display text-4xl font-bold text-slate-800 md:text-5xl">Inicia sesion</h2>
-            <p className="mt-2 text-slate-500 md:text-lg">Ingresa tus datos para continuar.</p>
+            <h2 className="font-display text-4xl font-bold text-slate-900 sm:text-5xl">
+              Acceder
+            </h2>
+            <p className="mt-2 text-slate-500">
+              Continúa con tu cuenta.
+            </p>
           </div>
 
           {error && (
-            <div className="rounded-2xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600">
+            <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">
               {error}
             </div>
           )}
 
-          <label className="grid gap-2 font-bold text-slate-500">
-            Correo electronico
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] md:min-h-16">
+          <label className="grid gap-2 font-semibold text-slate-700">
+            Correo electrónico
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
               <span aria-hidden="true">✉️</span>
-              <input className="w-full bg-transparent outline-none" type="email" placeholder="tu@correo.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <input
+                className="w-full bg-transparent outline-none"
+                type="email"
+                placeholder="tu@correo.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
           </label>
 
-          <label className="grid gap-2 font-bold text-slate-500">
+          <label className="grid gap-2 font-semibold text-slate-700">
             Contraseña
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] md:min-h-16">
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
               <span aria-hidden="true">🔒</span>
-              <input className="w-full bg-transparent outline-none" type="password" placeholder="Tu contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <input
+                className="w-full bg-transparent outline-none"
+                type="password"
+                placeholder="Tu contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
             </div>
           </label>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500 md:text-base">
-            <label className="flex items-center gap-2"><input className="h-5 w-5 accent-brand-600" type="checkbox" defaultChecked /> Recordar sesion</label>
-            <button className="font-extrabold text-brand-600" type="button">¿Olvidaste tu contraseña?</button>
+          <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500">
+            <label className="flex items-center gap-2">
+              <input
+                className="h-5 w-5 accent-brand-600"
+                type="checkbox"
+                defaultChecked
+              />
+              Recordar sesión
+            </label>
+
+            <button
+              className="font-bold text-brand-600 transition hover:text-brand-700"
+              type="button"
+            >
+              ¿Olvidaste tu contraseña?
+            </button>
           </div>
 
-          <div className="grid gap-3">
-            <button className="min-h-14 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 font-extrabold text-white shadow-soft disabled:opacity-60 md:min-h-16 md:text-lg" type="submit" disabled={loading}>
-              {loading ? 'Ingresando...' : 'Ingresar'}
-            </button>
-            <Link className="grid min-h-14 place-items-center rounded-2xl border-2 border-brand-600 bg-white font-extrabold text-brand-600 md:min-h-16 md:text-lg" to="/cliente/registro">Crear cuenta nueva</Link>
-          </div>
+          <button
+            className="
+              min-h-14
+              rounded-2xl
+              bg-brand-600
+              font-bold
+              text-white
+              shadow-soft
+              transition
+              hover:bg-brand-700
+              disabled:cursor-not-allowed
+              disabled:opacity-70
+              sm:min-h-16
+            "
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? 'Ingresando...' : 'Ingresar'}
+          </button>
+
+          <Link
+            className="
+              grid
+              min-h-14
+              place-items-center
+              rounded-2xl
+              border-2
+              border-brand-600
+              font-bold
+              text-brand-600
+              transition
+              hover:bg-brand-50
+              sm:min-h-16
+            "
+            to="/cliente/registro"
+          >
+            Crear cuenta nueva
+          </Link>
         </form>
       </section>
     </main>

@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { instructorService } from '../../services/instructorService.js';
 import { classService } from '../../services/classService.js';
+import PageLoader from '../../components/common/PageLoader.jsx';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
 const BACKEND_URL = API_BASE.replace('/api', '');
@@ -61,7 +62,11 @@ export default function InstructorDetalle() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const experienceYears = useMemo(() => calcYears(instructor?.fecha_registro), [instructor]);
+  const experienceYears = useMemo(() => {
+    const y = calcYears(instructor?.fecha_registro);
+    if (!y || y < 1) return 1;
+    return y;
+  }, [instructor]);
   const intensity = useMemo(() => dominantIntensity(classes), [classes]);
   const intensityMeta = LEVEL_LABELS[intensity] || { label: '—', color: 'text-slate-400', bg: 'bg-slate-50' };
 
@@ -72,12 +77,9 @@ export default function InstructorDetalle() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-brand-50 flex items-center justify-center p-8">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-500 font-medium">Cargando instructor...</p>
-        </div>
-      </main>
+      <PageLoader
+        text="Cargando información..."
+      />
     );
   }
 
@@ -134,11 +136,43 @@ export default function InstructorDetalle() {
             />
           ) : instructor.foto ? (
             <img
-              src={fotoUrl(instructor.foto)}
+              src={fotoUrl(instructor.foto) || '/public/default-instructor.jpg'}
               alt={instructor.nombre_completo}
               className="absolute inset-0 h-full w-full object-cover"
             />
-          ) : null}
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#004aab] to-sky-500">
+              <div className="text-center text-white">
+
+                <div className="
+                  mx-auto
+                  h-28
+                  w-28
+                  rounded-full
+                  bg-white/20
+                  flex
+                  items-center
+                  justify-center
+                  text-5xl
+                  font-black
+                  backdrop-blur-sm
+                  border
+                  border-white/20
+                ">
+                  {instructor.nombre_completo?.charAt(0)}
+                </div>
+
+                <p className="mt-4 text-xl font-bold">
+                  {instructor.nombre_completo}
+                </p>
+
+                <p className="mt-1 text-sm text-sky-100">
+                  Instructor JMGym
+                </p>
+
+              </div>
+            </div>
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-sky-950/80 via-sky-800/30 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-transparent" />
 
@@ -153,11 +187,11 @@ export default function InstructorDetalle() {
           </button>
 
           <div className="absolute bottom-0 left-0 right-0 z-10 p-6 pb-5">
-            <h1 className="text-3xl font-bold text-white drop-shadow-lg md:text-4xl">
+            <h1 className="text-4xl font-black text-white drop-shadow-xl md:text-5xl">
               {instructor.nombre_completo}
             </h1>
             {instructor.especialidad && (
-              <p className="mt-1.5 text-base font-semibold text-white/80 drop-shadow">
+              <p className="mt-2 text-lg font-bold text-sky-100">
                 {instructor.especialidad}
               </p>
             )}
@@ -166,29 +200,67 @@ export default function InstructorDetalle() {
 
         <div className="px-4 -mt-5 relative z-20 space-y-5">
           {/* Quick stats */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="rounded-2xl bg-white p-4 text-center shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
-              <span className="text-2xl">📅</span>
-              <p className="mt-1.5 text-xl font-extrabold text-slate-800">
-                {experienceYears !== null ? `${experienceYears}` : '—'}
+          <div className="grid grid-cols-3 gap-4">
+            {/* Experiencia */}
+            <div className="
+              rounded-3xl
+              bg-white
+              p-4
+              text-center
+              shadow-[0_4px_16px_rgba(15,86,130,0.08)]
+              ring-1
+              ring-sky-100
+              transition-all
+              duration-300
+              hover:-translate-y-1
+            ">
+              <p className="text-[#004aab] font-black text-2xl">
+                {experienceYears} {experienceYears === 1 ? 'año' : 'años'}
               </p>
-              <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
-                {experienceYears === 1 ? 'Año' : 'Años'}
+
+              <p className="mt-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                Experiencia
               </p>
             </div>
-            <div className="rounded-2xl bg-white p-4 text-center shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
-              <span className="text-2xl">🏆</span>
-              <p className="mt-1.5 text-xl font-extrabold text-slate-800">{classes.length}</p>
-              <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
-                {classes.length === 1 ? 'Clase' : 'Clases'}
+            {/* Clases */}
+            <div className="
+              rounded-3xl
+              bg-white
+              p-4
+              text-center
+              shadow-[0_4px_16px_rgba(15,86,130,0.08)]
+              ring-1
+              ring-sky-100
+              transition-all
+              duration-300
+              hover:-translate-y-1
+            ">
+              <p className="text-[#004aab] font-black text-2xl">
+                {classes.length}
+              </p>
+
+              <p className="mt-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                Clases activas
               </p>
             </div>
-            <div className="rounded-2xl bg-white p-4 text-center shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
-              <span className="text-2xl">🔥</span>
-              <p className={`mt-1.5 text-xl font-extrabold ${intensityMeta.color}`}>
+            {/* Intensidad */}
+            <div className="
+              rounded-3xl
+              bg-white
+              p-4
+              text-center
+              shadow-[0_4px_16px_rgba(15,86,130,0.08)]
+              ring-1
+              ring-sky-100
+              transition-all
+              duration-300
+              hover:-translate-y-1
+            ">
+              <p className={`text-2xl font-black ${intensityMeta.color}`}>
                 {intensityMeta.label}
               </p>
-              <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
+
+              <p className="mt-2 text-xs font-bold uppercase tracking-wider text-slate-400">
                 Intensidad
               </p>
             </div>
@@ -209,14 +281,23 @@ export default function InstructorDetalle() {
           )}
 
           {/* Bio */}
-          {instructor.biografia && (
+          <section className="rounded-3xl bg-white p-5 shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
             <section className="rounded-2xl bg-white p-5 shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
-              <h2 className="text-base font-extrabold text-slate-800">Biografía</h2>
+              <h2 className="text-base font-extrabold text-slate-800">
+                Conoce a tu instructor
+                <p className="text-xs text-slate-400 mt-1">
+                  Profesional certificado del equipo JMGym
+                </p>
+              </h2>
+              
               <p className="mt-2 text-sm leading-relaxed text-slate-500">
-                {instructor.biografia}
+                {instructor.biografia
+                  ? instructor.biografia
+                  : `${instructor.nombre_completo} forma parte del equipo profesional de JMGym. Especialista en ${instructor.especialidad?.toLowerCase()}, acompaña a los alumnos en el desarrollo de sus objetivos físicos mediante entrenamientos seguros, dinámicos y adaptados a diferentes niveles de experiencia.`
+                }
               </p>
             </section>
-          )}
+          </section>
 
           {/* Próximas clases */}
           <section>
@@ -224,7 +305,7 @@ export default function InstructorDetalle() {
 
             {classes.length > 0 ? (
               <div className="space-y-3">
-                {classes.map((cls) => {
+                {classes.slice(0,3).map((cls) => {
                   const classDate = cls.date
                     ? new Date(cls.date + 'T00:00:00').toLocaleDateString('es-PE', {
                         weekday: 'long',
@@ -236,7 +317,7 @@ export default function InstructorDetalle() {
                     <button
                       key={cls.id}
                       onClick={() => navigate(`/cliente/clases/${cls.id}`)}
-                      className="w-full flex items-center gap-4 rounded-2xl bg-white p-4 text-left shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100 transition hover:shadow-md active:scale-[0.98]"
+                      className="w-full flex items-center gap-3 rounded-2xl bg-white p-3 text-left shadow-sm ring-1 ring-sky-100 transition hover:bg-sky-50"
                     >
                       {cls.imagen_clase ? (
                         <img
@@ -258,8 +339,26 @@ export default function InstructorDetalle() {
                         </p>
                       </div>
                       <div className="text-right shrink-0">
+                        <p className="text-sm font-black text-[#004aab]">
+                          S/ {Number(cls.price || 0).toFixed(2)}
+                        </p>
                         <p className="text-sm font-bold text-sky-600">
                           {cls.availableSpots} cupos
+                          <span
+                            className={`inline-block mt-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                              cls.availableSpots <= 5
+                                ? 'bg-red-50 text-red-600'
+                                : cls.availableSpots <= 15
+                                ? 'bg-amber-50 text-amber-600'
+                                : 'bg-emerald-50 text-emerald-600'
+                            }`}
+                          >
+                            {cls.availableSpots <= 5
+                              ? 'Últimos'
+                              : cls.availableSpots <= 15
+                              ? 'Pocos'
+                              : 'Disponible'}
+                          </span>
                         </p>
                       </div>
                     </button>
@@ -284,6 +383,39 @@ export default function InstructorDetalle() {
               </div>
             )}
           </section>
+        </div>
+        <div className="grid grid-cols-2 gap-3 pt-2">
+          <button
+            onClick={() => navigate(-1)}
+            className="
+              rounded-2xl
+              border
+              border-slate-200
+              bg-white
+              py-4
+              font-bold
+              text-slate-700
+              transition
+              hover:bg-slate-50
+            "
+          >
+            ← Volver
+          </button>
+
+          <button
+            onClick={() => navigate('/cliente/clases')}
+            className="
+              rounded-2xl
+              bg-[#004aab]
+              py-4
+              font-bold
+              text-white
+              transition
+              hover:opacity-90
+            "
+          >
+            Ver clases
+          </button>
         </div>
       </section>
     </main>

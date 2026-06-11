@@ -7,6 +7,7 @@ function mapReservation(item) {
     id_usuario: item.id_usuario,
     id_clase: item.id_clase,
     id_espacio: item.id_espacio,
+    validationConflict: item.estado_reserva === 'CANCELADA',
     metodo_pago: item.metodo_pago,
     estado_pago: item.estado_pago,
     estado_reserva: item.estado_reserva,

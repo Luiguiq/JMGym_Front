@@ -29,10 +29,10 @@ function ListaClases() {
         <span>Volver al menu</span>
       </button>
 
-      <section className="mx-auto max-w-5xl">
+      <section className="mx-auto max-w-6xl">
         <h1 className="text-2xl font-extrabold text-slate-800 sm:text-3xl md:text-4xl">Clases disponibles</h1>
         <p className="mt-1 text-sm text-slate-500 sm:text-base">Encuentra tu proxima clase y reserva tu lugar</p>
-        <div className="mt-6 grid gap-4 sm:gap-5">
+        <div className="mt-8 grid gap-6">
           {loading ? (
             <p className="text-slate-400">Cargando clases...</p>
           ) : error ? (
