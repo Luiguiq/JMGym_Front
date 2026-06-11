@@ -1,0 +1,300 @@
+import { useEffect, useState } from 'react';
+import { Bell, Send, Users, Calendar } from 'lucide-react';
+import { notificationService } from '../../services/notificationService.js';
+import { classService } from '../../services/classService.js';
+import { userService } from '../../services/userService.js';
+
+const typeIcons = {
+  RECORDATORIO: '⏰', PAGO: '💳', PAGO_CONFIRMADO: '✅',
+  CAMBIO_HORARIO: '🕐', CAMBIO_INSTRUCTOR: '👤', NUEVA_CLASE: '🎯',
+  CANCELACION: '❌', REEMBOLSO: '💵', BLOQUEO_CUENTA: '🔒',
+  RESERVA_CONFIRMADA: '📋', RESERVA_CANCELADA: '🗑️',
+  CAMBIO_ESPACIO: '🪑', NOTIFICACION_GENERAL: '📢',
+};
+
+const tipoOptions = [
+  { value: 'NOTIFICACION_GENERAL', label: 'General' },
+  { value: 'RECORDATORIO', label: 'Recordatorio' },
+  { value: 'NUEVA_CLASE', label: 'Nueva clase' },
+  { value: 'CANCELACION', label: 'Cancelación' },
+  { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
+  { value: 'CAMBIO_INSTRUCTOR', label: 'Cambio de instructor' },
+];
+
+function NotificacionesAdmin() {
+  const [tab, setTab] = useState('send');
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [titulo, setTitulo] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [tipo, setTipo] = useState('NOTIFICACION_GENERAL');
+  const [target, setTarget] = useState('all');
+  const [selectedClassId, setSelectedClassId] = useState('');
+  const [selectedUserId, setSelectedUserId] = useState('');
+  const [sending, setSending] = useState(false);
+  const [result, setResult] = useState(null);
+
+  const [classes, setClasses] = useState([]);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    classService.getAllForAdmin().then(setClasses).catch(() => {});
+    userService.getAll().then(setUsers).catch(() => {});
+    loadNotifications();
+  }, []);
+
+  async function loadNotifications() {
+    try {
+      const data = await notificationService.getAllNotifications();
+      setNotifications(data);
+    } catch {} finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSend() {
+    if (!titulo.trim() || !mensaje.trim()) return;
+    setSending(true);
+    setResult(null);
+    try {
+      const payload = {
+        titulo: titulo.trim(),
+        mensaje: mensaje.trim(),
+        tipo,
+        all_users: target === 'all',
+        user_ids: target === 'user' && selectedUserId ? [parseInt(selectedUserId)] : null,
+        class_id: target === 'class' && selectedClassId ? parseInt(selectedClassId) : null,
+      };
+      const res = await notificationService.sendNotification(payload);
+      setResult(res);
+      setTitulo('');
+      setMensaje('');
+      loadNotifications();
+    } catch (err) {
+      setResult({ error: err.message });
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div>
+      <div className="mb-6">
+        <h1 className="text-xl font-black text-slate-800 sm:text-2xl">Notificaciones</h1>
+        <p className="mt-1 text-sm text-slate-500">Gestiona y envía notificaciones a los usuarios</p>
+      </div>
+
+      <div className="mb-6 flex gap-2">
+        {[
+          { key: 'send', label: 'Enviar', icon: Send },
+          { key: 'history', label: 'Historial', icon: Bell },
+        ].map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
+              tab === key
+                ? 'bg-[#004aab] text-white shadow'
+                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            <Icon size={16} />
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'send' ? (
+        <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+          <h2 className="mb-4 text-base font-bold text-slate-800">Nueva notificación</h2>
+
+          <div className="space-y-4">
+            <div>
+              <label className="mb-1.5 block text-xs font-bold text-slate-600">Tipo</label>
+              <div className="flex flex-wrap gap-2">
+                {tipoOptions.map(({ value, label }) => (
+                  <button
+                    key={value}
+                    onClick={() => setTipo(value)}
+                    className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
+                      tipo === value
+                        ? 'bg-brand-100 text-brand-700 ring-2 ring-brand-300'
+                        : 'bg-slate-50 text-slate-500 ring-1 ring-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    {typeIcons[value] || '📢'} {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="mb-1.5 block text-xs font-bold text-slate-600">Destinatarios</label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { value: 'all', label: 'Todos los usuarios', icon: Users },
+                  { value: 'class', label: 'Usuarios de una clase', icon: Calendar },
+                  { value: 'user', label: 'Usuario específico', icon: Users },
+                ].map(({ value, label, icon: Icon }) => (
+                  <button
+                    key={value}
+                    onClick={() => setTarget(value)}
+                    className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition ${
+                      target === value
+                        ? 'bg-brand-100 text-brand-700 ring-2 ring-brand-300'
+                        : 'bg-slate-50 text-slate-500 ring-1 ring-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Icon size={14} />
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {target === 'class' && (
+                <select
+                  value={selectedClassId}
+                  onChange={(e) => setSelectedClassId(e.target.value)}
+                  className="mt-2 w-full rounded-xl border-0 bg-slate-50 px-3 py-2 text-sm ring-1 ring-slate-200 focus:ring-2 focus:ring-brand-300"
+                >
+                  <option value="">Seleccionar clase...</option>
+                  {classes.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name} - {c.fecha}
+                    </option>
+                  ))}
+                </select>
+              )}
+
+              {target === 'user' && (
+                <select
+                  value={selectedUserId}
+                  onChange={(e) => setSelectedUserId(e.target.value)}
+                  className="mt-2 w-full rounded-xl border-0 bg-slate-50 px-3 py-2 text-sm ring-1 ring-slate-200 focus:ring-2 focus:ring-brand-300"
+                >
+                  <option value="">Seleccionar usuario...</option>
+                  {users.map((u) => (
+                    <option key={u.id_usuario} value={u.id_usuario}>
+                      {u.nombre_completo} - {u.correo}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+
+            <div>
+              <label className="mb-1.5 block text-xs font-bold text-slate-600">Título</label>
+              <input
+                type="text"
+                value={titulo}
+                onChange={(e) => setTitulo(e.target.value)}
+                placeholder="Ej: Recordatorio importante"
+                className="w-full rounded-xl border-0 bg-slate-50 px-3 py-2.5 text-sm ring-1 ring-slate-200 focus:ring-2 focus:ring-brand-300"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1.5 block text-xs font-bold text-slate-600">Mensaje</label>
+              <textarea
+                value={mensaje}
+                onChange={(e) => setMensaje(e.target.value)}
+                rows={3}
+                placeholder="Escribe el mensaje de la notificación..."
+                className="w-full rounded-xl border-0 bg-slate-50 px-3 py-2.5 text-sm ring-1 ring-slate-200 focus:ring-2 focus:ring-brand-300"
+              />
+            </div>
+
+            <button
+              onClick={handleSend}
+              disabled={!titulo.trim() || !mensaje.trim() || sending}
+              className="flex items-center gap-2 rounded-xl bg-[#004aab] px-5 py-2.5 text-sm font-bold text-white shadow transition hover:bg-[#003d91] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {sending ? (
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              ) : (
+                <Send size={16} />
+              )}
+              {sending ? 'Enviando...' : 'Enviar notificación'}
+            </button>
+
+            {result && (
+              <div
+                className={`rounded-xl p-3 text-sm font-medium ${
+                  result.error
+                    ? 'bg-red-50 text-red-700'
+                    : 'bg-emerald-50 text-emerald-700'
+                }`}
+              >
+                {result.error || result.message}
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+          <h2 className="mb-4 text-base font-bold text-slate-800">Historial de notificaciones</h2>
+
+          {loading ? (
+            <div className="flex justify-center py-10">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+            </div>
+          ) : notifications.length === 0 ? (
+            <div className="flex flex-col items-center py-10 text-slate-400">
+              <Bell size={36} strokeWidth={1.5} />
+              <p className="mt-2 text-sm">Sin notificaciones enviadas</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {notifications.slice(0, 100).map((n) => (
+                <div
+                  key={n.id}
+                  className="flex items-start gap-3 rounded-xl bg-slate-50 p-3 transition hover:bg-slate-100"
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-base shadow-sm">
+                    {typeIcons[n.type] || '📬'}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-sm font-bold text-slate-700">{n.title}</p>
+                      <span className="text-[10px] text-slate-400">
+                        {formatDate(n.sentAt)}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 line-clamp-2 text-xs text-slate-500">
+                      {n.message}
+                    </p>
+                    <div className="mt-1 flex items-center gap-3 text-[10px] text-slate-400">
+                      <span>Usuario #{n.userId}</span>
+                      <span>✓ {n.read ? 'Leído' : 'No leído'}</span>
+                      {n.requiresResponse && (
+                        <span>
+                          {n.userResponse
+                            ? `Resp: ${n.userResponse}`
+                            : 'Pendiente respuesta'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  return new Date(dateStr).toLocaleDateString('es-PE', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+export default NotificacionesAdmin;

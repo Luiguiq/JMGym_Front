@@ -11,7 +11,7 @@ const items = [
 function BottomNav() {
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 px-4 pb-4 sm:px-6 lg:px-8"
+      className="fixed inset-x-0 bottom-0 z-50 px-4 pb-3 sm:pb-4 sm:px-6 lg:px-8"
       aria-label="Navegacion cliente"
     >
       <div className="mx-auto grid max-w-[520px] grid-cols-4 gap-2 rounded-[28px] border border-white/80 bg-white/95 p-2 shadow-[0_-14px_34px_rgba(15,23,42,.08)] backdrop-blur">

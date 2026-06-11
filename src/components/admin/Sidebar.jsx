@@ -7,6 +7,7 @@ import {
   Users,
   UserPlus,
   ShieldPlus,
+  Bell,
   LogOut,
 } from 'lucide-react';
 
@@ -45,6 +46,12 @@ const Sidebar = ({ onClose }) => {
       label: 'Instructores',
       icon: UserPlus,
       path: '/admin/instructores',
+    },
+    {
+      id: 'notificaciones',
+      label: 'Notificaciones',
+      icon: Bell,
+      path: '/admin/notificaciones',
     },
     {
       id: 'crear-admin',
