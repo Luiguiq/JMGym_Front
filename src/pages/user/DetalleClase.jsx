@@ -238,7 +238,7 @@ const [checkingReservation, setCheckingReservation] = useState(false);
       <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] pb-28 text-slate-700">
         <section className="mx-auto max-w-5xl px-4 py-5 md:px-8 md:py-8">
           <article className="overflow-hidden rounded-[2rem] bg-white shadow-[0_18px_48px_rgba(15,86,130,0.13)] ring-1 ring-sky-100 md:grid md:grid-cols-[0.95fr_1.05fr]">
-            <header className="relative min-h-[420px] overflow-hidden bg-sky-500 p-6 text-white md:min-h-[520px] md:p-10">
+            <header className="relative min-h-[300px] overflow-hidden bg-sky-500 p-5 text-white sm:min-h-[420px] md:min-h-[520px] md:p-10">
               {classImage ? (
                   <img
                       src={classImage}
@@ -261,7 +261,7 @@ const [checkingReservation, setCheckingReservation] = useState(false);
                 ←
               </button>
 
-              <div className="relative z-10 mt-44 md:mt-64">
+              <div className="relative z-10 mt-28 sm:mt-44 md:mt-64">
                 <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1.5 text-xs font-extrabold uppercase tracking-wide text-sky-700 shadow-sm">
                   Intensidad
                 </span>
@@ -278,8 +278,8 @@ const [checkingReservation, setCheckingReservation] = useState(false);
               </div>
             </header>
 
-            <div className="relative bg-white p-5 md:p-8">
-              <div className="-mt-10 relative z-20 grid grid-cols-2 md:grid-cols-4 gap-3 rounded-[28px] bg-white p-4 shadow-[0_18px_40px_rgba(0,0,0,.08)]">
+          <div className="relative bg-white p-4 md:p-8">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 rounded-[28px] bg-white p-3 sm:p-4 shadow-[0_8px_24px_rgba(0,0,0,.06)]">
                 <div className="text-center">
                   <p className="text-xs text-slate-400">Fecha</p>
                   <p className="font-bold text-slate-800">
@@ -319,9 +319,9 @@ const [checkingReservation, setCheckingReservation] = useState(false);
                 </p>
               </section>
 
-              <section className="mt-6">
-                <h2 className="text-lg font-extrabold text-slate-800">Sobre la clase</h2>
-                <div className="mt-5 grid gap-3 md:grid-cols-3">
+            <section className="mt-6">
+              <h2 className="text-lg font-extrabold text-slate-800">Sobre la clase</h2>
+              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
                   {benefits.map((benefit) => (
                     <div
                       key={benefit}
@@ -398,7 +398,7 @@ const [checkingReservation, setCheckingReservation] = useState(false);
                 )}
               </div>
 
-              <div className="sticky bottom-4 mt-5">
+              <div className="sticky bottom-0 mt-5 pb-2 sm:bottom-4 sm:pb-0">
                 <button
                     className={`
                       min-h-14 w-full rounded-2xl font-extrabold text-white

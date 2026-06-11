@@ -44,11 +44,11 @@ function MisReservas() {
       : historyReservations;
 
   return (
-    <main className="min-h-screen bg-brand-50 px-5 py-6 pb-32 sm:px-6 sm:py-8 md:pb-28">
+    <main className="min-h-screen bg-brand-50 px-5 py-6 pb-28 sm:px-6 sm:py-8">
       <h1 className="text-2xl font-extrabold text-slate-800 sm:text-3xl md:text-4xl">Mis reservas</h1>
       <p className="mt-1 text-sm text-slate-500 sm:text-base">Consulta y gestiona tus clases reservadas</p>
 
-      <div className="mt-6 inline-flex rounded-2xl bg-white p-1 shadow-sm border border-slate-100">
+      <div className="mt-6 inline-flex rounded-2xl bg-white p-1 shadow-sm border border-slate-100 overflow-x-auto">
         <button
           onClick={() => setActiveTab('activas')}
           className={`
@@ -87,7 +87,7 @@ function MisReservas() {
         </button>
       </div>
 
-      <div className="mt-5 sm:mt-6 grid gap-4">
+      <div className="mt-5 sm:mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
         {loading ? (
           <p className="text-slate-400">
             Cargando reservas...

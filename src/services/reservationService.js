@@ -39,8 +39,11 @@ export const reservationService = {
     }),
   getAllReservations: () =>
     apiRequest('/reservations').then((d) => (d ?? []).map(mapReservation)),
-  cancelReservation: (id) =>
-    apiRequest(`/reservations/${id}/cancel`, { method: 'PATCH' }),
+  cancelReservation: (id, motivo, detalle) =>
+    apiRequest(`/reservations/${id}/cancel`, {
+      method: 'PATCH',
+      body: JSON.stringify({ motivo, detalle }),
+    }),
   deleteReservation: (id) =>
     apiRequest(`/reservations/${id}`, { method: 'DELETE' }),
 };

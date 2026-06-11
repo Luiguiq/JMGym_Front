@@ -21,9 +21,9 @@ const features = [
 
 function Landing() {
   return (
-    <main className="h-screen overflow-hidden bg-[#eaf3fb]">
+    <main className="min-h-dvh overflow-y-auto overflow-x-hidden bg-[#eaf3fb]">
 
-      <section className="mx-auto flex h-full max-w-7xl flex-col px-5 py-4 lg:px-10">
+      <section className="mx-auto flex min-h-dvh max-w-7xl flex-col px-4 py-3 sm:px-5 sm:py-4 lg:px-10">
 
         {/* HEADER */}
         <header
@@ -106,12 +106,13 @@ function Landing() {
 
                 <h2
                   className="
-                    mt-6
+                    mt-4
                     max-w-[10ch]
                     font-display
-                    text-5xl
+                    text-4xl
                     font-black
                     leading-[0.9]
+                    sm:text-5xl
                     md:text-6xl
                   "
                 >
@@ -137,9 +138,10 @@ function Landing() {
                 className="
                   mt-auto
                   grid
-                  gap-3
-                  pt-8
+                  gap-2
+                  pt-6
                   sm:grid-cols-3
+                  sm:gap-3
                 "
               >
                 {features.map((item) => (
@@ -148,20 +150,24 @@ function Landing() {
                     className="
                       rounded-[24px]
                       bg-white/10
-                      p-5
+                      p-4
                       backdrop-blur-sm
+                      sm:p-5
                     "
                   >
                     <div
                       className="
-                        mb-3
+                        mb-2
                         grid
-                        h-12
-                        w-12
+                        h-10
+                        w-10
                         place-items-center
                         rounded-2xl
                         bg-white/10
-                        text-xl
+                        text-lg
+                        sm:h-12
+                        sm:w-12
+                        sm:text-xl
                       "
                     >
                       {item.icon}
@@ -169,8 +175,9 @@ function Landing() {
 
                     <h3
                       className="
-                        text-lg
+                        text-base
                         font-extrabold
+                        sm:text-lg
                       "
                     >
                       {item.title}
@@ -178,9 +185,11 @@ function Landing() {
 
                     <p
                       className="
-                        mt-2
-                        text-sm
+                        mt-1
+                        text-xs
                         text-white/80
+                        sm:mt-2
+                        sm:text-sm
                       "
                     >
                       {item.text}
@@ -226,10 +235,11 @@ function Landing() {
 
               <h2
                 className="
-                  mt-4
-                  text-5xl
+                  mt-3
+                  text-3xl
                   font-black
                   text-slate-900
+                  sm:text-5xl
                 "
               >
                 Selecciona tu acceso
@@ -245,7 +255,7 @@ function Landing() {
                 Elige el perfil con el que deseas ingresar.
               </p>
 
-              <div className="mt-8 grid gap-4">
+              <div className="mt-6 grid gap-3 sm:mt-8 sm:gap-4">
 
                 <Link
                   to="/cliente/login"
@@ -255,24 +265,26 @@ function Landing() {
                     justify-between
                     rounded-[26px]
                     bg-brand-700
-                    px-8
-                    py-6
+                    px-5
+                    py-4
                     text-white
                     transition
                     hover:scale-[1.01]
+                    sm:px-8
+                    sm:py-6
                   "
                 >
                   <div>
-                    <h3 className="text-2xl font-black">
+                    <h3 className="text-xl font-black sm:text-2xl">
                       👤 Cliente
                     </h3>
 
-                    <p className="text-white/80">
+                    <p className="text-sm text-white/80 sm:text-base">
                       Reservar y gestionar clases
                     </p>
                   </div>
 
-                  <span className="text-3xl">
+                  <span className="text-2xl sm:text-3xl">
                     →
                   </span>
                 </Link>
@@ -287,31 +299,34 @@ function Landing() {
                     border-2
                     border-slate-200
                     bg-slate-50
-                    px-8
-                    py-6
+                    px-5
+                    py-4
                     transition
                     hover:bg-slate-100
+                    sm:px-8
+                    sm:py-6
                   "
                 >
                   <div>
 
                     <h3
                       className="
-                        text-2xl
+                        text-xl
                         font-black
                         text-slate-900
+                        sm:text-2xl
                       "
                     >
                       🛠 Administrador
                     </h3>
 
-                    <p className="text-slate-500">
+                    <p className="text-sm text-slate-500 sm:text-base">
                       Gestión del sistema
                     </p>
 
                   </div>
 
-                  <span className="text-3xl">
+                  <span className="text-2xl sm:text-3xl">
                     →
                   </span>
 

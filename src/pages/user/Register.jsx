@@ -1,120 +1,124 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext.jsx';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 
 const highlights = [
-  'Registro rápido',
-  'Reserva inmediata',
-  'Experiencia responsive',
+  { icon: '⚡', title: 'Registro rápido', text: 'Crea tu cuenta en segundos y empieza a reservar.' },
+  { icon: '💃', title: 'Reserva inmediata', text: 'Accede a todas las clases disponibles al instante.' },
+  { icon: '📱', title: 'Experiencia responsive', text: 'Funciona perfecto en móvil, tablet y escritorio.' },
 ];
 
 function Register() {
+  const navigate = useNavigate();
+  const { register } = useAuth();
 
-return (
+  const [name, setName] = useState('');
+  const [dni, setDni] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-<main className="min-h-screen bg-[#eef7fd] p-4">
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setError('');
+    setLoading(true);
 
-<section className="mx-auto grid min-h-[95vh] max-w-7xl overflow-hidden rounded-[40px] bg-white shadow-[0_30px_80px_rgba(15,23,42,.08)] lg:grid-cols-[1fr_1fr]">
+    try {
+      await register({ name, dni, email, password });
+      navigate('/cliente/home');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
-<aside className="bg-gradient-to-br from-[#004aab] to-[#1576ff] p-12 text-white">
+  return (
+    <main className="min-h-dvh overflow-x-hidden bg-[#eef7fd] p-3 sm:p-4 lg:p-5">
+      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-7xl overflow-hidden rounded-[32px] bg-white shadow-[0_24px_70px_rgba(15,23,42,.08)] lg:grid-cols-[0.92fr_1.08fr]">
+        <aside className="flex flex-col justify-between gap-6 bg-gradient-to-br from-[#004aab] via-[#0a58ca] to-[#1576ff] p-6 text-white sm:p-8 lg:p-10">
+          <Link className="grid h-12 w-12 place-items-center rounded-2xl bg-white/15 text-2xl font-black text-white transition hover:bg-white/20" to="/cliente/login" aria-label="Volver al inicio">
+            ←
+          </Link>
+          <div className="grid gap-6">
+            <div className="flex items-center gap-4">
+              <img className="h-20 w-20 rounded-3xl bg-white object-contain shadow-[0_12px_28px_rgba(0,0,0,.12)] sm:h-24 sm:w-24" src={logoJmGym} alt="Logo de JMGym" />
+              <div>
+                <h1 className="font-display text-4xl font-bold leading-none sm:text-5xl lg:text-6xl">JMGym</h1>
+                <p className="mt-2 text-sm text-white/85 sm:text-base">Tu espacio de reservas de baile, simple y claro.</p>
+              </div>
+            </div>
+            <div className="max-w-xl">
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-white/75">Bienvenido</p>
+              <h2 className="mt-4 max-w-[12ch] font-display text-4xl font-bold leading-[0.95] sm:text-5xl lg:text-6xl">Crea tu cuenta y reserva</h2>
+              <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/85 sm:text-base lg:text-lg">Regístrate para acceder a todas las clases, seleccionar espacios y gestionar tus reservas.</p>
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            {highlights.map((item) => (
+              <article key={item.title} className="rounded-[24px] bg-white/10 p-4 ring-1 ring-white/10 backdrop-blur-sm sm:p-5">
+                <div className="mb-3 text-2xl">{item.icon}</div>
+                <h3 className="font-bold text-white">{item.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-white/80">{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </aside>
 
-<Link
-to="/cliente/login"
-className="mb-12 inline-grid h-14 w-14 place-items-center rounded-2xl bg-white/15"
->
+        <form className="flex flex-col justify-center gap-5 p-6 sm:p-8 lg:p-10" onSubmit={handleSubmit}>
+          <div>
+            <h2 className="font-display text-4xl font-bold text-slate-900 sm:text-5xl">Registro</h2>
+            <p className="mt-2 text-slate-500">Crea una cuenta nueva.</p>
+          </div>
 
-←
+          {error && (
+            <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">{error}</div>
+          )}
 
-</Link>
+          <label className="grid gap-2 font-semibold text-slate-700">
+            Nombre completo
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+              <span aria-hidden="true">👤</span>
+              <input className="w-full bg-transparent outline-none" type="text" placeholder="Tu nombre" value={name} onChange={(e) => setName(e.target.value)} required />
+            </div>
+          </label>
 
-<img
-src={logoJmGym}
-className="h-28 w-28 rounded-[28px] bg-white object-contain"
-/>
+          <label className="grid gap-2 font-semibold text-slate-700">
+            DNI
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+              <span aria-hidden="true">🪪</span>
+              <input className="w-full bg-transparent outline-none" type="text" placeholder="12345678" value={dni} onChange={(e) => setDni(e.target.value)} required />
+            </div>
+          </label>
 
-<h1 className="mt-8 font-display text-6xl font-bold">
-Crear cuenta
-</h1>
+          <label className="grid gap-2 font-semibold text-slate-700">
+            Correo electrónico
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+              <span aria-hidden="true">✉️</span>
+              <input className="w-full bg-transparent outline-none" type="email" placeholder="tu@correo.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            </div>
+          </label>
 
-<p className="mt-5 text-lg text-white/80">
+          <label className="grid gap-2 font-semibold text-slate-700">
+            Contraseña
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+              <span aria-hidden="true">🔒</span>
+              <input className="w-full bg-transparent outline-none" type="password" placeholder="Tu contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            </div>
+          </label>
 
-Empieza a reservar tus clases favoritas.
+          <button className="min-h-14 rounded-2xl bg-brand-600 font-bold text-white shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-16" type="submit" disabled={loading}>
+            {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+          </button>
 
-</p>
-
-<div className="mt-10 grid gap-4">
-
-{highlights.map((x)=>(
-
-<div
-key={x}
-className="rounded-3xl bg-white/10 p-5"
->
-
-{x}
-
-</div>
-
-))}
-
-</div>
-
-</aside>
-
-<form className="flex flex-col justify-center p-10">
-
-<h2 className="font-display text-5xl font-bold">
-Registro
-</h2>
-
-<div className="mt-8 grid gap-5">
-
-<input
-placeholder="Nombre completo"
-className="rounded-2xl border p-5"
-/>
-
-<input
-placeholder="DNI"
-className="rounded-2xl border p-5"
-/>
-
-<input
-placeholder="Correo"
-className="rounded-2xl border p-5"
-/>
-
-<input
-placeholder="Contraseña"
-className="rounded-2xl border p-5"
-/>
-
-<button
-className="min-h-16 rounded-2xl bg-brand-600 text-white font-bold"
->
-
-Crear cuenta
-
-</button>
-
-<Link
-to="/cliente/login"
-className="text-center font-bold text-brand-600"
->
-
-Ya tengo cuenta
-
-</Link>
-
-</div>
-
-</form>
-
-</section>
-
-</main>
-
-);
-
+          <Link className="grid min-h-14 place-items-center rounded-2xl border-2 border-brand-600 font-bold text-brand-600 transition hover:bg-brand-50 sm:min-h-16" to="/cliente/login">
+            Ya tengo cuenta
+          </Link>
+        </form>
+      </section>
+    </main>
+  );
 }
-
 export default Register;

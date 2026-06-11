@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
       nombre_completo: name,
       correo_personal: email,
       password,
-      dni: dni || undefined,
+      dni,
     });
     const user = mapUser(data.user);
     setUser(user);
