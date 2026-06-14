@@ -1,4 +1,11 @@
 import { useNavigate } from 'react-router-dom';
+import { Calendar, Clock, Timer, Flame, Users, Dumbbell, Music, Zap } from 'lucide-react';
+
+const genreIcons = {
+  cardio: <Zap className="w-6 h-6 sm:w-7 sm:h-7" />,
+  baile: <Music className="w-6 h-6 sm:w-7 sm:h-7" />,
+  fuerza: <Dumbbell className="w-6 h-6 sm:w-7 sm:h-7" />,
+};
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
 import zumbaImage from '../../assets/images/zumba.jpg';
@@ -48,7 +55,7 @@ function ClassCard({ classItem }) {
             <img src={image} alt="" className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-400 to-brand-600 text-2xl text-white sm:text-3xl">
-              {classItem.icon || '💪'}
+              {genreIcons[classItem.icon] || <Dumbbell className="w-6 h-6 sm:w-7 sm:h-7" />}
             </div>
           )}
         </div>
@@ -61,14 +68,14 @@ function ClassCard({ classItem }) {
             </span>
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-slate-500">
-            <span>📅 {formattedDate}</span>
-            <span>🕗 {classItem.time}</span>
-            <span>⏱ {classItem.duration}</span>
-            <span className={`font-bold ${intensity.text}`}>🔥 {intensity.label}</span>
+            <span><Calendar className="inline-block w-3.5 h-3.5 mr-1" />{formattedDate}</span>
+            <span><Clock className="inline-block w-3.5 h-3.5 mr-1" />{classItem.time}</span>
+            <span><Timer className="inline-block w-3.5 h-3.5 mr-1" />{classItem.duration}</span>
+            <span className={`font-bold ${intensity.text}`}><Flame className="inline-block w-3.5 h-3.5 mr-1" />{intensity.label}</span>
           </div>
           <div className="mt-1.5 flex items-center justify-between gap-2">
             <p className="text-lg font-black text-[#004aab] sm:text-xl">S/ {Number(classItem.price || 0).toFixed(2)}</p>
-            <p className="text-xs text-slate-400">👥 {classItem.availableSpots} cupos</p>
+            <p className="text-xs text-slate-400"><Users className="inline-block w-3.5 h-3.5 mr-1" />{classItem.availableSpots} cupos</p>
           </div>
         </div>
       </div>

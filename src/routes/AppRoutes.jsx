@@ -25,6 +25,12 @@ import Login from '../pages/user/Login.jsx';
 import MisReservas from '../pages/user/MisReservas.jsx';
 import DetalleReserva from '../pages/user/DetalleReserva.jsx';
 import Perfil from '../pages/user/Perfil.jsx';
+import AyudaSoporte from '../pages/user/AyudaSoporte.jsx';
+import CambiarAsiento from '../pages/user/CambiarAsiento.jsx';
+import CancelacionesAdmin from '../pages/admin/CancelacionesAdmin.jsx';
+import Configuraciones from '../pages/user/Configuraciones.jsx';
+import EditarPerfil from '../pages/user/EditarPerfil.jsx';
+import Pagos from '../pages/user/Pagos.jsx';
 import Register from '../pages/user/Register.jsx';;
 import SeleccionEspacio from '../pages/user/SeleccionEspacio';
 import PagoClase from '../pages/user/PagoClase';
@@ -69,6 +75,11 @@ function AppRoutes() {
           }
         />
         <Route path="perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
+        <Route path="perfil/editar" element={<ProtectedRoute><EditarPerfil /></ProtectedRoute>} />
+        <Route path="configuraciones" element={<ProtectedRoute><Configuraciones /></ProtectedRoute>} />
+        <Route path="ayuda" element={<ProtectedRoute><AyudaSoporte /></ProtectedRoute>} />
+        <Route path="reservas/:id/cambiar-asiento" element={<ProtectedRoute><CambiarAsiento /></ProtectedRoute>} />
+        <Route path="pagos" element={<ProtectedRoute><Pagos /></ProtectedRoute>} />
         <Route path="notificaciones" element={<ProtectedRoute><Notificaciones /></ProtectedRoute>} />
           <Route path="/cliente/clases/:id" element={<DetalleClase />} />
           <Route path="/cliente/seleccion-espacio/:id" element={<SeleccionEspacio />} />
@@ -84,6 +95,7 @@ function AppRoutes() {
         <Route path="clases/:id/editar" element={<EditarClase />} />
         <Route path="reservas" element={<ReservasAdmin />} />
         <Route path="instructores" element={<InstructoresAdmin />} />
+        <Route path="cancelaciones" element={<CancelacionesAdmin />} />
         <Route path="usuarios" element={<UsuariosAdmin />} />
         <Route path="crear-admin" element={<CrearAdmin />} />
         <Route path="notificaciones" element={<NotificacionesAdmin />} />

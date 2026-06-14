@@ -19,7 +19,7 @@ export const clientHomeData = {
       capacity: 15,
       availableSpots: 3,
       color: 'orange',
-      icon: '🏃‍♀️',
+      icon: 'cardio',
     },
     {
       id: 2,
@@ -32,7 +32,7 @@ export const clientHomeData = {
       capacity: 12,
       availableSpots: 2,
       color: 'blue',
-      icon: '🕺',
+      icon: 'baile',
     },
   ],
 };

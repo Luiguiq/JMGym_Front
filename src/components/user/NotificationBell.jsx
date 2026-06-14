@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell } from 'lucide-react';
+import { Bell, AlarmClock, CreditCard, CheckCircle, Clock, User, Target, XCircle, DollarSign, Lock, ClipboardList, Trash2, Armchair, Megaphone } from 'lucide-react';
 import { notificationService } from '../../services/notificationService.js';
 
 const typeIcons = {
-  RECORDATORIO: '⏰', PAGO: '💳', PAGO_CONFIRMADO: '✅',
-  CAMBIO_HORARIO: '🕐', CAMBIO_INSTRUCTOR: '👤', NUEVA_CLASE: '🎯',
-  CANCELACION: '❌', REEMBOLSO: '💵', BLOQUEO_CUENTA: '🔒',
-  RESERVA_CONFIRMADA: '📋', RESERVA_CANCELADA: '🗑️',
-  CAMBIO_ESPACIO: '🪑', NOTIFICACION_GENERAL: '📢',
+  RECORDATORIO: AlarmClock, PAGO: CreditCard, PAGO_CONFIRMADO: CheckCircle,
+  CAMBIO_HORARIO: Clock, CAMBIO_INSTRUCTOR: User, NUEVA_CLASE: Target,
+  CANCELACION: XCircle, REEMBOLSO: DollarSign, BLOQUEO_CUENTA: Lock,
+  RESERVA_CONFIRMADA: ClipboardList, RESERVA_CANCELADA: Trash2,
+  CAMBIO_ESPACIO: Armchair, NOTIFICACION_GENERAL: Megaphone,
 };
 
 const typeColors = {
@@ -133,7 +133,7 @@ function NotificationBell({ floating }) {
               className={`flex w-full gap-3 px-4 py-3 text-left transition hover:bg-slate-50 ${!n.read ? 'bg-brand-50/40' : ''}`}
             >
               <span className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm ${typeColors[n.type] || 'bg-slate-100 text-slate-600'}`}>
-                {typeIcons[n.type] || '📬'}
+                {typeIcons[n.type] ? React.createElement(typeIcons[n.type], { size: 16 }) : <Bell size={16} />}
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">

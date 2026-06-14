@@ -1,35 +1,32 @@
-import { createContext, useContext, useMemo, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useMemo, useState, useCallback } from 'react';
 import { authService } from '../services/authService.js';
 
 const AuthContext = createContext(null);
 
+function getFromStorage(key) {
+  return localStorage.getItem(key) || sessionStorage.getItem(key);
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
-      const stored = localStorage.getItem('user');
+      const stored = getFromStorage('user');
       return stored ? JSON.parse(stored) : null;
     } catch {
       return null;
     }
   });
 
-  const [token, setToken] = useState(() => localStorage.getItem('token'));
+  const [token, setToken] = useState(() => getFromStorage('token'));
 
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem('token', token);
-    } else {
-      localStorage.removeItem('token');
+  function persist(key, value, remember) {
+    localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
+    if (value !== null && value !== undefined) {
+      const storage = remember ? localStorage : sessionStorage;
+      storage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
     }
-  }, [token]);
-
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
-    }
-  }, [user]);
+  }
 
   function mapUser(backendUser) {
     return {
@@ -38,14 +35,17 @@ export function AuthProvider({ children }) {
       email: backendUser.email ?? backendUser.correo ?? '',
       dni: backendUser.dni,
       role: backendUser.role ?? backendUser.rol ?? 'client',
+      foto_perfil: backendUser.foto_perfil,
     };
   }
 
-  const login = useCallback(async ({ email, password }) => {
+  const login = useCallback(async ({ email, password }, remember = true) => {
     const data = await authService.login({ correo_personal: email, password });
     const user = mapUser(data.user);
     setUser(user);
     setToken(data.token);
+    persist('token', data.token, remember);
+    persist('user', user, remember);
     return { ...data, user };
   }, []);
 
@@ -59,6 +59,8 @@ export function AuthProvider({ children }) {
     const user = mapUser(data.user);
     setUser(user);
     setToken(data.token);
+    persist('token', data.token, true);
+    persist('user', user, true);
     return { ...data, user };
   }, []);
 
@@ -73,6 +75,8 @@ export function AuthProvider({ children }) {
     };
     setUser(user);
     setToken(data.token);
+    persist('token', data.token, true);
+    persist('user', user, true);
     return { ...data, user };
   }, []);
 
@@ -81,6 +85,8 @@ export function AuthProvider({ children }) {
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
   }, []);
 
   const value = useMemo(() => ({

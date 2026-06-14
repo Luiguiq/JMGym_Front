@@ -28,6 +28,10 @@ function mapReservation(item) {
     duracion_minutos: item.clase?.duracion_minutos ?? 0,
     instructor_nombre: item.clase?.instructor_nombre ?? '',
     codigo_espacio: item.espacio?.codigo_espacio ?? '',
+    userName: item.usuario?.nombre_completo ?? item.usuarioNombre ?? '',
+    usuarioNombre: item.usuario?.nombre_completo ?? item.usuarioNombre ?? '',
+    usuarioCorreo: item.usuario?.correo ?? '',
+    userPhoto: item.usuario?.foto_perfil ?? '',
   };
 }
 
@@ -43,11 +47,19 @@ export const reservationService = {
     }),
   getAllReservations: () =>
     apiRequest('/reservations').then((d) => (d ?? []).map(mapReservation)),
+  changeSeat: (id, seatId) =>
+    apiRequest(`/reservations/${id}/seat`, {
+      method: 'PATCH',
+      body: JSON.stringify({ seat_id: seatId }),
+    }),
   cancelReservation: (id, motivo, detalle) =>
     apiRequest(`/reservations/${id}/cancel`, {
       method: 'PATCH',
       body: JSON.stringify({ motivo, detalle }),
     }),
-  deleteReservation: (id) =>
-    apiRequest(`/reservations/${id}`, { method: 'DELETE' }),
+  deleteReservation: (id, motivo, detalle) =>
+    apiRequest(`/reservations/${id}`, {
+      method: 'DELETE',
+      body: JSON.stringify({ motivo, detalle }),
+    }),
 };

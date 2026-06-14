@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { X, Search, AlertTriangle, User } from 'lucide-react';
 import { instructorService } from '../../services/instructorService.js';
 import InstructorForm from '../../components/admin/InstructorForm.jsx';
 
@@ -150,14 +151,14 @@ export default function InstructoresAdmin() {
             : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
         }`}>
           <span>{alert.message}</span>
-          <button onClick={() => setAlert(null)} className="text-lg leading-none opacity-60 hover:opacity-100 ml-3">✕</button>
+          <button onClick={() => setAlert(null)} className="opacity-60 hover:opacity-100 ml-3"><X size={18} /></button>
         </div>
       )}
 
       {/* Search + Filter */}
       <div className="mb-5 flex gap-2">
         <div className="relative flex-1">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm leading-none">🔍</span>
+          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             value={search}
@@ -231,7 +232,7 @@ export default function InstructoresAdmin() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="w-full max-w-sm rounded-[28px] bg-white p-6 shadow-2xl text-center">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-2xl">
-              ⚠️
+              <AlertTriangle size={28} className="text-amber-600" />
             </div>
             <h3 className="text-xl font-black text-slate-900">Cambiar estado</h3>
             <p className="mt-2 text-sm text-slate-500">
@@ -259,7 +260,7 @@ export default function InstructoresAdmin() {
       {filtered.length === 0 && (
         <div className="rounded-3xl bg-white border border-slate-100 p-10 text-center shadow-sm">
           <div className="text-5xl mb-4">
-            {search || activeFilter !== 'TODOS' ? '🔍' : '👤'}
+            {search || activeFilter !== 'TODOS' ? <Search size={48} className="mx-auto text-slate-300" /> : <User size={48} className="mx-auto text-slate-300" />}
           </div>
           <h3 className="text-lg font-bold text-slate-700">
             {search || activeFilter !== 'TODOS' ? 'Sin resultados' : 'No hay instructores'}

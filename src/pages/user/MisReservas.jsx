@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Calendar, Clock, Search, ClipboardList, ScrollText } from 'lucide-react';
 import { reservationService } from '../../services/reservationService.js';
 import ReservationCard from '../../components/user/ReservationCard.jsx';
 
@@ -130,7 +131,7 @@ function MisReservas() {
               : 'text-slate-500 hover:text-slate-700'
           }`}
         >
-          📅 Activas ({activeReservations.length})
+          <Calendar size={18} className="inline" /> Activas ({activeReservations.length})
         </button>
         <button
           onClick={() => setActiveTab('historial')}
@@ -140,7 +141,7 @@ function MisReservas() {
               : 'text-slate-500 hover:text-slate-700'
           }`}
         >
-          🕘 Historial ({rawHistory.length})
+          <Clock size={18} className="inline" /> Historial ({rawHistory.length})
         </button>
       </div>
 
@@ -171,7 +172,7 @@ function MisReservas() {
         <div className="mt-5 space-y-3">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 value={search}
@@ -220,13 +221,13 @@ function MisReservas() {
           <p className="text-red-500">{error}</p>
         ) : activeTab === 'activas' && activeReservations.length === 0 ? (
           <div className="rounded-3xl bg-white border border-slate-100 p-10 text-center shadow-sm">
-            <div className="text-5xl mb-4">📋</div>
+            <ClipboardList size={48} className="mx-auto mb-4 text-slate-300" />
             <h3 className="text-lg font-bold text-slate-700">No tienes reservas activas</h3>
             <p className="mt-2 text-sm text-slate-400">Cuando reserves una clase aparecerá aquí.</p>
           </div>
         ) : activeTab === 'historial' && historyReservations.length === 0 ? (
           <div className="rounded-3xl bg-white border border-slate-100 p-10 text-center shadow-sm">
-            <div className="text-5xl mb-4">📜</div>
+            <ScrollText size={48} className="mx-auto mb-4 text-slate-300" />
             <h3 className="text-lg font-bold text-slate-700">
               {hasActiveFilters ? 'Sin resultados' : 'No tienes historial de reservas'}
             </h3>

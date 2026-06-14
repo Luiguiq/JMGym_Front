@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CheckCircle, XCircle, Flag, CreditCard, Clock, Undo2, Calendar, MapPin, Search, User } from 'lucide-react';
 import { reservationService } from '../../services/reservationService.js';
 
 const MOTIVOS_LABEL = {
   CAMBIO_HORARIO: 'Cambio de horario',
+  CAMBIO_INSTRUCTOR: 'Cambio de instructor',
   SALUD: 'Problemas de salud',
   ECONOMICO: 'Motivo económico',
-  CAMBIO_SECTOR: 'Cambio de sector',
   OTRO: 'Otro motivo',
 };
 
@@ -23,9 +24,9 @@ function ReservationCard({ reservation, onRefresh }) {
 
   const motivosCancelacion = [
     { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
+    { value: 'CAMBIO_INSTRUCTOR', label: 'Cambio de instructor' },
     { value: 'SALUD', label: 'Problemas de salud' },
     { value: 'ECONOMICO', label: 'Motivo económico' },
-    { value: 'CAMBIO_SECTOR', label: 'Cambio de sector' },
     { value: 'OTRO', label: 'Otro motivo' },
   ];
 
@@ -61,12 +62,12 @@ function ReservationCard({ reservation, onRefresh }) {
 
   const statusIcon =
     reservation.estado_reserva === 'ACTIVA'
-      ? '✅'
+      ? <CheckCircle className="w-3.5 h-3.5" />
       : reservation.estado_reserva === 'CANCELADA'
-        ? '❌'
+        ? <XCircle className="w-3.5 h-3.5" />
         : reservation.estado_reserva === 'FINALIZADA'
-          ? '🏁'
-          : '✅';
+          ? <Flag className="w-3.5 h-3.5" />
+          : <CheckCircle className="w-3.5 h-3.5" />;
 
   const pagoLabel =
     reservation.estado_pago === 'PAGADO'
@@ -88,12 +89,12 @@ function ReservationCard({ reservation, onRefresh }) {
 
   const pagoIcon =
     reservation.estado_pago === 'PAGADO'
-      ? '💳'
+      ? <CreditCard className="w-3.5 h-3.5" />
       : reservation.estado_pago === 'PENDIENTE'
-        ? '⏳'
+        ? <Clock className="w-3.5 h-3.5" />
         : reservation.estado_pago === 'VENCIDO'
-          ? '⚠️'
-          : '🔙';
+          ? <AlertTriangle className="w-3.5 h-3.5" />
+          : <Undo2 className="w-3.5 h-3.5" />;
 
   const handleOpenCancel = () => {
     if (!canCancel || canceling) return;
@@ -148,25 +149,25 @@ function ReservationCard({ reservation, onRefresh }) {
 
             <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 px-3 py-1 text-slate-600 font-medium">
-                📅 {fecha}
+                <Calendar className="inline-block w-4 h-4" /> {fecha}
               </span>
 
               {reservation.hora_inicio && (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 px-3 py-1 text-slate-600 font-medium">
-                  🕐 {reservation.hora_inicio.slice(0, 5)}
+                  <Clock className="inline-block w-4 h-4" /> {reservation.hora_inicio.slice(0, 5)}
                 </span>
               )}
 
               {reservation.codigo_espacio && (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-3 py-1 font-bold text-[#004aab]">
-                  💺 {reservation.codigo_espacio}
+                  <MapPin className="inline-block w-4 h-4" /> {reservation.codigo_espacio}
                 </span>
               )}
             </div>
 
             {reservation.monto > 0 && !isHistory && (
               <div className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-sky-50 border border-sky-100 px-4 py-2">
-                <span className="text-lg">💳</span>
+                <span className="text-lg"><CreditCard className="inline-block w-5 h-5" /></span>
                 <div>
                   <p className="text-[10px] uppercase font-bold tracking-wider text-slate-500">Total</p>
                   <p className="text-xl font-black text-[#004aab] leading-none">
@@ -232,7 +233,7 @@ function ReservationCard({ reservation, onRefresh }) {
             onClick={() => navigate(`/cliente/reservas/${reservation.id}`)}
             className="flex-1 rounded-xl bg-brand-50 py-2.5 text-xs font-bold text-[#004aab] transition hover:bg-brand-100"
           >
-            🔍 Ver detalle
+            <Search className="inline-block w-3.5 h-3.5 mr-1" /> Ver detalle
           </button>
 
           {canCancel && (
@@ -240,66 +241,96 @@ function ReservationCard({ reservation, onRefresh }) {
               onClick={handleOpenCancel}
               className="flex-1 rounded-xl bg-red-50 py-2.5 text-xs font-bold text-red-600 transition hover:bg-red-100"
             >
-              ❌ Cancelar
+              <XCircle className="inline-block w-3.5 h-3.5 mr-1" /> Cancelar
             </button>
           )}
         </div>
       </article>
 
       {showCancelModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 sm:p-6">
-          <div className="w-full max-w-md rounded-[28px] bg-white shadow-2xl lg:max-w-lg flex flex-col max-h-[90vh]">
-            <div className="overflow-y-auto p-5 sm:p-6">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 sm:p-6"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowCancelModal(false); }}
+        >
+          <div
+            className="w-full sm:max-w-md rounded-[28px] bg-white shadow-2xl flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="overflow-y-auto px-4 sm:px-6 py-4 sm:p-6">
               <div className="text-center">
-                <div className="mx-auto mb-3 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-amber-100 text-2xl sm:text-3xl">
-                  ⚠️
+                <div className="mx-auto mb-2 sm:mb-3 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner">
+                  <XCircle className="w-6 h-6 sm:w-7 sm:h-7 text-red-500" />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black text-slate-900">Cancelar reserva</h3>
-                <p className="mt-1.5 text-xs sm:text-sm text-slate-500">
-                  Esta reserva está pendiente de pago. Puedes cancelarla ahora y liberar el espacio.
+                <h3 className="text-lg sm:text-2xl font-black text-slate-900">Cancelar reserva</h3>
+                <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed px-1">
+                  ¿Estás seguro? Esta acción no se puede deshacer. Al cancelar, el espacio{' '}
+                  <span className="font-bold text-slate-700">{reservation.codigo_espacio}</span> quedará disponible.
                 </p>
               </div>
 
-              <div className="mt-4 sm:mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-3 sm:p-4">
+              <div className={`mt-3 sm:mt-5 rounded-2xl border p-3 sm:p-4 ${
+                  cancelMotivo === 'CAMBIO_INSTRUCTOR'
+                    ? 'border-amber-200 bg-amber-50/80'
+                    : 'border-slate-100 bg-slate-50/80'
+                }`}>
                 <div className="space-y-2 text-xs sm:text-sm">
-                  <div className="flex justify-between gap-4">
-                    <span className="text-slate-500 shrink-0">Clase</span>
-                    <span className="font-bold text-slate-800 text-right truncate max-w-[200px] sm:max-w-none">{reservation.className}</span>
+                  {reservation.instructor_nombre && (
+                    <div className={`flex items-center gap-2.5 sm:gap-3 ${
+                      cancelMotivo === 'CAMBIO_INSTRUCTOR' ? 'text-amber-800' : ''
+                    }`}>
+                      <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-slate-400" />
+                      <span className="font-semibold">Prof. {reservation.instructor_nombre}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2.5 sm:gap-3">
+                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-slate-400" />
+                    <span className="font-semibold text-slate-800">{fecha}</span>
                   </div>
-                  <div className="flex justify-between gap-4">
-                    <span className="text-slate-500 shrink-0">Fecha</span>
-                    <span className="font-bold text-slate-800 text-right">{fecha}</span>
+                  {reservation.hora_inicio && (
+                    <div className="flex items-center gap-2.5 sm:gap-3">
+                      <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-slate-400" />
+                      <span className="font-semibold text-slate-800">{reservation.hora_inicio.slice(0, 5)}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2.5 sm:gap-3">
+                    <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-[#004aab]" />
+                    <span className="font-bold text-[#004aab]">{reservation.codigo_espacio}</span>
                   </div>
-                  <div className="flex justify-between gap-4">
-                    <span className="text-slate-500 shrink-0">Espacio</span>
-                    <span className="font-bold text-[#004aab] text-right">{reservation.codigo_espacio}</span>
-                  </div>
-                  <div className="flex justify-between gap-4">
-                    <span className="text-slate-500 shrink-0">Monto</span>
-                    <span className="font-bold text-slate-800 text-right">S/ {Number(reservation.monto).toFixed(2)}</span>
+                  <div className="flex items-center gap-2.5 sm:gap-3">
+                    <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-slate-400" />
+                    <span className="font-semibold text-slate-800">S/ {Number(reservation.monto).toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 sm:mt-5">
-                <label className="text-xs sm:text-sm font-bold text-slate-700 block mb-2">Motivo de cancelación</label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="mt-3 sm:mt-5">
+                <label className="text-xs sm:text-sm font-bold text-slate-700 block mb-2 sm:mb-2.5">Motivo de cancelación</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
                   {motivosCancelacion.map((m) => (
                     <label
                       key={m.value}
-                      className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 sm:px-4 sm:py-3 cursor-pointer transition ${
+                      className={`flex items-center gap-2 sm:gap-2.5 rounded-xl border-2 px-3 py-2 sm:px-3.5 sm:py-3 cursor-pointer transition-all duration-200 ${
                         cancelMotivo === m.value
-                          ? 'border-[#004aab] bg-blue-50'
-                          : 'border-slate-200 bg-white'
+                          ? 'border-[#004aab] bg-blue-50/70 shadow-sm'
+                          : 'border-slate-100 bg-white hover:border-slate-200 hover:bg-slate-50'
                       }`}
                     >
+                      <div className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors duration-200 ${
+                        cancelMotivo === m.value
+                          ? 'border-[#004aab]'
+                          : 'border-slate-300'
+                      }`}>
+                        {cancelMotivo === m.value && (
+                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#004aab]" />
+                        )}
+                      </div>
                       <input
                         type="radio"
                         name="motivo"
                         value={m.value}
                         checked={cancelMotivo === m.value}
                         onChange={(e) => setCancelMotivo(e.target.value)}
-                        className="accent-[#004aab] shrink-0"
+                        className="sr-only"
                       />
                       <span className="text-xs sm:text-sm font-medium text-slate-700 leading-tight">{m.label}</span>
                     </label>
@@ -308,31 +339,43 @@ function ReservationCard({ reservation, onRefresh }) {
               </div>
 
               {cancelMotivo === 'OTRO' && (
-                <div className="mt-3">
+                <div className="mt-2 sm:mt-3 animate-[fadeIn_0.2s_ease-out]">
                   <textarea
                     value={cancelDetalle}
                     onChange={(e) => setCancelDetalle(e.target.value)}
                     placeholder="Describe el motivo (opcional)..."
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm outline-none transition focus:border-[#004aab] focus:ring-2 focus:ring-blue-100 resize-none"
+                    className="w-full rounded-xl border-2 border-slate-100 bg-white px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm outline-none transition-all duration-200 focus:border-[#004aab] focus:ring-2 focus:ring-blue-100 resize-none"
                     rows={2}
                   />
                 </div>
               )}
 
-              <div className="mt-5 sm:mt-6 flex gap-3">
+              <div className="mt-4 sm:mt-6 flex gap-2 sm:gap-3">
                 <button
                   onClick={() => setShowCancelModal(false)}
                   disabled={canceling}
-                  className="flex-1 rounded-2xl border border-slate-200 py-2.5 sm:py-3 font-bold text-slate-700 text-xs sm:text-sm transition hover:bg-slate-50 disabled:opacity-60"
+                  className="flex-1 rounded-xl sm:rounded-2xl border-2 border-slate-100 py-3 sm:py-3.5 font-bold text-slate-600 text-xs sm:text-sm transition-all duration-200 hover:bg-slate-50 hover:border-slate-200 active:scale-[0.98] disabled:opacity-60"
                 >
                   Mantener reserva
                 </button>
                 <button
                   onClick={handleCancel}
                   disabled={canceling}
-                  className="flex-1 rounded-2xl bg-[#004aab] py-2.5 sm:py-3 font-bold text-white text-xs sm:text-sm transition hover:opacity-90 disabled:opacity-60"
+                  className="flex-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-red-500 to-red-600 py-3 sm:py-3.5 font-bold text-white text-xs sm:text-sm transition-all duration-200 hover:from-red-600 hover:to-red-700 active:scale-[0.98] shadow-lg shadow-red-200 disabled:opacity-60"
                 >
-                  {canceling ? 'Cancelando...' : 'Sí, cancelar'}
+                  {canceling ? (
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-3.5 w-3.5 sm:h-4 sm:w-4" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Cancelando...
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center justify-center gap-1.5">
+                      <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Cancelar
+                    </span>
+                  )}
                 </button>
               </div>
             </div>

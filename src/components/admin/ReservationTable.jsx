@@ -1,4 +1,4 @@
-import { Trash2, Edit2, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Trash2, Edit2, CheckCircle, XCircle, Clock, AlertTriangle, Check } from 'lucide-react';
 
 const ReservationTable = ({ 
   data = [], 
@@ -67,11 +67,11 @@ const ReservationTable = ({
                   <td className="px-6 py-4">
                     {reservation.validationConflict ? (
                       <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-                        ⚠ Conflicto
+                        <AlertTriangle size={14} className="inline" /> Conflicto
                       </span>
                     ) : (
                       <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                        ✓ Válida
+                        <Check size={14} className="inline" /> Válida
                       </span>
                     )}
                   </td>

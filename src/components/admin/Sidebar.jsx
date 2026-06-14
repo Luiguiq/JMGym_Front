@@ -8,6 +8,7 @@ import {
   UserPlus,
   ShieldPlus,
   Bell,
+  XCircle,
   LogOut,
 } from 'lucide-react';
 
@@ -34,6 +35,12 @@ const Sidebar = ({ onClose }) => {
       label: 'Reservas',
       icon: Calendar,
       path: '/admin/reservas',
+    },
+    {
+      id: 'cancelaciones',
+      label: 'Cancelaciones',
+      icon: XCircle,
+      path: '/admin/cancelaciones',
     },
     {
       id: 'usuarios',

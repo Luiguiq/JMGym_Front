@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
-import { Bell, Send, Users, Calendar } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Bell, Send, Users, Calendar, AlarmClock, CreditCard, CheckCircle, Clock, User, Target, XCircle, DollarSign, Lock, ClipboardList, Trash2, Armchair, Megaphone, Check } from 'lucide-react';
 import { notificationService } from '../../services/notificationService.js';
 import { classService } from '../../services/classService.js';
 import { userService } from '../../services/userService.js';
 
 const typeIcons = {
-  RECORDATORIO: '⏰', PAGO: '💳', PAGO_CONFIRMADO: '✅',
-  CAMBIO_HORARIO: '🕐', CAMBIO_INSTRUCTOR: '👤', NUEVA_CLASE: '🎯',
-  CANCELACION: '❌', REEMBOLSO: '💵', BLOQUEO_CUENTA: '🔒',
-  RESERVA_CONFIRMADA: '📋', RESERVA_CANCELADA: '🗑️',
-  CAMBIO_ESPACIO: '🪑', NOTIFICACION_GENERAL: '📢',
+  RECORDATORIO: AlarmClock, PAGO: CreditCard, PAGO_CONFIRMADO: CheckCircle,
+  CAMBIO_HORARIO: Clock, CAMBIO_INSTRUCTOR: User, NUEVA_CLASE: Target,
+  CANCELACION: XCircle, REEMBOLSO: DollarSign, BLOQUEO_CUENTA: Lock,
+  RESERVA_CONFIRMADA: ClipboardList, RESERVA_CANCELADA: Trash2,
+  CAMBIO_ESPACIO: Armchair, NOTIFICACION_GENERAL: Megaphone,
 };
 
 const tipoOptions = [
@@ -123,7 +123,7 @@ function NotificacionesAdmin() {
                         : 'bg-slate-50 text-slate-500 ring-1 ring-slate-200 hover:bg-slate-100'
                     }`}
                   >
-                    {typeIcons[value] || '📢'} {label}
+                    {typeIcons[value] ? React.createElement(typeIcons[value], { size: 14 }) : <Megaphone size={14} />} {label}
                   </button>
                 ))}
               </div>
@@ -252,7 +252,7 @@ function NotificacionesAdmin() {
                   className="flex items-start gap-3 rounded-xl bg-slate-50 p-3 transition hover:bg-slate-100"
                 >
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-base shadow-sm">
-                    {typeIcons[n.type] || '📬'}
+                    {typeIcons[n.type] ? React.createElement(typeIcons[n.type], { size: 16 }) : <Bell size={16} />}
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
@@ -266,7 +266,7 @@ function NotificacionesAdmin() {
                     </p>
                     <div className="mt-1 flex items-center gap-3 text-[10px] text-slate-400">
                       <span>Usuario #{n.userId}</span>
-                      <span>✓ {n.read ? 'Leído' : 'No leído'}</span>
+                       <span><Check size={12} className="inline" /> {n.read ? 'Leído' : 'No leído'}</span>
                       {n.requiresResponse && (
                         <span>
                           {n.userResponse

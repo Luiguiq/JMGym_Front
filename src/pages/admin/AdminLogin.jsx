@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Mail, Lock, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, AlertCircle, ArrowLeft, MapPin, Info } from 'lucide-react';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -125,7 +125,7 @@ const AdminLogin = () => {
           </button>
 
           <div className="mt-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <p className="text-xs text-slate-600 font-semibold mb-2">📌 Credenciales Demo:</p>
+            <p className="text-xs text-slate-600 font-semibold mb-2"><MapPin size={14} className="inline" /> Credenciales Demo:</p>
             <p className="text-xs text-slate-600">
               <strong>Email:</strong> admin@jmgym.com
             </p>
@@ -137,7 +137,7 @@ const AdminLogin = () => {
 
         <div className="bg-white rounded-2xl shadow-lg p-6 text-center">
           <p className="text-sm text-slate-600">
-            ℹ️ <strong>Frontend conectado</strong> - Datos desde la API
+            <Info size={16} className="inline" /> <strong>Frontend conectado</strong> - Datos desde la API
           </p>
         </div>
       </div>

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { Zap, Music, Smartphone, ArrowLeft, User, IdCard, Mail, Lock } from 'lucide-react';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 
 const highlights = [
-  { icon: '⚡', title: 'Registro rápido', text: 'Crea tu cuenta en segundos y empieza a reservar.' },
-  { icon: '💃', title: 'Reserva inmediata', text: 'Accede a todas las clases disponibles al instante.' },
-  { icon: '📱', title: 'Experiencia responsive', text: 'Funciona perfecto en móvil, tablet y escritorio.' },
+  { icon: <Zap size={24} />, title: 'Registro rápido', text: 'Crea tu cuenta en segundos y empieza a reservar.' },
+  { icon: <Music size={24} />, title: 'Reserva inmediata', text: 'Accede a todas las clases disponibles al instante.' },
+  { icon: <Smartphone size={24} />, title: 'Experiencia responsive', text: 'Funciona perfecto en móvil, tablet y escritorio.' },
 ];
 
 function Register() {
@@ -40,7 +41,7 @@ function Register() {
       <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-7xl overflow-hidden rounded-[32px] bg-white shadow-[0_24px_70px_rgba(15,23,42,.08)] lg:grid-cols-[0.92fr_1.08fr]">
         <aside className="flex flex-col justify-between gap-6 bg-gradient-to-br from-[#004aab] via-[#0a58ca] to-[#1576ff] p-6 text-white sm:p-8 lg:p-10">
           <Link className="grid h-12 w-12 place-items-center rounded-2xl bg-white/15 text-2xl font-black text-white transition hover:bg-white/20" to="/cliente/login" aria-label="Volver al inicio">
-            ←
+            <ArrowLeft size={24} />
           </Link>
           <div className="grid gap-6">
             <div className="flex items-center gap-4">
@@ -80,7 +81,7 @@ function Register() {
           <label className="grid gap-2 font-semibold text-slate-700">
             Nombre completo
             <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
-              <span aria-hidden="true">👤</span>
+              <span aria-hidden="true"><User size={20} /></span>
               <input className="w-full bg-transparent outline-none" type="text" placeholder="Tu nombre" value={name} onChange={(e) => setName(e.target.value)} required />
             </div>
           </label>
@@ -88,7 +89,7 @@ function Register() {
           <label className="grid gap-2 font-semibold text-slate-700">
             DNI
             <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
-              <span aria-hidden="true">🪪</span>
+              <span aria-hidden="true"><IdCard size={20} /></span>
               <input className="w-full bg-transparent outline-none" type="text" placeholder="12345678" value={dni} onChange={(e) => setDni(e.target.value)} required />
             </div>
           </label>
@@ -96,7 +97,7 @@ function Register() {
           <label className="grid gap-2 font-semibold text-slate-700">
             Correo electrónico
             <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
-              <span aria-hidden="true">✉️</span>
+              <span aria-hidden="true"><Mail size={20} /></span>
               <input className="w-full bg-transparent outline-none" type="email" placeholder="tu@correo.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
             </div>
           </label>
@@ -104,7 +105,7 @@ function Register() {
           <label className="grid gap-2 font-semibold text-slate-700">
             Contraseña
             <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
-              <span aria-hidden="true">🔒</span>
+              <span aria-hidden="true"><Lock size={20} /></span>
               <input className="w-full bg-transparent outline-none" type="password" placeholder="Tu contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </div>
           </label>
