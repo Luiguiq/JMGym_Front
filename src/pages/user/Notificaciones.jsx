@@ -1,22 +1,22 @@
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Bell, Check, X, Eye } from 'lucide-react';
+import { ArrowLeft, Bell, Check, X, Eye, AlarmClock, CreditCard, CheckCircle, Clock, User, Target, DollarSign, Lock, ClipboardList, Trash2, Armchair, Megaphone, Mail, AlertTriangle, XCircle } from 'lucide-react';
 import { notificationService } from '../../services/notificationService.js';
 
 const typeIcons = {
-  RECORDATORIO: '⏰',
-  PAGO: '💳',
-  PAGO_CONFIRMADO: '✅',
-  CAMBIO_HORARIO: '🕐',
-  CAMBIO_INSTRUCTOR: '👤',
-  NUEVA_CLASE: '🎯',
-  CANCELACION: '❌',
-  REEMBOLSO: '💵',
-  BLOQUEO_CUENTA: '🔒',
-  RESERVA_CONFIRMADA: '📋',
-  RESERVA_CANCELADA: '🗑️',
-  CAMBIO_ESPACIO: '🪑',
-  NOTIFICACION_GENERAL: '📢',
+  RECORDATORIO: AlarmClock,
+  PAGO: CreditCard,
+  PAGO_CONFIRMADO: CheckCircle,
+  CAMBIO_HORARIO: Clock,
+  CAMBIO_INSTRUCTOR: User,
+  NUEVA_CLASE: Target,
+  CANCELACION: XCircle,
+  REEMBOLSO: DollarSign,
+  BLOQUEO_CUENTA: Lock,
+  RESERVA_CONFIRMADA: ClipboardList,
+  RESERVA_CANCELADA: Trash2,
+  CAMBIO_ESPACIO: Armchair,
+  NOTIFICACION_GENERAL: Megaphone,
 };
 
 const typeLabels = {
@@ -174,7 +174,7 @@ function Notificaciones() {
               >
                 <div className="flex gap-3">
                   <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-lg">
-                    {typeIcons[n.type] || '📬'}
+                    {typeIcons[n.type] ? React.createElement(typeIcons[n.type], { size: 20 }) : <Mail size={20} />}
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
@@ -236,8 +236,8 @@ function Notificaciones() {
                           }`}
                         >
                           {n.userResponse === 'ACEPTADO'
-                            ? '✓ Cambio aceptado'
-                            : '✗ Reserva cancelada'}
+                            ? <><Check size={14} className="inline" /> Cambio aceptado</>
+                            : <><X size={14} className="inline" /> Reserva cancelada</>}
                         </span>
                       )}
                     </div>
@@ -267,7 +267,7 @@ function Notificaciones() {
                   ? 'bg-emerald-100'
                   : 'bg-amber-100'
               }`}>
-                {confirmOverlay.respuesta === 'ACEPTADO' ? '✅' : '⚠️'}
+                {confirmOverlay.respuesta === 'ACEPTADO' ? <CheckCircle size={32} /> : <AlertTriangle size={32} />}
               </div>
               <h3 className="text-xl font-black text-slate-900">
                 {confirmOverlay.respuesta === 'ACEPTADO'

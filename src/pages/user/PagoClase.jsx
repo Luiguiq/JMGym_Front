@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Check, DollarSign, Edit3 } from 'lucide-react';
 import { classService } from '../../services/classService.js';
 import { reservationService } from '../../services/reservationService.js';
 import yapeLogo from '../../assets/images/yapelogo.png';
@@ -308,9 +309,7 @@ function PagoClase() {
                                     `}
                                 >
                                     {method === 'YAPE' && (
-                                        <span className="text-white text-xs">
-                                            ✓
-                                        </span>
+                                        <Check className="w-3 h-3 text-white" />
                                     )}
                                 </div>
                             </div>
@@ -325,7 +324,7 @@ function PagoClase() {
                                     border-sky-100
                                 ">
                                     <p className="text-xs font-semibold text-sky-800">
-                                        ✓ Escanea el código QR disponible en recepción para completar tu pago.
+                                        <Check className="inline-block w-3 h-3 mr-1" /> Escanea el código QR disponible en recepción para completar tu pago.
                                     </p>
                                 </div>
                             )}
@@ -362,7 +361,7 @@ function PagoClase() {
                                     ring-1
                                     ring-sky-100
                                 ">
-                                    💵
+                                    <DollarSign className="w-5 h-5" />
                                 </div>
 
                                 <div className="flex-1">
@@ -393,9 +392,7 @@ function PagoClase() {
                                     `}
                                 >
                                     {method === 'EFECTIVO' && (
-                                        <span className="text-white text-xs">
-                                            ✓
-                                        </span>
+                                        <Check className="w-3 h-3 text-white" />
                                     )}
                                 </div>
                             </div>
@@ -410,7 +407,7 @@ function PagoClase() {
                                     border-sky-100
                                 ">
                                     <p className="text-xs font-semibold text-sky-800">
-                                        ✓ Acércate a recepción 15 minutos antes del inicio de tu clase para realizar el pago.
+                                        <Check className="inline-block w-3 h-3 mr-1" /> Acércate a recepción 15 minutos antes del inicio de tu clase para realizar el pago.
                                     </p>
                                 </div>
                             )}
@@ -503,7 +500,7 @@ function PagoClase() {
                                     text-3xl
                                 "
                             >
-                                📝
+                                <Edit3 className="w-7 h-7" />
                             </div>
 
                             <h3 className="text-2xl font-black text-slate-900">
@@ -610,7 +607,7 @@ function PagoClase() {
                             "
                         >
                             <p className="font-bold text-emerald-700">
-                                ✓ Reserva segura
+                                <Check className="inline-block w-4 h-4 mr-1" /> Reserva segura
                             </p>
 
                             <p className="mt-1 text-xs text-emerald-600">

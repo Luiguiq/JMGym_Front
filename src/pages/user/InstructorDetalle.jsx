@@ -3,6 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { instructorService } from '../../services/instructorService.js';
 import { classService } from '../../services/classService.js';
 import PageLoader from '../../components/common/PageLoader.jsx';
+import { AlertTriangle, Search, Dumbbell, ClipboardList, Zap, Music } from 'lucide-react';
+
+const genreIcons = {
+  cardio: <Zap className="h-6 w-6 text-slate-500" />,
+  baile: <Music className="h-6 w-6 text-slate-500" />,
+  fuerza: <Dumbbell className="h-6 w-6 text-slate-500" />,
+};
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
 const BACKEND_URL = API_BASE.replace('/api', '');
@@ -109,7 +116,7 @@ export default function InstructorDetalle() {
     return (
       <main className="min-h-screen bg-brand-50 p-8 flex items-center justify-center">
         <div className="bg-white p-6 rounded-3xl shadow-soft max-w-md w-full text-center border border-red-100">
-          <span className="text-4xl" aria-hidden="true">⚠️</span>
+          <AlertTriangle className="mx-auto h-10 w-10 text-red-400" aria-hidden="true" />
           <h2 className="text-xl font-bold text-slate-800 mt-3">Hubo un error</h2>
           <p className="text-red-500 mt-2 text-sm">{error}</p>
           <button
@@ -127,7 +134,7 @@ export default function InstructorDetalle() {
     return (
       <main className="min-h-screen bg-brand-50 p-8 flex items-center justify-center">
         <div className="bg-white p-6 rounded-3xl shadow-soft max-w-md w-full text-center">
-          <span className="text-4xl" aria-hidden="true">🔍</span>
+          <Search className="mx-auto h-10 w-10 text-slate-400" aria-hidden="true" />
           <h2 className="text-xl font-bold text-slate-800 mt-3">Instructor no encontrado</h2>
           <button
             onClick={() => navigate('/cliente/clases')}
@@ -346,7 +353,7 @@ export default function InstructorDetalle() {
                         <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-2xl"
                           style={{ backgroundColor: cls.color === 'orange' ? '#FFF7ED' : '#EFF6FF' }}
                         >
-                          {cls.icon || '💪'}
+                          {genreIcons[cls.icon] || <Dumbbell className="h-6 w-6 text-slate-500" />}
                         </span>
                       )}
                       <div className="flex-1 min-w-0">
@@ -385,7 +392,7 @@ export default function InstructorDetalle() {
             ) : (
               <div className="rounded-2xl bg-white p-8 text-center shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-sky-50">
-                  <span className="text-3xl">📋</span>
+                  <ClipboardList className="h-8 w-8 text-sky-500" />
                 </div>
                 <h3 className="text-base font-bold text-slate-700">Sin clases programadas</h3>
                 <p className="mt-1 text-sm text-slate-400">

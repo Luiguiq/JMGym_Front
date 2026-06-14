@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AlertTriangle, Check } from 'lucide-react';
 import { notificationService } from '../../services/notificationService.js';
 
 function NotificationResponseOverlay() {
@@ -46,7 +47,7 @@ function NotificationResponseOverlay() {
       <div className="w-full max-w-md rounded-[28px] bg-white shadow-2xl overflow-hidden animate-in">
         <div className="p-6 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-3xl">
-            ⚠️
+            <AlertTriangle size={32} className="text-amber-600" />
           </div>
 
           <h2 className="text-xl font-black text-slate-900">{pending.title}</h2>
@@ -58,7 +59,7 @@ function NotificationResponseOverlay() {
               disabled={loading}
               className="w-full rounded-2xl bg-[#004aab] py-3.5 font-bold text-sm text-white transition hover:opacity-90 disabled:opacity-50"
             >
-              {loading ? 'Procesando...' : '✓ Aceptar cambios'}
+              {loading ? 'Procesando...' : <><Check size={16} className="inline" /> Aceptar cambios</>}
             </button>
 
             <button

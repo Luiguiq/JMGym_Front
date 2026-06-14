@@ -18,7 +18,7 @@ function mapClass(backendClass) {
     status: backendClass.estado,
     price: backendClass.precio,
     color: backendClass.id_genero === 1 ? 'orange' : backendClass.id_genero === 2 ? 'blue' : 'blue',
-    icon: backendClass.id_genero === 1 ? '🏃‍♀️' : backendClass.id_genero === 2 ? '🕺' : '💪',
+    icon: backendClass.id_genero === 1 ? 'cardio' : backendClass.id_genero === 2 ? 'baile' : 'fuerza',
     // Campos adicionales para el admin
     id_genero: backendClass.id_genero,
     id_instructor: backendClass.id_instructor,

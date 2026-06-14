@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { Mail } from 'lucide-react';
 import ClassCard from '../../components/user/ClassCard.jsx';
 import { classService } from '../../services/classService.js';
 
@@ -95,7 +96,7 @@ function Home() {
                 <div className="rounded-2xl bg-red-50 p-4 text-center text-sm text-red-600">{error}</div>
               ) : todayClasses.length === 0 ? (
                 <div className="rounded-2xl bg-slate-50 p-8 text-center">
-                  <p className="text-3xl">📭</p>
+                  <Mail size={40} className="mx-auto text-slate-300" />
                   <p className="mt-2 font-bold text-slate-600">No hay clases disponibles</p>
                   <p className="mt-1 text-xs text-slate-400">Vuelve pronto para ver nuevas opciones.</p>
                 </div>

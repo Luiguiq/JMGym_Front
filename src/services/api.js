@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api';
 
 export async function apiRequest(path, options = {}) {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 
   const headers = {
     'Content-Type': 'application/json',
@@ -25,6 +25,8 @@ export async function apiRequest(path, options = {}) {
     const loginPath = user?.role === 'admin' ? '/admin/login' : '/cliente/login';
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
     window.location.href = loginPath;
     throw new Error('Sesión expirada');
   }

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Search, X, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import ClassCard from '../../components/user/ClassCard.jsx';
 import { classService } from '../../services/classService.js';
 
@@ -251,19 +251,6 @@ function ListaClases() {
   const activeCount = visibleClasses.length;
   const totalCount = classes.length;
 
-  const timeLabel = timeFilter === '' ? '📅 Todas'
-    : timeFilter === 'hoy' ? '📅 Hoy'
-    : timeFilter === 'manana' ? '📅 Mañana'
-    : timeFilter === 'semana'
-      ? (selectedDates.length > 0 ? `📅 ${selectedDates.length} día(s)` : '📅 Esta semana')
-    : customDate
-      ? (() => {
-          const d = new Date(customDate + 'T00:00:00');
-          const diff = Math.round((d - new Date()) / 86400000);
-          return diff === 0 ? '📅 Hoy' : diff === 1 ? '📅 Mañana' : `📅 ${d.toLocaleDateString('es-PE', { day: 'numeric', month: 'short' })}`;
-        })()
-    : '📅 Elegir fecha';
-
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] px-5 py-6 pb-28 sm:px-6 sm:py-8">
       <button
@@ -306,7 +293,7 @@ function ListaClases() {
                 : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
             }`}
           >
-            📅 Todas
+            <Calendar size={14} className="-ml-0.5 inline-block" /> Todas
           </button>
           <button
             onClick={() => { setTimeFilter('hoy'); setSelectedDates([]); setCustomDate(''); }}
@@ -316,7 +303,7 @@ function ListaClases() {
                 : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
             }`}
           >
-            📅 Hoy
+            <Calendar size={14} className="-ml-0.5 inline-block" /> Hoy
           </button>
           <button
             onClick={() => { setTimeFilter('manana'); setSelectedDates([]); setCustomDate(''); }}
@@ -326,7 +313,7 @@ function ListaClases() {
                 : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
             }`}
           >
-            📅 Mañana
+            <Calendar size={14} className="-ml-0.5 inline-block" /> Mañana
           </button>
           <button
             onClick={() => { setTimeFilter('semana'); setShowCalendar('semana'); }}
@@ -336,7 +323,7 @@ function ListaClases() {
                 : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
             }`}
           >
-            📅 {timeFilter === 'semana' && selectedDates.length > 0 ? `${selectedDates.length} día(s)` : 'Esta semana'}
+            <Calendar size={14} className="-ml-0.5 inline-block" /> {timeFilter === 'semana' && selectedDates.length > 0 ? `${selectedDates.length} día(s)` : 'Esta semana'}
           </button>
           <button
             onClick={() => { setTimeFilter('custom'); setShowCalendar('custom'); }}
@@ -346,7 +333,7 @@ function ListaClases() {
                 : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
             }`}
           >
-            📅 {customDate || 'Elegir fecha'}
+            <Calendar size={14} className="-ml-0.5 inline-block" /> {customDate || 'Elegir fecha'}
           </button>
         </div>
 

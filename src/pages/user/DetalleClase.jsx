@@ -8,6 +8,13 @@ import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
 import zumbaImage from '../../assets/images/zumba.jpg';
 import PageLoader from '../../components/common/PageLoader.jsx';
+import { AlertTriangle, Search, Flame, Music, Heart, Zap, Dumbbell, TrendingUp, Calendar, Clock, Timer, User } from 'lucide-react';
+
+const genreIcons = {
+  cardio: <Zap className="h-16 w-16 text-white/80" />,
+  baile: <Music className="h-16 w-16 text-white/80" />,
+  fuerza: <Dumbbell className="h-16 w-16 text-white/80" />,
+};
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
 const BACKEND_URL = API_BASE.replace('/api', '');
@@ -31,7 +38,7 @@ function getAvailabilityInfo(spots) {
       label: 'Clase completa',
       color: 'text-red-600',
       bg: 'bg-red-50',
-      icon: '🔴'
+      iconColor: 'bg-red-500'
     };
   }
 
@@ -40,7 +47,7 @@ function getAvailabilityInfo(spots) {
       label: 'Últimos espacios',
       color: 'text-red-600',
       bg: 'bg-red-50',
-      icon: '🔴'
+      iconColor: 'bg-red-500'
     };
   }
 
@@ -49,7 +56,7 @@ function getAvailabilityInfo(spots) {
       label: 'Pocos espacios',
       color: 'text-amber-600',
       bg: 'bg-amber-50',
-      icon: '🟡'
+      iconColor: 'bg-yellow-400'
     };
   }
 
@@ -57,7 +64,7 @@ function getAvailabilityInfo(spots) {
     label: 'Muchos espacios disponibles',
     color: 'text-emerald-600',
     bg: 'bg-emerald-50',
-    icon: '🟢'
+    iconColor: 'bg-emerald-500'
   };
 }
 
@@ -124,13 +131,11 @@ const [checkingReservation, setCheckingReservation] = useState(false);
   }, [isAuthenticated, id, classItem]);
 
   function handleReserve() {
-    // Si no ha iniciado sesión, lo mandamos al login
     if (!isAuthenticated) {
       navigate('/cliente/login');
       return;
     }
 
-    // Si ya inició sesión, lo mandamos a tu nueva pantalla de asientos
     navigate(`/cliente/seleccion-espacio/${id}`);
   }
 
@@ -146,7 +151,7 @@ const [checkingReservation, setCheckingReservation] = useState(false);
     return (
         <main className="min-h-screen bg-brand-50 p-8 flex items-center justify-center">
           <div className="bg-white p-6 rounded-3xl shadow-soft max-w-md w-full text-center border border-red-100">
-            <span className="text-4xl" aria-hidden="true">⚠️</span>
+            <AlertTriangle className="mx-auto h-10 w-10 text-red-400" aria-hidden="true" />
             <h2 className="text-xl font-bold text-slate-800 mt-3">Hubo un error</h2>
             <p className="text-red-500 mt-2 text-sm">{error}</p>
             <button
@@ -164,7 +169,7 @@ const [checkingReservation, setCheckingReservation] = useState(false);
     return (
         <main className="min-h-screen bg-brand-50 p-8 flex items-center justify-center">
           <div className="bg-white p-6 rounded-3xl shadow-soft max-w-md w-full text-center">
-            <span className="text-4xl" aria-hidden="true">🔍</span>
+            <Search className="mx-auto h-10 w-10 text-slate-400" aria-hidden="true" />
             <h2 className="text-xl font-bold text-slate-800 mt-3">Clase no encontrada</h2>
             <p className="text-slate-500 mt-2 text-sm">El horario o la clase especificada no existe actualmente.</p>
             <button
@@ -179,7 +184,7 @@ const [checkingReservation, setCheckingReservation] = useState(false);
   }
 
   const renderIntensityDots = (level) => {
-    let activeDots = 2; // Por defecto MEDIA (Moderado)
+    let activeDots = 2;
     if (level === 'Energia alta' || level === 'ALTA') activeDots = 3;
     if (level === 'Principiante' || level === 'BAJA') activeDots = 1;
 
@@ -197,30 +202,32 @@ const [checkingReservation, setCheckingReservation] = useState(false);
     );
   };
 
+  const ICON_MAP = { Flame, Music, Heart, Zap, Dumbbell, TrendingUp };
+
   const classImage = classItem.imagen_clase || getClassImage(classItem.name);
   const benefitsMap = {
     zumba: [
-      '🔥 Quema calorías',
-      '💃 Mejora coordinación',
-      '❤️ Mejora resistencia cardiovascular',
+      { icon: 'Flame', text: 'Quema calorías' },
+      { icon: 'Music', text: 'Mejora coordinación' },
+      { icon: 'Heart', text: 'Mejora resistencia cardiovascular' },
     ],
 
     cardiofit: [
-      '❤️ Aumenta resistencia',
-      '🔥 Alto gasto calórico',
-      '⚡ Mejora capacidad aeróbica',
+      { icon: 'Heart', text: 'Aumenta resistencia' },
+      { icon: 'Flame', text: 'Alto gasto calórico' },
+      { icon: 'Zap', text: 'Mejora capacidad aeróbica' },
     ],
 
     cardio: [
-      '❤️ Aumenta resistencia',
-      '🔥 Alto gasto calórico',
-      '⚡ Mejora capacidad aeróbica',
+      { icon: 'Heart', text: 'Aumenta resistencia' },
+      { icon: 'Flame', text: 'Alto gasto calórico' },
+      { icon: 'Zap', text: 'Mejora capacidad aeróbica' },
     ],
 
     'tren superior': [
-      '💪 Incrementa fuerza muscular',
-      '🏋️ Mejora estabilidad',
-      '📈 Favorece hipertrofia',
+      { icon: 'Dumbbell', text: 'Incrementa fuerza muscular' },
+      { icon: 'Dumbbell', text: 'Mejora estabilidad' },
+      { icon: 'TrendingUp', text: 'Favorece hipertrofia' },
     ],
   };
 
@@ -230,9 +237,9 @@ const [checkingReservation, setCheckingReservation] = useState(false);
 
   const benefits =
     benefitsMap[normalizedName] || [
-      '💪 Mejora condición física',
-      '🔥 Incrementa actividad física',
-      '⚡ Favorece el bienestar general',
+      { icon: 'Dumbbell', text: 'Mejora condición física' },
+      { icon: 'Flame', text: 'Incrementa actividad física' },
+      { icon: 'Zap', text: 'Favorece el bienestar general' },
     ];
   const availabilityInfo = getAvailabilityInfo(
     classItem.availableSpots
@@ -257,7 +264,7 @@ const [checkingReservation, setCheckingReservation] = useState(false);
                   />
               ) : (
                   <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-sky-400 to-brand-600 text-8xl" aria-hidden="true">
-                    {classItem.icon || '💪'}
+                    {genreIcons[classItem.icon] || <Dumbbell className="h-16 w-16 text-white/80" />}
                   </div>
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-sky-950/75 via-sky-800/35 to-sky-400/15" aria-hidden="true" />
@@ -293,19 +300,19 @@ const [checkingReservation, setCheckingReservation] = useState(false);
                 <div className="text-center">
                   <p className="text-xs text-slate-400">Fecha</p>
                   <p className="font-bold text-slate-800">
-                    📅 {formattedDate}
+                    <Calendar className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {formattedDate}
                   </p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-slate-400">Hora</p>
                   <p className="font-bold text-slate-800">
-                    🕗 {classItem.time}
+                    <Clock className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {classItem.time}
                   </p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-slate-400">Duración</p>
                   <p className="font-bold text-slate-800">
-                    ⏱ {classItem.duration}
+                    <Timer className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {classItem.duration}
                   </p>
                 </div>
                 <div className="text-center">
@@ -332,16 +339,20 @@ const [checkingReservation, setCheckingReservation] = useState(false);
             <section className="mt-6">
               <h2 className="text-lg font-extrabold text-slate-800">Sobre la clase</h2>
               <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
-                  {benefits.map((benefit) => (
-                    <div
-                      key={benefit}
-                      className="rounded-2xl bg-sky-50 p-4"
-                    >
-                      <p className="font-bold text-sky-700">
-                        {benefit}
-                      </p>
-                    </div>
-                  ))}
+                  {benefits.map((benefit, i) => {
+                    const IconComponent = ICON_MAP[benefit.icon];
+                    return (
+                      <div
+                        key={i}
+                        className="rounded-2xl bg-sky-50 p-4"
+                      >
+                        <p className="font-bold text-sky-700">
+                          {IconComponent && <IconComponent className="inline-block h-5 w-5 mr-1.5 -mt-0.5" />}
+                          {benefit.text}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-slate-500 md:text-base">
                   {classItem.description || 'Entrenamiento dinámico diseñado para mejorar tu resistencia, coordinación y energía con una rutina guiada por el instructor.'}
@@ -349,7 +360,7 @@ const [checkingReservation, setCheckingReservation] = useState(false);
               </section>
 
               <section className="mt-6">
-                <h2 className="text-lg font-extrabold text-slate-800">Regla de vestimenta ⚠️</h2>
+                <h2 className="text-lg font-extrabold text-slate-800">Regla de vestimenta <AlertTriangle className="inline-block h-5 w-5 text-amber-500 -mt-0.5" /></h2>
                 <ul className="mt-2 space-y-1 text-sm leading-relaxed text-slate-500 md:text-base">
                   {clothingRules.map((rule) => (
                       <li key={rule}>• {rule}</li>
@@ -372,7 +383,7 @@ const [checkingReservation, setCheckingReservation] = useState(false);
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#004aab] to-sky-500 text-4xl text-white">
-                        {classItem.trainer?.charAt(0) || '👩‍🏫'}
+                        {classItem.trainer?.charAt(0) || <User className="h-8 w-8" />}
                       </div>
                     )}
                   </div>
@@ -385,8 +396,9 @@ const [checkingReservation, setCheckingReservation] = useState(false);
               </section>
 
               <section className={`mt-6 rounded-3xl p-5 ${availabilityInfo.bg}`}>
-                <h3 className={`font-extrabold text-lg ${availabilityInfo.color}`}>
-                  {availabilityInfo.icon} {availabilityInfo.label}
+                <h3 className={`font-extrabold text-lg ${availabilityInfo.color} flex items-center gap-2`}>
+                  <span className={`inline-block w-3 h-3 rounded-full ${availabilityInfo.iconColor}`} />
+                  {availabilityInfo.label}
                 </h3>
                 <p className="mt-2 text-sm text-slate-600">
                   Actualmente quedan {classItem.availableSpots} espacios disponibles para esta sesión.
@@ -396,8 +408,9 @@ const [checkingReservation, setCheckingReservation] = useState(false);
               <div className="mt-6 space-y-3">
                 {hasActiveReservation && (
                   <div className="rounded-3xl bg-amber-50 p-4 ring-1 ring-amber-200">
-                    <h3 className="font-extrabold text-amber-700">
-                      ⚠ Ya reservaste esta clase
+                    <h3 className="font-extrabold text-amber-700 flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5 text-amber-600" />
+                      Ya reservaste esta clase
                     </h3>
 
                     <p className="mt-1 text-sm text-amber-700">
@@ -407,8 +420,9 @@ const [checkingReservation, setCheckingReservation] = useState(false);
                 )}
                 {hasDateConflict && (
                   <div className="rounded-3xl bg-amber-50 p-4 ring-1 ring-amber-200">
-                    <h3 className="font-extrabold text-amber-700">
-                      ⚠ Conflicto de fecha
+                    <h3 className="font-extrabold text-amber-700 flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5 text-amber-600" />
+                      Conflicto de fecha
                     </h3>
 
                     <p className="mt-1 text-sm text-amber-700">

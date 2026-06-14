@@ -1,21 +1,22 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { Zap, MapPin, Smartphone, ArrowLeft, Mail, Lock } from 'lucide-react';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 
 const highlights = [
   {
-    icon: '⚡',
+    icon: <Zap size={24} />,
     title: 'Reserva rápida',
     text: 'Encuentra y reserva clases en pocos pasos.',
   },
   {
-    icon: '📍',
+    icon: <MapPin size={24} />,
     title: 'Control claro',
     text: 'Selecciona tu espacio y continúa sin confusión.',
   },
   {
-    icon: '📱',
+    icon: <Smartphone size={24} />,
     title: 'Acceso flexible',
     text: 'Funciona bien en móvil, tablet y escritorio.',
   },
@@ -29,6 +30,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [remember, setRemember] = useState(true);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -36,7 +38,7 @@ function Login() {
     setLoading(true);
 
     try {
-      await login({ email, password });
+      await login({ email, password }, remember);
       navigate('/cliente/home');
     } catch (err) {
       setError(err.message);
@@ -93,7 +95,7 @@ function Login() {
             to="/"
             aria-label="Volver al inicio"
           >
-            ←
+            <ArrowLeft size={24} />
           </Link>
 
           <div className="grid gap-6">
@@ -195,7 +197,7 @@ function Login() {
           <label className="grid gap-2 font-semibold text-slate-700">
             Correo electrónico
             <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
-              <span aria-hidden="true">✉️</span>
+              <span aria-hidden="true"><Mail size={20} /></span>
               <input
                 className="w-full bg-transparent outline-none"
                 type="email"
@@ -210,7 +212,7 @@ function Login() {
           <label className="grid gap-2 font-semibold text-slate-700">
             Contraseña
             <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
-              <span aria-hidden="true">🔒</span>
+              <span aria-hidden="true"><Lock size={20} /></span>
               <input
                 className="w-full bg-transparent outline-none"
                 type="password"
@@ -227,7 +229,8 @@ function Login() {
               <input
                 className="h-5 w-5 accent-brand-600"
                 type="checkbox"
-                defaultChecked
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
               />
               Recordar sesión
             </label>
