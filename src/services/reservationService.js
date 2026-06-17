@@ -47,6 +47,10 @@ export const reservationService = {
     }),
   getAllReservations: () =>
     apiRequest('/reservations').then((d) => (d ?? []).map(mapReservation)),
+  markAsPaid: (id) =>
+    apiRequest(`/reservations/${id}/mark-paid`, {
+      method: 'PATCH',
+    }).then(mapReservation),
   changeSeat: (id, seatId) =>
     apiRequest(`/reservations/${id}/seat`, {
       method: 'PATCH',
