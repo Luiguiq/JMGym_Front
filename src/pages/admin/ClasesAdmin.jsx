@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search } from 'lucide-react';
+import { AlertTriangle, Plus, Search, Trash2, X } from 'lucide-react';
 import ClassTable from '../../components/admin/ClassTable';
 import ClassForm from '../../components/admin/ClassForm';
 import Loader from '../../components/admin/Loader';
@@ -15,6 +15,9 @@ const ClasesAdmin = () => {
   const [statusFilter, setStatusFilter] = useState('todas');
   const [showForm, setShowForm] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleteError, setDeleteError] = useState('');
+  const [deleting, setDeleting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
@@ -84,14 +87,25 @@ const ClasesAdmin = () => {
     }
   };
 
-  const handleDeleteClass = async (id) => {
-    if (window.confirm('¿Está seguro de que desea eliminar esta clase?')) {
-      try {
-        await classService.deleteClass(id);
-        await loadClasses();
-      } catch (error) {
-        console.error('Error eliminando clase:', error);
-      }
+  const handleDeleteClass = (clase) => {
+    setDeleteTarget(clase);
+    setDeleteError('');
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      setDeleting(true);
+      setDeleteError('');
+      await classService.deleteClass(deleteTarget.id);
+      await loadClasses();
+      setDeleteTarget(null);
+    } catch (error) {
+      console.error('Error eliminando clase:', error);
+      setDeleteError(error.message || 'No se pudo eliminar la clase');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -156,7 +170,7 @@ const ClasesAdmin = () => {
           <ClassTable
             data={paginatedClasses}
             onEdit={handleEditClass}
-            onDelete={handleDeleteClass}
+            onDelete={(id) => handleDeleteClass(classes.find((clase) => clase.id === id))}
             pagination={{
               page: currentPage,
               total: filteredClasses.length,
@@ -177,6 +191,61 @@ const ClasesAdmin = () => {
           }}
           loading={loading}
         />
+      )}
+
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl border border-red-100">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-red-600">
+                  <AlertTriangle size={24} />
+                </div>
+                <div>
+                  <h2 className="text-lg font-extrabold text-slate-900">Eliminar clase</h2>
+                  <p className="text-sm text-slate-500">Esta accion no se puede deshacer.</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+                className="rounded-xl p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+              <p className="text-sm text-slate-600">Vas a eliminar:</p>
+              <p className="mt-1 font-bold text-slate-900">{deleteTarget.name}</p>
+              <p className="text-sm text-slate-500">{deleteTarget.instructor} - {deleteTarget.schedule}</p>
+            </div>
+
+            {deleteError && (
+              <div className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                {deleteError}
+              </div>
+            )}
+
+            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+                className="rounded-2xl border border-slate-200 px-5 py-3 font-bold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                disabled={deleting}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-5 py-3 font-bold text-white shadow-lg shadow-red-200 transition hover:bg-red-700 disabled:opacity-60"
+              >
+                <Trash2 size={18} />
+                {deleting ? 'Eliminando...' : 'Si, eliminar'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
