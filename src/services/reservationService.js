@@ -61,6 +61,14 @@ export const reservationService = {
       method: 'PATCH',
       body: JSON.stringify({ motivo, detalle }),
     }),
+  requestRefund: (id) =>
+    apiRequest(`/reservations/${id}/refund-request`, {
+      method: 'PATCH',
+    }).then(mapReservation),
+  approveRefund: (id) =>
+    apiRequest(`/reservations/${id}/refund-approve`, {
+      method: 'PATCH',
+    }).then(mapReservation),
   deleteReservation: (id, motivo, detalle) =>
     apiRequest(`/reservations/${id}`, {
       method: 'DELETE',

@@ -33,6 +33,8 @@ function getPaymentStatusStyle(status) {
       return 'bg-emerald-50 text-emerald-700 border-emerald-200';
     case 'PENDIENTE':
       return 'bg-amber-50 text-amber-700 border-amber-200';
+    case 'REEMBOLSO_PENDIENTE':
+      return 'bg-orange-50 text-orange-700 border-orange-200';
     case 'REEMBOLSADO':
       return 'bg-purple-50 text-purple-700 border-purple-200';
     default:
@@ -55,8 +57,20 @@ const PAGO_ICON = {
   PAGADO: CreditCard,
   PENDIENTE: Clock,
   VENCIDO: AlertTriangle,
+  REEMBOLSO_PENDIENTE: AlertTriangle,
   REEMBOLSADO: Undo2,
 };
+
+function buildClassStartDate(dateStr, timeStr) {
+  if (!dateStr || !timeStr) return null;
+
+  const normalizedTime =
+    timeStr.length === 5 ? `${timeStr}:00` : timeStr;
+
+  const result = new Date(`${dateStr}T${normalizedTime}`);
+
+  return Number.isNaN(result.getTime()) ? null : result;
+}
 
 function DetalleReserva() {
   const { id } = useParams();
@@ -64,6 +78,13 @@ function DetalleReserva() {
 
   const [reservation, setReservation] = useState(null);
   const qrValue = reservation?.qr_checkin || reservation?.qr_url || null;
+
+  const canShowQR =
+    reservation?.estado_reserva === 'ACTIVA' &&
+    (
+      reservation?.estado_pago === 'PAGADO' ||
+      reservation?.estado_pago === 'PENDIENTE'
+    );
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -73,6 +94,9 @@ function DetalleReserva() {
   const [cancelMotivo, setCancelMotivo] = useState('OTRO');
   const [cancelDetalle, setCancelDetalle] = useState('');
 
+  const [showRefundModal, setShowRefundModal] = useState(false);
+  const [refunding, setRefunding] = useState(false);
+
   const motivosCancelacion = [
     { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
     { value: 'CAMBIO_INSTRUCTOR', label: 'Cambio de instructor' },
@@ -81,9 +105,40 @@ function DetalleReserva() {
     { value: 'OTRO', label: 'Otro motivo' },
   ];
 
-  const canCancel = reservation?.estado_reserva === 'ACTIVA';
+  const classStartAt = buildClassStartDate(
+    reservation?.fecha_clase,
+    reservation?.hora_inicio
+  );
+
+  const hasClassStarted = classStartAt
+    ? classStartAt <= new Date()
+    : false;
+
+  const isRefundPending =
+    reservation?.estado_pago === 'REEMBOLSO_PENDIENTE';
+
+  const canChangeSeat =
+  reservation?.estado_reserva === 'ACTIVA';
+
+  const canCancel =
+    reservation?.estado_reserva === 'ACTIVA' &&
+    reservation?.estado_pago === 'PENDIENTE';
+
+  const canRefund =
+    reservation?.estado_reserva === 'ACTIVA' &&
+    reservation?.estado_pago === 'PAGADO' &&
+    reservation?.metodo_pago?.toUpperCase() === 'YAPE';
+
+  const canRequestRefund =
+    reservation?.estado_reserva === 'ACTIVA' &&
+    reservation?.estado_pago === 'PAGADO' &&
+    !hasClassStarted &&
+    !isRefundPending;
+
   const isCanceled = reservation?.estado_reserva === 'CANCELADA';
-  const isCompleted = reservation?.estado_reserva === 'FINALIZADA' || reservation?.estado_reserva === 'COMPLETADA';
+  const isCompleted =
+    reservation?.estado_reserva === 'FINALIZADA' ||
+    reservation?.estado_reserva === 'COMPLETADA';
 
   useEffect(() => {
     reservationService
@@ -111,6 +166,26 @@ function DetalleReserva() {
       alert(err?.message || 'Error al cancelar la reserva');
     } finally {
       setCanceling(false);
+    }
+  };
+
+  const handleRefundRequest = async () => {
+    const confirmRefund = window.confirm(
+      '¿Deseas solicitar el reembolso de esta reserva?'
+    );
+
+    if (!confirmRefund) return;
+
+    setRefunding(true);
+    try {
+      const updated = await reservationService.requestRefund(id);
+      setReservation(updated);
+      setShowRefundModal(false);
+    } catch (err) {
+      setShowRefundModal(false);
+      alert(err?.message || 'Error al solicitar el reembolso');
+    } finally {
+      setRefunding(false);
     }
   };
 
@@ -209,6 +284,17 @@ function DetalleReserva() {
               </div>
             )}
 
+            {isRefundPending && (
+              <div className="mt-4 rounded-2xl bg-orange-50 border border-orange-200 p-4">
+                <p className="text-xs uppercase font-bold tracking-wider text-orange-500 mb-1">
+                  Reembolso en revisión
+                </p>
+                <p className="font-bold text-orange-700">
+                  Tu solicitud fue enviada al administrador.
+                </p>
+              </div>
+            )}
+
             <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="rounded-2xl bg-sky-50 p-4">
                 <p className="text-xs text-slate-500 uppercase">Fecha</p>
@@ -264,7 +350,7 @@ function DetalleReserva() {
               )}
             </div>
 
-            {qrValue ? (
+            {canShowQR && qrValue ? (
               <div className="rounded-3xl border border-sky-100 bg-white p-6">
                 <h3 className="mb-4 text-center font-black text-slate-800">
                   Código QR de Check-in
@@ -285,9 +371,10 @@ function DetalleReserva() {
               </div>
             ) : (
               <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
-                <h3 className="font-bold text-slate-700">
-                  QR no disponible
-                </h3>
+                <p className="mt-2 text-sm text-slate-500">
+                  El código QR solo está disponible para reservas activas
+                  pendientes o pagadas.
+                </p>
 
                 <p className="mt-2 text-sm text-slate-500">
                   Esta reserva todavía no tiene un código QR generado.
@@ -311,22 +398,47 @@ function DetalleReserva() {
           </div>
         </div>
 
-        {canCancel && (
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+
+          {canChangeSeat && (
             <button
-              onClick={() => navigate(`/cliente/reservas/${reservation.id}/cambiar-asiento`)}
+              onClick={() =>
+                navigate(
+                  `/cliente/reservas/${reservation.id}/cambiar-asiento`
+                )
+              }
               className="flex-1 rounded-2xl bg-sky-50 border border-sky-200 py-3.5 font-bold text-sky-700 transition hover:bg-sky-100"
             >
-              <Armchair className="inline-block h-5 w-5 mr-1 -mt-0.5" /> Cambiar asiento
+              <Armchair className="inline-block h-5 w-5 mr-1 -mt-0.5" />
+              Cambiar asiento
             </button>
+          )}
+
+          {canCancel && (
             <button
-              onClick={() => { setCancelMotivo('OTRO'); setCancelDetalle(''); setShowCancelModal(true); }}
+              onClick={() => {
+                setCancelMotivo('OTRO');
+                setCancelDetalle('');
+                setShowCancelModal(true);
+              }}
               className="flex-1 rounded-2xl bg-red-50 border border-red-200 py-3.5 font-bold text-red-600 transition hover:bg-red-100"
             >
-              <XCircle className="inline-block h-5 w-5 mr-1 -mt-0.5" /> Cancelar reserva
+              <XCircle className="inline-block h-5 w-5 mr-1 -mt-0.5" />
+              Cancelar reserva
             </button>
-          </div>
-        )}
+          )}
+
+          {canRefund && (
+            <button
+              onClick={handleRefundRequest}
+              className="flex-1 rounded-2xl bg-orange-50 border border-orange-200 py-3.5 font-bold text-orange-600 transition hover:bg-orange-100"
+            >
+              <Undo2 className="inline-block h-5 w-5 mr-1 -mt-0.5" />
+              Solicitar reembolso
+            </button>
+          )}
+
+        </div>
       </div>
 
       {showCancelModal && (
