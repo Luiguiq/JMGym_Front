@@ -137,11 +137,11 @@ function ReservasAdmin() {
           <span
             className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold ${
               isPending
-                ? 'bg-orange-50 text-orange-700'
-                : 'bg-emerald-50 text-emerald-700'
+                ? 'bg-orange-50 text-orange-800 border border-orange-200'
+                : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
             }`}
           >
-            {isPending ? 'Pendiente' : 'Pagado'}
+            {isPending ? 'Pago pendiente' : 'Pago confirmado'}
           </span>
         </div>
 
@@ -175,7 +175,7 @@ function ReservasAdmin() {
           </div>
         </div>
 
-        <div className="mt-1.5 flex items-center justify-between text-xs text-slate-400">
+        <div className="mt-1.5 flex items-center justify-between text-xs text-slate-500">
           <span>
             <CreditCard size={12} className="inline -mt-0.5 mr-0.5" />
             S/ {Number(r.monto || 0).toFixed(2)}
@@ -194,17 +194,21 @@ function ReservasAdmin() {
         {isPending && (
           <div className="mt-3 space-y-2">
             <button
+              type="button"
               onClick={() => { setPayTarget(r); setPayError(''); }}
-              className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 py-2.5 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100 active:scale-[0.98]"
+              aria-label={`Confirmar pago en efectivo de ${r.userName || 'usuario'} por S/ ${Number(r.monto || 0).toFixed(2)}`}
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 py-2.5 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
             >
-              <CheckCircle size={16} />
-              Colocar como pagado
+              <CheckCircle size={16} aria-hidden="true" />
+              Confirmar pago en efectivo
             </button>
             <button
+              type="button"
               onClick={() => { setCancelTarget(r); setCancelError(''); setCancelMotivo('CLASE_CANCELADA'); setCancelDetalle(''); }}
-              className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-bold text-red-600 transition hover:bg-red-100 active:scale-[0.98]"
+              aria-label={`Cancelar reserva de ${r.userName || 'usuario'}`}
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-bold text-red-700 transition hover:bg-red-100 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-red-500/40"
             >
-              <XCircle size={16} />
+              <XCircle size={16} aria-hidden="true" />
               Cancelar reserva
             </button>
           </div>
@@ -242,6 +246,7 @@ function ReservasAdmin() {
         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
         <input
           type="text"
+          aria-label="Buscar reservas por cliente, clase o código"
           placeholder="Buscar por cliente, clase o código..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -257,8 +262,11 @@ function ReservasAdmin() {
             { key: 'pendientes', label: 'Pendientes' },
           ].map((t) => (
             <button
+              type="button"
               key={t.key}
               onClick={() => setFilterTab(t.key)}
+              aria-pressed={filterTab === t.key}
+              aria-label={`Mostrar reservas ${t.label.toLowerCase()}`}
               className={`shrink-0 rounded-full px-5 py-2 text-sm font-bold transition ${
                 filterTab === t.key
                   ? 'bg-brand-600 text-white shadow-md'
@@ -329,19 +337,23 @@ function ReservasAdmin() {
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-4 pt-2">
               <button
+                type="button"
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={safePage <= 1}
+                aria-label="Ir a la página anterior"
                 className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <ChevronLeft size={18} />
+                <ChevronLeft size={18} aria-hidden="true" />
                 Anterior
               </button>
               <span className="text-sm font-semibold text-slate-500">
                 {safePage} / {totalPages}
               </span>
               <button
+                type="button"
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={safePage >= totalPages}
+                aria-label="Ir a la página siguiente"
                 className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Siguiente
@@ -564,6 +576,78 @@ function ReservasAdmin() {
                       <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Sí, cancelar
                     </span>
                   )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {payTarget && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 sm:p-6"
+          onClick={(e) => { if (e.target === e.currentTarget) setPayTarget(null); }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirmar-pago-title"
+            className="w-full sm:max-w-sm rounded-[28px] bg-white shadow-2xl animate-[fadeIn_0.2s_ease-out]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-5 py-5 sm:p-6">
+              <div className="text-center">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 shadow-inner">
+                  <CheckCircle className="w-7 h-7 text-emerald-600" aria-hidden="true" />
+                </div>
+                <h3 id="confirmar-pago-title" className="text-lg sm:text-2xl font-black text-slate-900">Confirmar pago en efectivo</h3>
+                <p className="mt-1.5 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  Confirma que el cliente pagó en recepción. El estado cambiará de pago pendiente a pago confirmado.
+                </p>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-3 sm:p-4">
+                <div className="space-y-2 text-xs sm:text-sm">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-600 shrink-0">Cliente</span>
+                    <span className="font-bold text-slate-900 text-right truncate max-w-[180px]">{payTarget.userName}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-600 shrink-0">Clase</span>
+                    <span className="font-bold text-slate-900 text-right truncate max-w-[180px]">{payTarget.className}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-600 shrink-0">Código</span>
+                    <span className="font-mono font-semibold text-slate-700 text-right">#{payTarget.codigo_reserva}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-600 shrink-0">Monto recibido</span>
+                    <span className="font-bold text-slate-900 text-right">S/ {Number(payTarget.monto || 0).toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {payError && (
+                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700" role="alert">
+                  {payError}
+                </div>
+              )}
+
+              <div className="mt-4 flex gap-2 sm:gap-3">
+                <button
+                  type="button"
+                  onClick={() => { setPayTarget(null); setPayError(''); }}
+                  disabled={paying}
+                  className="flex-1 rounded-xl sm:rounded-2xl border-2 border-slate-100 py-3 sm:py-3.5 font-bold text-slate-700 text-xs sm:text-sm transition-all duration-200 hover:bg-slate-50 hover:border-slate-200 active:scale-[0.98] disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-slate-400/40"
+                >
+                  Volver
+                </button>
+                <button
+                  type="button"
+                  onClick={handleMarkAsPaid}
+                  disabled={paying}
+                  className="flex-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 sm:py-3.5 font-bold text-white text-xs sm:text-sm transition-all duration-200 hover:from-emerald-600 hover:to-emerald-700 active:scale-[0.98] shadow-lg shadow-emerald-200 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                >
+                  {paying ? 'Guardando...' : 'Sí, confirmar'}
                 </button>
               </div>
             </div>

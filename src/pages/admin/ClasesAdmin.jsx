@@ -5,6 +5,7 @@ import ClassTable from '../../components/admin/ClassTable';
 import ClassForm from '../../components/admin/ClassForm';
 import Loader from '../../components/admin/Loader';
 import { classService } from '../../services/classService';
+import { reservationService } from '../../services/reservationService';
 
 const ClasesAdmin = () => {
   const navigate = useNavigate();
@@ -15,9 +16,10 @@ const ClasesAdmin = () => {
   const [statusFilter, setStatusFilter] = useState('todas');
   const [showForm, setShowForm] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
-  const [deleteTarget, setDeleteTarget] = useState(null);
-  const [deleteError, setDeleteError] = useState('');
-  const [deleting, setDeleting] = useState(false);
+  const [usersModalClass, setUsersModalClass] = useState(null);
+  const [classUsers, setClassUsers] = useState([]);
+  const [loadingClassUsers, setLoadingClassUsers] = useState(false);
+  const [classUsersError, setClassUsersError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
@@ -32,8 +34,24 @@ const ClasesAdmin = () => {
   const loadClasses = async () => {
     try {
       setLoading(true);
-      const data = await classService.getAllForAdmin();
-      setClasses(data);
+      const [classesData, reservationsData] = await Promise.all([
+        classService.getAllForAdmin(),
+        reservationService.getAllReservations(),
+      ]);
+
+      const enrolledByClass = reservationsData.reduce((acc, reservation) => {
+        if (reservation.estado_reserva !== 'ACTIVA') return acc;
+
+        acc[reservation.id_clase] = (acc[reservation.id_clase] || 0) + 1;
+        return acc;
+      }, {});
+
+      setClasses(
+        classesData.map((clase) => ({
+          ...clase,
+          enrolled: enrolledByClass[clase.id] || 0,
+        }))
+      );
     } catch (error) {
       console.error('Error cargando clases:', error);
     } finally {
@@ -114,6 +132,33 @@ const ClasesAdmin = () => {
     setShowForm(true);
   };
 
+  const handleViewClassUsers = async (clase) => {
+    setUsersModalClass(clase);
+    setClassUsers([]);
+    setClassUsersError('');
+    setLoadingClassUsers(true);
+
+    try {
+      const reservations = await reservationService.getAllReservations();
+      const users = reservations
+        .filter((reservation) => reservation.id_clase === clase.id && reservation.estado_reserva === 'ACTIVA')
+        .map((reservation) => reservation.usuarioNombre || reservation.userName)
+        .filter(Boolean);
+
+      setClassUsers([...new Set(users)]);
+    } catch (error) {
+      setClassUsersError(error?.message || 'Error cargando usuarios de la clase');
+    } finally {
+      setLoadingClassUsers(false);
+    }
+  };
+
+  const handleCloseUsersModal = () => {
+    setUsersModalClass(null);
+    setClassUsers([]);
+    setClassUsersError('');
+  };
+
   const paginatedClasses = filteredClasses.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
@@ -170,7 +215,8 @@ const ClasesAdmin = () => {
           <ClassTable
             data={paginatedClasses}
             onEdit={handleEditClass}
-            onDelete={(id) => handleDeleteClass(classes.find((clase) => clase.id === id))}
+            onViewUsers={handleViewClassUsers}
+            onDelete={handleDeleteClass}
             pagination={{
               page: currentPage,
               total: filteredClasses.length,
@@ -193,56 +239,42 @@ const ClasesAdmin = () => {
         />
       )}
 
-      {deleteTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl border border-red-100">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-red-600">
-                  <AlertTriangle size={24} />
-                </div>
-                <div>
-                  <h2 className="text-lg font-extrabold text-slate-900">Eliminar clase</h2>
-                  <p className="text-sm text-slate-500">Esta accion no se puede deshacer.</p>
-                </div>
+      {usersModalClass && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
+            <div className="border-b border-slate-200 px-5 py-4 flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900">Usuarios de la clase</h2>
+                <p className="text-sm text-slate-500 mt-1">{usersModalClass.name}</p>
               </div>
               <button
-                onClick={() => setDeleteTarget(null)}
-                disabled={deleting}
-                className="rounded-xl p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
+                type="button"
+                onClick={handleCloseUsersModal}
+                className="text-slate-400 hover:text-slate-700 transition-colors"
+                aria-label="Cerrar usuarios de la clase"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-              <p className="text-sm text-slate-600">Vas a eliminar:</p>
-              <p className="mt-1 font-bold text-slate-900">{deleteTarget.name}</p>
-              <p className="text-sm text-slate-500">{deleteTarget.instructor} - {deleteTarget.schedule}</p>
-            </div>
-
-            {deleteError && (
-              <div className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
-                {deleteError}
-              </div>
-            )}
-
-            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-              <button
-                onClick={() => setDeleteTarget(null)}
-                disabled={deleting}
-                className="rounded-2xl border border-slate-200 px-5 py-3 font-bold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleConfirmDelete}
-                disabled={deleting}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-5 py-3 font-bold text-white shadow-lg shadow-red-200 transition hover:bg-red-700 disabled:opacity-60"
-              >
-                <Trash2 size={18} />
-                {deleting ? 'Eliminando...' : 'Si, eliminar'}
-              </button>
+            <div className="p-5">
+              {loadingClassUsers ? (
+                <div className="flex justify-center py-8">
+                  <Loader size="sm" text="Cargando usuarios..." />
+                </div>
+              ) : classUsersError ? (
+                <p className="text-sm text-red-600">{classUsersError}</p>
+              ) : classUsers.length > 0 ? (
+                <ul className="divide-y divide-slate-100 rounded-xl border border-slate-100 overflow-hidden">
+                  {classUsers.map((userName) => (
+                    <li key={userName} className="px-4 py-3 text-sm font-medium text-slate-800">
+                      {userName}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-slate-600">No hay usuarios registrados para esta clase.</p>
+              )}
             </div>
           </div>
         </div>
