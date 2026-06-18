@@ -84,7 +84,9 @@ function PagoClase() {
                 {/* Encabezado */}
                 <header className="px-4 pt-5 pb-4 sm:px-6 sm:pt-10 sm:pb-6">
                     <button
+                        type="button"
                         onClick={() => navigate(-1)}
+                        aria-label="Volver a la pantalla anterior"
                         className="flex items-center gap-2 sm:gap-3 text-slate-800 font-semibold transition hover:text-sky-700"
                     >
                         <span className="text-lg sm:text-xl">←</span>
@@ -93,7 +95,7 @@ function PagoClase() {
                 </header>
 
                 <div className="px-4 sm:px-6 flex-1">
-                    {error && <div className="mb-4 p-3 bg-red-50 text-red-600 font-bold text-sm rounded-xl">{error}</div>}
+                    {error && <div className="mb-4 p-3 bg-red-50 text-red-700 font-bold text-sm rounded-xl" role="alert">{error}</div>}
 
                     {/* Tarjeta Blanca: Resumen de Reserva */}
                     <div
@@ -243,9 +245,14 @@ function PagoClase() {
 
                     <div className="grid gap-4 mb-8">
                         {/* Opción Yape */}
-                        <div
+                        <button
+                            type="button"
                             onClick={() => setMethod('YAPE')}
+                            aria-pressed={method === 'YAPE'}
+                            aria-label="Seleccionar pago con Yape"
                             className={`
+                                w-full
+                                text-left
                                 cursor-pointer
                                 rounded-[20px]
                                 border-2
@@ -256,6 +263,9 @@ function PagoClase() {
                                         ? 'border-sky-500 bg-sky-50/70 shadow-[0_8px_24px_rgba(14,165,233,0.12)]'
                                         : 'border-white bg-white shadow-[0_4px_20px_rgba(15,86,130,0.05)]'
                                 }
+                                focus:outline-none
+                                focus:ring-2
+                                focus:ring-sky-500/40
                             `}
                         >
                             <div className="flex items-center">
@@ -326,14 +336,22 @@ function PagoClase() {
                                     <p className="text-xs font-semibold text-sky-800">
                                         <Check className="inline-block w-3 h-3 mr-1" /> Escanea el código QR disponible en recepción para completar tu pago.
                                     </p>
+                                    <p className="mt-1 text-[11px] font-bold text-slate-600">
+                                        Método seleccionado: Yape.
+                                    </p>
                                 </div>
                             )}
-                        </div>
+                        </button>
 
                         {/* Opción Efectivo */}
-                        <div
+                        <button
+                            type="button"
                             onClick={() => setMethod('EFECTIVO')}
+                            aria-pressed={method === 'EFECTIVO'}
+                            aria-label="Seleccionar pago en efectivo"
                             className={`
+                                w-full
+                                text-left
                                 cursor-pointer
                                 rounded-[20px]
                                 border-2
@@ -344,6 +362,9 @@ function PagoClase() {
                                         ? 'border-sky-500 bg-sky-50/70 shadow-[0_8px_24px_rgba(14,165,233,0.12)]'
                                         : 'border-white bg-white shadow-[0_4px_20px_rgba(15,86,130,0.05)]'
                                 }
+                                focus:outline-none
+                                focus:ring-2
+                                focus:ring-sky-500/40
                             `}
                         >
                             <div className="flex items-center">
@@ -409,9 +430,12 @@ function PagoClase() {
                                     <p className="text-xs font-semibold text-sky-800">
                                         <Check className="inline-block w-3 h-3 mr-1" /> Acércate a recepción 15 minutos antes del inicio de tu clase para realizar el pago.
                                     </p>
+                                    <p className="mt-1 text-[11px] font-bold text-slate-600">
+                                        Método seleccionado: Efectivo. Tu pago quedará pendiente hasta que administración lo confirme.
+                                    </p>
                                 </div>
                             )}
-                        </div>
+                        </button>
                     </div>
                 </div>
 
@@ -423,6 +447,7 @@ function PagoClase() {
                     </div>
                     )}
                     <button
+                        type="button"
                         disabled={processing}
                         onClick={() => setShowConfirm(true)}
                         className="
@@ -461,6 +486,9 @@ function PagoClase() {
             </div>
             {showConfirm && (
                 <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="confirmar-reserva-title"
                     className="
                         fixed
                         inset-0
@@ -503,7 +531,7 @@ function PagoClase() {
                                 <Edit3 className="w-7 h-7" />
                             </div>
 
-                            <h3 className="text-2xl font-black text-slate-900">
+                            <h3 id="confirmar-reserva-title" className="text-2xl font-black text-slate-900">
                                 Confirmar reserva
                             </h3>
 
@@ -567,6 +595,12 @@ function PagoClase() {
                                     </span>
                                 </div>
 
+                                {method === 'EFECTIVO' && (
+                                    <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800">
+                                        Estado inicial: pago pendiente hasta confirmación en recepción.
+                                    </div>
+                                )}
+
                             </div>
 
                             <div
@@ -619,6 +653,7 @@ function PagoClase() {
                         <div className="mt-6 flex gap-3">
 
                             <button
+                                type="button"
                                 onClick={() => setShowConfirm(false)}
                                 disabled={processing}
                                 className="
@@ -637,6 +672,7 @@ function PagoClase() {
                             </button>
 
                             <button
+                                type="button"
                                 onClick={handleConfirm}
                                 disabled={processing}
                                 className="

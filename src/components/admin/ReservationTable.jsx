@@ -14,10 +14,10 @@ const ReservationTable = ({
   };
 
   const paymentStatusColors = {
-    PAGADO: 'bg-green-100 text-green-800',
-    PENDIENTE: 'bg-amber-100 text-amber-800',
-    VENCIDO: 'bg-red-100 text-red-800',
-    REEMBOLSADO: 'bg-blue-100 text-blue-800',
+    PAGADO: 'bg-green-100 text-green-800 border-green-200',
+    PENDIENTE: 'bg-amber-100 text-amber-800 border-amber-200',
+    VENCIDO: 'bg-red-100 text-red-800 border-red-200',
+    REEMBOLSADO: 'bg-blue-100 text-blue-800 border-blue-200',
   };
 
   if (loading) {
@@ -56,7 +56,7 @@ const ReservationTable = ({
           </thead>
           <tbody>
             {data.map((reservation) => {
-              const statusConfig = statusColors[reservation.status] || statusColors.pendiente;
+              const statusConfig = statusColors[reservation.status] || statusColors.ACTIVA;
               const StatusIcon = statusConfig.icon;
 
               return (
@@ -82,23 +82,27 @@ const ReservationTable = ({
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${paymentStatusColors[reservation.paymentStatus] || paymentStatusColors.pendiente}`}>
-                      {reservation.paymentStatus}
+                    <span className={`px-3 py-1 rounded-full border text-xs font-semibold ${paymentStatusColors[reservation.paymentStatus] || paymentStatusColors.PENDIENTE}`}>
+                      Pago {reservation.paymentStatus}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-2">
                       <button
+                        type="button"
                         onClick={() => onEdit?.(reservation)}
+                        aria-label={`Editar reserva de ${reservation.userName}`}
                         className="p-2 hover:bg-brand-50 text-brand-600 rounded-lg transition-colors"
                       >
-                        <Edit2 size={16} />
+                        <Edit2 size={16} aria-hidden="true" />
                       </button>
                       <button
+                        type="button"
                         onClick={() => onDelete?.(reservation.id)}
+                        aria-label={`Eliminar reserva de ${reservation.userName}`}
                         className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
                       >
-                        <Trash2 size={16} />
+                        <Trash2 size={16} aria-hidden="true" />
                       </button>
                     </div>
                   </td>
@@ -112,7 +116,7 @@ const ReservationTable = ({
       {/* Mobile Cards */}
       <div className="md:hidden space-y-3">
         {data.map((reservation) => {
-          const statusConfig = statusColors[reservation.status] || statusColors.pendiente;
+          const statusConfig = statusColors[reservation.status] || statusColors.ACTIVA;
           const StatusIcon = statusConfig.icon;
 
           return (
@@ -138,24 +142,28 @@ const ReservationTable = ({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Pago:</span>
-                  <span className={`font-medium ${paymentStatusColors[reservation.paymentStatus] || paymentStatusColors.pendiente}`}>
-                    {reservation.paymentStatus}
+                  <span className={`rounded-full border px-2 py-0.5 font-medium ${paymentStatusColors[reservation.paymentStatus] || paymentStatusColors.PENDIENTE}`}>
+                    Pago {reservation.paymentStatus}
                   </span>
                 </div>
               </div>
 
               <div className="flex gap-2">
                 <button
+                  type="button"
                   onClick={() => onEdit?.(reservation)}
+                  aria-label={`Editar reserva de ${reservation.userName}`}
                   className="flex-1 p-2 bg-brand-50 text-brand-600 rounded-lg font-medium text-sm hover:bg-brand-100 transition-colors"
                 >
-                  <Edit2 size={16} className="mx-auto" />
+                  <Edit2 size={16} className="mx-auto" aria-hidden="true" />
                 </button>
                 <button
+                  type="button"
                   onClick={() => onDelete?.(reservation.id)}
+                  aria-label={`Eliminar reserva de ${reservation.userName}`}
                   className="flex-1 p-2 bg-red-50 text-red-600 rounded-lg font-medium text-sm hover:bg-red-100 transition-colors"
                 >
-                  <Trash2 size={16} className="mx-auto" />
+                  <Trash2 size={16} className="mx-auto" aria-hidden="true" />
                 </button>
               </div>
             </div>

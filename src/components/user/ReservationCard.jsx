@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, XCircle, Flag, CreditCard, Clock, Undo2, Calendar, MapPin, Search, User } from 'lucide-react';
+import { CheckCircle, XCircle, Flag, CreditCard, Clock, Undo2, Calendar, MapPin, Search, User, AlertTriangle } from 'lucide-react';
 import { reservationService } from '../../services/reservationService.js';
 
 const MOTIVOS_LABEL = {
@@ -209,7 +209,7 @@ function ReservationCard({ reservation, onRefresh }) {
             </span>
 
             {reservation.estado_pago && (
-              <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide border ${pagoColor}`}>
+              <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide border ${pagoColor}`} aria-label={`Estado del pago: ${pagoLabel}`}>
                 {pagoIcon} {pagoLabel}
               </span>
             )}
@@ -230,7 +230,9 @@ function ReservationCard({ reservation, onRefresh }) {
 
         <div className="mt-4 flex gap-3 border-t border-slate-100 pt-4">
           <button
+            type="button"
             onClick={() => navigate(`/cliente/reservas/${reservation.id}`)}
+            aria-label={`Ver detalle de la reserva ${reservation.codigo_reserva || ''}`}
             className="flex-1 rounded-xl bg-brand-50 py-2.5 text-xs font-bold text-[#004aab] transition hover:bg-brand-100"
           >
             <Search className="inline-block w-3.5 h-3.5 mr-1" /> Ver detalle
@@ -238,7 +240,9 @@ function ReservationCard({ reservation, onRefresh }) {
 
           {canCancel && (
             <button
+              type="button"
               onClick={handleOpenCancel}
+              aria-label={`Cancelar la reserva ${reservation.codigo_reserva || ''}`}
               className="flex-1 rounded-xl bg-red-50 py-2.5 text-xs font-bold text-red-600 transition hover:bg-red-100"
             >
               <XCircle className="inline-block w-3.5 h-3.5 mr-1" /> Cancelar
@@ -253,6 +257,8 @@ function ReservationCard({ reservation, onRefresh }) {
           onClick={(e) => { if (e.target === e.currentTarget) setShowCancelModal(false); }}
         >
           <div
+            role="dialog"
+            aria-modal="true"
             className="w-full sm:max-w-md rounded-[28px] bg-white shadow-2xl flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]"
             onClick={(e) => e.stopPropagation()}
           >
@@ -352,6 +358,7 @@ function ReservationCard({ reservation, onRefresh }) {
 
               <div className="mt-4 sm:mt-6 flex gap-2 sm:gap-3">
                 <button
+                  type="button"
                   onClick={() => setShowCancelModal(false)}
                   disabled={canceling}
                   className="flex-1 rounded-xl sm:rounded-2xl border-2 border-slate-100 py-3 sm:py-3.5 font-bold text-slate-600 text-xs sm:text-sm transition-all duration-200 hover:bg-slate-50 hover:border-slate-200 active:scale-[0.98] disabled:opacity-60"
@@ -359,6 +366,7 @@ function ReservationCard({ reservation, onRefresh }) {
                   Mantener reserva
                 </button>
                 <button
+                  type="button"
                   onClick={handleCancel}
                   disabled={canceling}
                   className="flex-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-red-500 to-red-600 py-3 sm:py-3.5 font-bold text-white text-xs sm:text-sm transition-all duration-200 hover:from-red-600 hover:to-red-700 active:scale-[0.98] shadow-lg shadow-red-200 disabled:opacity-60"
