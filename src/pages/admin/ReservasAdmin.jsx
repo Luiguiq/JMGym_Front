@@ -21,6 +21,9 @@ function ReservasAdmin() {
   const [payTarget, setPayTarget] = useState(null);
   const [paying, setPaying] = useState(false);
   const [payError, setPayError] = useState('');
+  const [refundTarget, setRefundTarget] = useState(null);
+  const [approvingRefund, setApprovingRefund] = useState(false);
+  const [refundError, setRefundError] = useState('');
 
   const adminMotivos = [
     { value: 'CLASE_CANCELADA', label: 'Clase cancelada' },
@@ -78,11 +81,56 @@ function ReservasAdmin() {
     }
   };
 
+  const handleApproveRefund = async () => {
+  if (!refundTarget) return;
+
+  setApprovingRefund(true);
+  setRefundError('');
+
+  try {
+
+    const updatedReservation =
+      await reservationService.approveRefund(
+        refundTarget.id
+      );
+
+    setReservations((prev) =>
+      prev.map((r) =>
+        r.id === updatedReservation.id
+          ? updatedReservation
+          : r
+      )
+    );
+
+    setRefundTarget(null);
+
+  } catch (error) {
+
+    setRefundError(
+      error?.message ||
+      'No se pudo aprobar el reembolso.'
+    );
+
+  } finally {
+
+    setApprovingRefund(false);
+
+  }
+};
+
   const pagadas = reservations.filter(
     (r) => r.estado_pago === 'PAGADO' && r.estado_reserva === 'ACTIVA'
   );
   const pendientes = reservations.filter(
     (r) => r.estado_pago === 'PENDIENTE' && r.estado_reserva === 'ACTIVA'
+  );
+  const reembolsos = reservations.filter(
+    (r) =>
+      r.estado_pago === 'REEMBOLSO_PENDIENTE'
+  );
+  console.log(
+    'REEMBOLSOS',
+    reembolsos
   );
 
   const filtered =
@@ -90,7 +138,11 @@ function ReservasAdmin() {
       ? pagadas
       : filterTab === 'pendientes'
         ? pendientes
-        : reservations.filter((r) => r.estado_reserva === 'ACTIVA');
+        : filterTab === 'reembolsos'
+          ? reembolsos
+          : reservations.filter(
+              (r) => r.estado_reserva === 'ACTIVA'
+            );
 
   const searched = search
     ? filtered.filter(
@@ -110,7 +162,12 @@ function ReservasAdmin() {
   useEffect(() => { setPage(1); }, [filterTab, search]);
 
   function renderCard(r) {
-    const isPending = r.estado_pago === 'PENDIENTE';
+    const isPending =
+      r.estado_pago === 'PENDIENTE';
+
+    const isRefundPending =
+      r.estado_pago === 'REEMBOLSO_PENDIENTE';
+
     const fotoUrl = r.userPhoto
       ? `${BACKEND_URL}${r.userPhoto}`
       : null;
@@ -136,12 +193,22 @@ function ReservasAdmin() {
           </div>
           <span
             className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold ${
-              isPending
-                ? 'bg-orange-50 text-orange-800 border border-orange-200'
-                : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+              isRefundPending
+                ? 'bg-amber-100 text-amber-700'
+                : isPending
+                ? 'bg-orange-50 text-orange-700'
+                : r.estado_pago === 'REEMBOLSADO'
+                ? 'bg-purple-100 text-purple-700'
+                : 'bg-emerald-50 text-emerald-700'
             }`}
           >
-            {isPending ? 'Pago pendiente' : 'Pago confirmado'}
+            {isRefundPending
+              ? 'Reembolso pendiente'
+              : r.estado_pago === 'REEMBOLSADO'
+              ? 'Reembolsado'
+              : isPending
+              ? 'Pendiente'
+              : 'Pagado'}
           </span>
         </div>
 
@@ -213,7 +280,29 @@ function ReservasAdmin() {
             </button>
           </div>
         )}
+        {isRefundPending && (
+          <div className="mt-3">
+
+            <button
+              onClick={() => {
+                setRefundTarget(r);
+                setRefundError('');
+              }}
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 py-2.5 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100"
+            >
+              <CheckCircle size={16} />
+              Aprobar reembolso
+            </button>
+
+          </div>
+        )}
       </div>
+    );
+
+    console.log(
+      'CARD',
+      r.codigo_reserva,
+      r.estado_pago
     );
   }
 
@@ -260,20 +349,29 @@ function ReservasAdmin() {
             { key: 'todas', label: 'Todas' },
             { key: 'pagadas', label: 'Pagadas' },
             { key: 'pendientes', label: 'Pendientes' },
+            { key: 'reembolsos', label: 'Reembolsos' },
           ].map((t) => (
             <button
               type="button"
               key={t.key}
-              onClick={() => setFilterTab(t.key)}
-              aria-pressed={filterTab === t.key}
-              aria-label={`Mostrar reservas ${t.label.toLowerCase()}`}
+              onClick={() => {
+                setFilterTab(t.key);
+                setPage(1);
+              }}
               className={`shrink-0 rounded-full px-5 py-2 text-sm font-bold transition ${
                 filterTab === t.key
-                  ? 'bg-brand-600 text-white shadow-md'
+                  ? t.key === 'reembolsos'
+                    ? 'bg-orange-500 text-white shadow-md'
+                    : 'bg-brand-600 text-white shadow-md'
                   : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
               }`}
             >
               {t.label}
+              {t.key === 'reembolsos' && reembolsos.length > 0 && (
+                <span className="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-xs">
+                  {reembolsos.length}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -331,6 +429,29 @@ function ReservasAdmin() {
                   .filter((r) => r.estado_pago === 'PENDIENTE')
                   .map(renderCard)}
               </div>
+            </section>
+          )}
+
+          {pageItems.some(
+            (r) => r.estado_pago === 'REEMBOLSO_PENDIENTE'
+          ) && (
+            <section>
+
+              <h3 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-amber-600">
+                <span className="h-2 w-2 rounded-full bg-amber-500" />
+                Solicitudes de reembolso
+              </h3>
+
+              <div className="space-y-3">
+                {pageItems
+                  .filter(
+                    (r) =>
+                      r.estado_pago ===
+                      'REEMBOLSO_PENDIENTE'
+                  )
+                  .map(renderCard)}
+              </div>
+
             </section>
           )}
 
@@ -440,6 +561,85 @@ function ReservasAdmin() {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {refundTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+
+          <div className="w-full max-w-md rounded-3xl bg-white p-6">
+
+            <h3 className="text-xl font-black">
+              Aprobar reembolso
+            </h3>
+
+            <p className="mt-2 text-sm text-slate-600">
+              ¿Deseas aprobar el reembolso de la reserva
+              <strong>
+                {' '}
+                #{refundTarget.codigo_reserva}
+              </strong>
+              ?
+            </p>
+
+            <div className="mt-4 rounded-xl bg-slate-50 p-4">
+
+              <p>
+                Cliente:
+                <strong>
+                  {' '}
+                  {refundTarget.userName}
+                </strong>
+              </p>
+
+              <p>
+                Clase:
+                <strong>
+                  {' '}
+                  {refundTarget.className}
+                </strong>
+              </p>
+
+              <p>
+                Monto:
+                <strong>
+                  {' '}
+                  S/ {Number(refundTarget.monto).toFixed(2)}
+                </strong>
+              </p>
+
+            </div>
+
+            {refundError && (
+              <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                {refundError}
+              </div>
+            )}
+
+            <div className="mt-5 flex gap-3">
+
+              <button
+                onClick={() => setRefundTarget(null)}
+                disabled={approvingRefund}
+                className="flex-1 rounded-xl border border-slate-200 py-3 font-bold"
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={handleApproveRefund}
+                disabled={approvingRefund}
+                className="flex-1 rounded-xl bg-emerald-600 py-3 font-bold text-white"
+              >
+                {approvingRefund
+                  ? 'Procesando...'
+                  : 'Aprobar'}
+              </button>
+
+            </div>
+
+          </div>
+
         </div>
       )}
 
