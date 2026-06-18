@@ -65,7 +65,6 @@ function ReservasAdmin() {
     if (!payTarget) return;
     setPaying(true);
     setPayError('');
-
     try {
       const updatedReservation = await reservationService.markAsPaid(payTarget.id);
       setReservations((prev) =>
@@ -73,7 +72,7 @@ function ReservasAdmin() {
       );
       setPayTarget(null);
     } catch (error) {
-      setPayError(error?.message || 'No se pudo confirmar el pago. Intenta nuevamente.');
+      setPayError(error?.message || 'No se pudo marcar la reserva como pagada. Intenta nuevamente.');
     } finally {
       setPaying(false);
     }
@@ -364,6 +363,86 @@ function ReservasAdmin() {
           )}
         </div>
       )}
+      {payTarget && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 sm:p-6"
+          onClick={(e) => { if (e.target === e.currentTarget) setPayTarget(null); }}
+        >
+          <div
+            className="w-full sm:max-w-sm rounded-[28px] bg-white shadow-2xl animate-[fadeIn_0.2s_ease-out]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-5 py-5 sm:p-6">
+              <div className="text-center">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 shadow-inner">
+                  <CheckCircle className="w-7 h-7 text-emerald-500" />
+                </div>
+                <h3 className="text-lg sm:text-2xl font-black text-slate-900">Colocar como pagado</h3>
+                <p className="mt-1.5 text-xs sm:text-sm text-slate-500 leading-relaxed">
+                  ¿Confirmas cambiar esta reserva de pendiente a pagado?
+                </p>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-3 sm:p-4">
+                <div className="space-y-2 text-xs sm:text-sm">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-500 shrink-0">Cliente</span>
+                    <span className="font-bold text-slate-900 text-right truncate max-w-[180px]">{payTarget.userName}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-500 shrink-0">Clase</span>
+                    <span className="font-bold text-slate-900 text-right truncate max-w-[180px]">{payTarget.className}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-500 shrink-0">Código</span>
+                    <span className="font-mono font-semibold text-slate-700 text-right">#{payTarget.codigo_reserva}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-500 shrink-0">Monto</span>
+                    <span className="font-bold text-slate-900 text-right">S/ {Number(payTarget.monto || 0).toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {payError && (
+                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
+                  {payError}
+                </div>
+              )}
+
+              <div className="mt-4 flex gap-2 sm:gap-3">
+                <button
+                  onClick={() => { setPayTarget(null); setPayError(''); }}
+                  disabled={paying}
+                  className="flex-1 rounded-xl sm:rounded-2xl border-2 border-slate-100 py-3 sm:py-3.5 font-bold text-slate-600 text-xs sm:text-sm transition-all duration-200 hover:bg-slate-50 hover:border-slate-200 active:scale-[0.98] disabled:opacity-60"
+                >
+                  Volver
+                </button>
+                <button
+                  onClick={handleMarkAsPaid}
+                  disabled={paying}
+                  className="flex-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 sm:py-3.5 font-bold text-white text-xs sm:text-sm transition-all duration-200 hover:from-emerald-600 hover:to-emerald-700 active:scale-[0.98] shadow-lg shadow-emerald-200 disabled:opacity-60"
+                >
+                  {paying ? (
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-3.5 w-3.5 sm:h-4 sm:w-4" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Guardando...
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center justify-center gap-1.5">
+                      <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Sí, pagado
+                    </span>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {cancelTarget && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 sm:p-6"

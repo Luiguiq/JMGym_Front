@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, X } from 'lucide-react';
+import { AlertTriangle, Plus, Search, Trash2, X } from 'lucide-react';
 import ClassTable from '../../components/admin/ClassTable';
 import ClassForm from '../../components/admin/ClassForm';
 import Loader from '../../components/admin/Loader';
@@ -105,14 +105,25 @@ const ClasesAdmin = () => {
     }
   };
 
-  const handleDeleteClass = async (id) => {
-    if (window.confirm('¿Está seguro de que desea eliminar esta clase?')) {
-      try {
-        await classService.deleteClass(id);
-        await loadClasses();
-      } catch (error) {
-        console.error('Error eliminando clase:', error);
-      }
+  const handleDeleteClass = (clase) => {
+    setDeleteTarget(clase);
+    setDeleteError('');
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      setDeleting(true);
+      setDeleteError('');
+      await classService.deleteClass(deleteTarget.id);
+      await loadClasses();
+      setDeleteTarget(null);
+    } catch (error) {
+      console.error('Error eliminando clase:', error);
+      setDeleteError(error.message || 'No se pudo eliminar la clase');
+    } finally {
+      setDeleting(false);
     }
   };
 
