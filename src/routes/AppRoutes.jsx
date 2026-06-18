@@ -28,6 +28,7 @@ import Perfil from '../pages/user/Perfil.jsx';
 import AyudaSoporte from '../pages/user/AyudaSoporte.jsx';
 import CambiarAsiento from '../pages/user/CambiarAsiento.jsx';
 import CancelacionesAdmin from '../pages/admin/CancelacionesAdmin.jsx';
+import CategoriasAdmin from '../pages/admin/CategoriasAdmin.jsx';
 import Configuraciones from '../pages/user/Configuraciones.jsx';
 import EditarPerfil from '../pages/user/EditarPerfil.jsx';
 import Pagos from '../pages/user/Pagos.jsx';
@@ -95,6 +96,7 @@ function AppRoutes() {
         <Route path="clases/:id/editar" element={<EditarClase />} />
         <Route path="reservas" element={<ReservasAdmin />} />
         <Route path="instructores" element={<InstructoresAdmin />} />
+        <Route path="categorias" element={<CategoriasAdmin />} />
         <Route path="cancelaciones" element={<CancelacionesAdmin />} />
         <Route path="usuarios" element={<UsuariosAdmin />} />
         <Route path="crear-admin" element={<CrearAdmin />} />

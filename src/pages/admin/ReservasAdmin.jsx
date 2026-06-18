@@ -332,7 +332,7 @@ function ReservasAdmin() {
       </div>
 
       <div className="relative">
-        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
         <input
           type="text"
           aria-label="Buscar reservas por cliente, clase o código"
@@ -343,7 +343,7 @@ function ReservasAdmin() {
         />
       </div>
 
-      <div className="-mx-4 px-4 overflow-x-auto pb-1 sm:mx-0 sm:px-0">
+      <div className="-mx-4 px-4 overflow-x-auto pb-1 sm:mx-0 sm:px-0" role="tablist" aria-label="Filtros de reservas">
         <div className="flex gap-2 min-w-max sm:min-w-0">
           {[
             { key: 'todas', label: 'Todas' },
@@ -354,6 +354,8 @@ function ReservasAdmin() {
             <button
               type="button"
               key={t.key}
+              role="tab"
+              aria-selected={filterTab === t.key}
               onClick={() => {
                 setFilterTab(t.key);
                 setPage(1);
@@ -392,7 +394,7 @@ function ReservasAdmin() {
         </div>
       ) : pageItems.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <Calendar size={48} className="text-slate-300" />
+          <Calendar size={48} className="text-slate-300" aria-hidden="true" />
           <p className="text-lg font-bold text-slate-500">
             {search ? 'Sin resultados' : 'No hay reservas activas'}
           </p>
@@ -650,14 +652,17 @@ function ReservasAdmin() {
         >
           <div
             className="w-full sm:max-w-md rounded-[28px] bg-white shadow-2xl flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="admin-cancel-title"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="overflow-y-auto px-4 sm:px-6 py-4 sm:p-6">
               <div className="text-center">
                 <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner">
-                  <AlertTriangle className="w-7 h-7 text-red-500" />
+                  <AlertTriangle className="w-7 h-7 text-red-500" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg sm:text-2xl font-black text-slate-900">Cancelar reserva</h3>
+                <h3 id="admin-cancel-title" className="text-lg sm:text-2xl font-black text-slate-900">Cancelar reserva</h3>
                 <p className="mt-1.5 text-xs sm:text-sm text-slate-500 leading-relaxed">
                   Estás a punto de cancelar la reserva de{' '}
                   <span className="font-bold text-slate-700">{cancelTarget.userName}</span>.
@@ -745,7 +750,7 @@ function ReservasAdmin() {
               )}
 
               {cancelError && (
-                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
+                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700" role="alert">
                   {cancelError}
                 </div>
               )}

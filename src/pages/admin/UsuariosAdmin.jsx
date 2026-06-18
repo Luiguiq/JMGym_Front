@@ -96,9 +96,9 @@ export default function UsuariosAdmin() {
       </div>
 
       {alert && (
-        <div className={`mb-4 p-3 rounded-lg text-sm font-medium ${alert.type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
-          {alert.message}
-          <button className="float-right" onClick={() => setAlert(null)}>×</button>
+        <div role="alert" className={`mb-4 p-3 rounded-lg text-sm font-medium flex items-center justify-between ${alert.type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+          <span>{alert.message}</span>
+          <button className="text-current opacity-60 hover:opacity-100 flex-shrink-0 ml-3" onClick={() => setAlert(null)} aria-label="Cerrar mensaje">×</button>
         </div>
       )}
 
@@ -111,13 +111,21 @@ export default function UsuariosAdmin() {
       )}
 
       {showHistory && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-2xl bg-white rounded-xl shadow-xl p-4 sm:p-6 max-h-[80vh] overflow-y-auto">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowHistory(null); }}
+        >
+          <div
+            className="w-full max-w-2xl bg-white rounded-xl shadow-xl p-4 sm:p-6 max-h-[80vh] overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="history-modal-title"
+          >
             <div className="flex items-center justify-between mb-4 gap-3">
-              <h2 className="text-base sm:text-lg font-bold text-slate-800 truncate">
+              <h2 id="history-modal-title" className="text-base sm:text-lg font-bold text-slate-800 truncate">
                 Historial de {showHistory.nombre_completo}
               </h2>
-              <button onClick={() => setShowHistory(null)} className="text-slate-400 hover:text-slate-600 text-xl flex-shrink-0">×</button>
+              <button onClick={() => setShowHistory(null)} className="text-slate-400 hover:text-slate-600 text-xl flex-shrink-0 p-1" aria-label="Cerrar historial">×</button>
             </div>
             {history.length === 0 ? (
               <p className="text-slate-400 text-center py-8">Sin reservas registradas</p>
@@ -126,11 +134,11 @@ export default function UsuariosAdmin() {
                 <table className="w-full text-sm min-w-[480px]">
                   <thead>
                     <tr className="bg-slate-50 text-slate-600 uppercase text-xs tracking-wider">
-                      <th className="text-left px-3 py-2">#</th>
-                      <th className="text-left px-3 py-2">Fecha Reserva</th>
-                      <th className="text-left px-3 py-2">Fecha Clase</th>
-                      <th className="text-center px-3 py-2">Estado</th>
-                      <th className="text-right px-3 py-2">Monto</th>
+                      <th scope="col" className="text-left px-3 py-2">#</th>
+                      <th scope="col" className="text-left px-3 py-2">Fecha Reserva</th>
+                      <th scope="col" className="text-left px-3 py-2">Fecha Clase</th>
+                      <th scope="col" className="text-center px-3 py-2">Estado</th>
+                      <th scope="col" className="text-right px-3 py-2">Monto</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -159,12 +167,14 @@ export default function UsuariosAdmin() {
         <div className="p-3 sm:p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-3">
           <input
             type="text"
+            aria-label="Buscar usuarios por nombre, correo o DNI"
             placeholder="Buscar por nombre, correo o DNI..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 min-w-[200px] px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
           <select
+            aria-label="Filtrar por estado de usuario"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
@@ -179,12 +189,12 @@ export default function UsuariosAdmin() {
           <table className="w-full text-sm min-w-[720px]">
             <thead>
               <tr className="bg-slate-50 text-slate-600 uppercase text-xs tracking-wider">
-                <th className="text-left px-4 py-3">Nombre</th>
-                <th className="text-left px-4 py-3">DNI</th>
-                <th className="text-left px-4 py-3">Correo</th>
-                <th className="text-left px-4 py-3">Teléfono</th>
-                <th className="text-center px-4 py-3">Estado</th>
-                <th className="text-center px-4 py-3">Acciones</th>
+                <th scope="col" className="text-left px-4 py-3">Nombre</th>
+                <th scope="col" className="text-left px-4 py-3">DNI</th>
+                <th scope="col" className="text-left px-4 py-3">Correo</th>
+                <th scope="col" className="text-left px-4 py-3">Teléfono</th>
+                <th scope="col" className="text-center px-4 py-3">Estado</th>
+                <th scope="col" className="text-center px-4 py-3">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -203,18 +213,21 @@ export default function UsuariosAdmin() {
                     <button
                       onClick={() => { setEditUser(u); setShowForm(true); }}
                       className="text-brand-500 hover:text-brand-600 font-medium mr-2 sm:mr-3"
+                      aria-label={`Editar usuario ${u.nombre_completo}`}
                     >
                       Editar
                     </button>
                     <button
                       onClick={() => handleToggleBlock(u.id_usuario)}
                       className={`font-medium mr-2 sm:mr-3 ${u.estado === 'ACTIVO' ? 'text-red-500 hover:text-red-600' : 'text-green-500 hover:text-green-600'}`}
+                      aria-label={u.estado === 'ACTIVO' ? `Bloquear usuario ${u.nombre_completo}` : `Desbloquear usuario ${u.nombre_completo}`}
                     >
                       {u.estado === 'ACTIVO' ? 'Bloquear' : 'Desbloquear'}
                     </button>
                     <button
                       onClick={() => handleShowHistory(u)}
                       className="text-slate-500 hover:text-slate-700 font-medium"
+                      aria-label={`Ver historial de ${u.nombre_completo}`}
                     >
                       Historial
                     </button>

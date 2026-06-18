@@ -122,8 +122,12 @@ function MisReservas() {
       <p className="mt-1 text-sm text-slate-500 sm:text-base">Consulta y gestiona tus clases reservadas</p>
 
       {/* Tabs */}
-      <div className="mt-6 inline-flex rounded-2xl bg-white p-1 shadow-sm border border-slate-100 overflow-x-auto">
+      <div className="mt-6 inline-flex rounded-2xl bg-white p-1 shadow-sm border border-slate-100 overflow-x-auto" role="tablist" aria-label="Secciones de reservas">
         <button
+          role="tab"
+          id="tab-activas"
+          aria-selected={activeTab === 'activas'}
+          aria-controls="panel-activas"
           onClick={() => setActiveTab('activas')}
           className={`px-5 py-3 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
             activeTab === 'activas'
@@ -131,9 +135,13 @@ function MisReservas() {
               : 'text-slate-500 hover:text-slate-700'
           }`}
         >
-          <Calendar size={18} className="inline" /> Activas ({activeReservations.length})
+          <Calendar size={18} className="inline" aria-hidden="true" /> Activas ({activeReservations.length})
         </button>
         <button
+          role="tab"
+          id="tab-historial"
+          aria-selected={activeTab === 'historial'}
+          aria-controls="panel-historial"
           onClick={() => setActiveTab('historial')}
           className={`px-5 py-3 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
             activeTab === 'historial'
@@ -141,26 +149,26 @@ function MisReservas() {
               : 'text-slate-500 hover:text-slate-700'
           }`}
         >
-          <Clock size={18} className="inline" /> Historial ({rawHistory.length})
+          <Clock size={18} className="inline" aria-hidden="true" /> Historial ({rawHistory.length})
         </button>
       </div>
 
       {/* Stats - history */}
       {activeTab === 'historial' && rawHistory.length > 0 && (
         <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="rounded-2xl bg-white border border-slate-100 p-4 shadow-sm">
+          <div className="rounded-2xl bg-white border border-slate-100 p-4 shadow-sm" role="status">
             <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Total</p>
             <p className="text-xl font-black text-slate-800">{stats.total}</p>
           </div>
-          <div className="rounded-2xl bg-white border border-slate-100 p-4 shadow-sm">
+          <div className="rounded-2xl bg-white border border-slate-100 p-4 shadow-sm" role="status">
             <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Asistidas</p>
             <p className="text-xl font-black text-emerald-600">{stats.completed}</p>
           </div>
-          <div className="rounded-2xl bg-white border border-slate-100 p-4 shadow-sm">
+          <div className="rounded-2xl bg-white border border-slate-100 p-4 shadow-sm" role="status">
             <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Canceladas</p>
             <p className="text-xl font-black text-red-500">{stats.cancelled}</p>
           </div>
-          <div className="rounded-2xl bg-white border border-slate-100 p-4 shadow-sm">
+          <div className="rounded-2xl bg-white border border-slate-100 p-4 shadow-sm" role="status">
             <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Gastado</p>
             <p className="text-xl font-black text-[#004aab]">S/ {stats.totalSpent.toFixed(2)}</p>
           </div>
@@ -172,9 +180,10 @@ function MisReservas() {
         <div className="mt-5 space-y-3">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
               <input
                 type="text"
+                aria-label="Buscar reservas por clase o instructor"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Buscar por clase o instructor..."
@@ -183,6 +192,7 @@ function MisReservas() {
             </div>
 
             <select
+              aria-label="Filtrar por estado de reserva"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="rounded-xl border border-slate-200 bg-white py-2.5 px-4 text-sm font-medium text-slate-700 outline-none transition focus:border-[#004aab] focus:ring-2 focus:ring-blue-100"
@@ -193,6 +203,7 @@ function MisReservas() {
             </select>
 
             <select
+              aria-label="Ordenar por fecha"
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
               className="rounded-xl border border-slate-200 bg-white py-2.5 px-4 text-sm font-medium text-slate-700 outline-none transition focus:border-[#004aab] focus:ring-2 focus:ring-blue-100"
@@ -216,47 +227,65 @@ function MisReservas() {
       {/* Content */}
       <div className="mt-5 sm:mt-6">
         {loading ? (
-          <p className="text-slate-400">Cargando reservas...</p>
+          <p className="text-slate-400" role="status">Cargando reservas...</p>
         ) : error ? (
-          <p className="text-red-500">{error}</p>
-        ) : activeTab === 'activas' && activeReservations.length === 0 ? (
-          <div className="rounded-3xl bg-white border border-slate-100 p-10 text-center shadow-sm">
-            <ClipboardList size={48} className="mx-auto mb-4 text-slate-300" />
-            <h3 className="text-lg font-bold text-slate-700">No tienes reservas activas</h3>
-            <p className="mt-2 text-sm text-slate-400">Cuando reserves una clase aparecerá aquí.</p>
-          </div>
-        ) : activeTab === 'historial' && historyReservations.length === 0 ? (
-          <div className="rounded-3xl bg-white border border-slate-100 p-10 text-center shadow-sm">
-            <ScrollText size={48} className="mx-auto mb-4 text-slate-300" />
-            <h3 className="text-lg font-bold text-slate-700">
-              {hasActiveFilters ? 'Sin resultados' : 'No tienes historial de reservas'}
-            </h3>
-            <p className="mt-2 text-sm text-slate-400">
-              {hasActiveFilters
-                ? 'Intenta con otros términos de búsqueda.'
-                : 'Las reservas completadas o canceladas aparecerán aquí.'}
-            </p>
-          </div>
+          <p className="text-red-500" role="alert">{error}</p>
         ) : activeTab === 'activas' ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
-            {activeReservations.map((res) => (
-              <ReservationCard reservation={res} key={res.id} onRefresh={loadReservations} />
-            ))}
+          <div
+            role="tabpanel"
+            id="panel-activas"
+            aria-labelledby="tab-activas"
+            aria-live="polite"
+          >
+            {activeReservations.length === 0 ? (
+              <div className="rounded-3xl bg-white border border-slate-100 p-10 text-center shadow-sm">
+                <ClipboardList size={48} className="mx-auto mb-4 text-slate-300" aria-hidden="true" />
+                <h3 className="text-lg font-bold text-slate-700">No tienes reservas activas</h3>
+                <p className="mt-2 text-sm text-slate-400">Cuando reserves una clase aparecerá aquí.</p>
+              </div>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+                {activeReservations.map((res) => (
+                  <ReservationCard reservation={res} key={res.id} onRefresh={loadReservations} />
+                ))}
+              </div>
+            )}
           </div>
         ) : (
-          <div className="space-y-6">
-            {historyGroups.map(([monthKey, group]) => (
-              <section key={monthKey}>
-                <h3 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 mb-3 px-1">
-                  {formatMonthLabel(monthKey)} · {group.length} reserva{group.length !== 1 ? 's' : ''}
+          <div
+            role="tabpanel"
+            id="panel-historial"
+            aria-labelledby="tab-historial"
+            aria-live="polite"
+          >
+            {historyReservations.length === 0 ? (
+              <div className="rounded-3xl bg-white border border-slate-100 p-10 text-center shadow-sm">
+                <ScrollText size={48} className="mx-auto mb-4 text-slate-300" aria-hidden="true" />
+                <h3 className="text-lg font-bold text-slate-700">
+                  {hasActiveFilters ? 'Sin resultados' : 'No tienes historial de reservas'}
                 </h3>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
-                  {group.map((res) => (
-                    <ReservationCard reservation={res} key={res.id} onRefresh={loadReservations} />
-                  ))}
-                </div>
-              </section>
-            ))}
+                <p className="mt-2 text-sm text-slate-400">
+                  {hasActiveFilters
+                    ? 'Intenta con otros términos de búsqueda.'
+                    : 'Las reservas completadas o canceladas aparecerán aquí.'}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {historyGroups.map(([monthKey, group]) => (
+                  <section key={monthKey} aria-label={`${formatMonthLabel(monthKey)} - ${group.length} reservas`}>
+                    <h3 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 mb-3 px-1">
+                      {formatMonthLabel(monthKey)} · {group.length} reserva{group.length !== 1 ? 's' : ''}
+                    </h3>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+                      {group.map((res) => (
+                        <ReservationCard reservation={res} key={res.id} onRefresh={loadReservations} />
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

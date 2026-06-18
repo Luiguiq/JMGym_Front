@@ -105,14 +105,14 @@ function Pagos() {
         )}
 
         {loading ? (
-          <div className="space-y-3">
+          <div className="space-y-3" role="status" aria-label="Cargando pagos">
             {[1, 2, 3].map((i) => (
               <div key={i} className="h-28 animate-pulse rounded-2xl bg-slate-200" />
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="mt-16 flex flex-col items-center gap-3 text-center">
-            <CreditCard size={48} className="text-slate-300" />
+            <CreditCard size={48} className="text-slate-300" aria-hidden="true" />
             <p className="text-lg font-bold text-slate-500">
               {search ? 'Sin resultados' : 'Aún no tienes pagos'}
             </p>
@@ -121,7 +121,7 @@ function Pagos() {
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-3" aria-live="polite">
             {filtered.map((p) => {
               const estadoStyle = ESTADO_STYLES[p.estado] || ESTADO_STYLES.PENDIENTE;
               const MetodoIcon = METODO_ICONS[p.metodoPago] || CreditCard;
