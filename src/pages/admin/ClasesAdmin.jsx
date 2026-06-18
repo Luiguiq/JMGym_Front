@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, X } from 'lucide-react';
 import ClassTable from '../../components/admin/ClassTable';
 import ClassForm from '../../components/admin/ClassForm';
 import Loader from '../../components/admin/Loader';
 import { classService } from '../../services/classService';
+import { reservationService } from '../../services/reservationService';
 
 const ClasesAdmin = () => {
   const navigate = useNavigate();
@@ -15,6 +16,10 @@ const ClasesAdmin = () => {
   const [statusFilter, setStatusFilter] = useState('todas');
   const [showForm, setShowForm] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [usersModalClass, setUsersModalClass] = useState(null);
+  const [classUsers, setClassUsers] = useState([]);
+  const [loadingClassUsers, setLoadingClassUsers] = useState(false);
+  const [classUsersError, setClassUsersError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
@@ -29,8 +34,24 @@ const ClasesAdmin = () => {
   const loadClasses = async () => {
     try {
       setLoading(true);
-      const data = await classService.getAllForAdmin();
-      setClasses(data);
+      const [classesData, reservationsData] = await Promise.all([
+        classService.getAllForAdmin(),
+        reservationService.getAllReservations(),
+      ]);
+
+      const enrolledByClass = reservationsData.reduce((acc, reservation) => {
+        if (reservation.estado_reserva !== 'ACTIVA') return acc;
+
+        acc[reservation.id_clase] = (acc[reservation.id_clase] || 0) + 1;
+        return acc;
+      }, {});
+
+      setClasses(
+        classesData.map((clase) => ({
+          ...clase,
+          enrolled: enrolledByClass[clase.id] || 0,
+        }))
+      );
     } catch (error) {
       console.error('Error cargando clases:', error);
     } finally {
@@ -100,6 +121,33 @@ const ClasesAdmin = () => {
     setShowForm(true);
   };
 
+  const handleViewClassUsers = async (clase) => {
+    setUsersModalClass(clase);
+    setClassUsers([]);
+    setClassUsersError('');
+    setLoadingClassUsers(true);
+
+    try {
+      const reservations = await reservationService.getAllReservations();
+      const users = reservations
+        .filter((reservation) => reservation.id_clase === clase.id && reservation.estado_reserva === 'ACTIVA')
+        .map((reservation) => reservation.usuarioNombre || reservation.userName)
+        .filter(Boolean);
+
+      setClassUsers([...new Set(users)]);
+    } catch (error) {
+      setClassUsersError(error?.message || 'Error cargando usuarios de la clase');
+    } finally {
+      setLoadingClassUsers(false);
+    }
+  };
+
+  const handleCloseUsersModal = () => {
+    setUsersModalClass(null);
+    setClassUsers([]);
+    setClassUsersError('');
+  };
+
   const paginatedClasses = filteredClasses.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
@@ -156,6 +204,7 @@ const ClasesAdmin = () => {
           <ClassTable
             data={paginatedClasses}
             onEdit={handleEditClass}
+            onViewUsers={handleViewClassUsers}
             onDelete={handleDeleteClass}
             pagination={{
               page: currentPage,
@@ -177,6 +226,47 @@ const ClasesAdmin = () => {
           }}
           loading={loading}
         />
+      )}
+
+      {usersModalClass && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
+            <div className="border-b border-slate-200 px-5 py-4 flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900">Usuarios de la clase</h2>
+                <p className="text-sm text-slate-500 mt-1">{usersModalClass.name}</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleCloseUsersModal}
+                className="text-slate-400 hover:text-slate-700 transition-colors"
+                aria-label="Cerrar usuarios de la clase"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-5">
+              {loadingClassUsers ? (
+                <div className="flex justify-center py-8">
+                  <Loader size="sm" text="Cargando usuarios..." />
+                </div>
+              ) : classUsersError ? (
+                <p className="text-sm text-red-600">{classUsersError}</p>
+              ) : classUsers.length > 0 ? (
+                <ul className="divide-y divide-slate-100 rounded-xl border border-slate-100 overflow-hidden">
+                  {classUsers.map((userName) => (
+                    <li key={userName} className="px-4 py-3 text-sm font-medium text-slate-800">
+                      {userName}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-slate-600">No hay usuarios registrados para esta clase.</p>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
