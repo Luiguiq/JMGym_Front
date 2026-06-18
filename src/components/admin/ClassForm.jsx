@@ -164,31 +164,40 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
           <h2 className="text-lg sm:text-2xl font-bold text-slate-900">
             {initialData ? 'Editar Clase' : 'Crear Nueva Clase'}
           </h2>
-          <button onClick={handleClose} className="p-2 hover:bg-slate-100 rounded-lg transition-colors flex-shrink-0">
-            <X size={20} className="text-slate-600" />
+          <button onClick={handleClose} className="p-2 hover:bg-slate-100 rounded-lg transition-colors flex-shrink-0" aria-label="Cerrar formulario">
+            <X size={20} className="text-slate-600" aria-hidden="true" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-5" noValidate>
           {/* Nombre */}
           <div>
-            <label className="block text-sm font-semibold text-slate-900 mb-2">Nombre de la Clase</label>
+            <label htmlFor="class-nombre" className="block text-sm font-semibold text-slate-900 mb-2">
+              Nombre de la Clase <span className="text-red-500" aria-hidden="true">*</span>
+            </label>
             <input
+              id="class-nombre"
               type="text"
               name="nombre_clase"
               value={formData.nombre_clase}
               onChange={handleChange}
+              required
+              aria-required="true"
+              aria-invalid={!!errors.nombre_clase}
+              aria-describedby={errors.nombre_clase ? 'error-nombre_clase' : undefined}
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 ${errors.nombre_clase ? 'border-red-500' : 'border-slate-300'}`}
               placeholder="ej: Zumba"
             />
-            {errors.nombre_clase && <p className="text-red-600 text-xs mt-1">{errors.nombre_clase}</p>}
+            {errors.nombre_clase && <p id="error-nombre_clase" className="text-red-600 text-xs mt-1" role="alert">{errors.nombre_clase}</p>}
           </div>
 
           {/* Instructor y Género */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-4 border-0 p-0 m-0">
+            <legend className="sr-only">Instructor y tipo de clase</legend>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Instructor</label>
+              <label htmlFor="class-instructor" className="block text-sm font-semibold text-slate-900 mb-2">Instructor</label>
               <select
+                id="class-instructor"
                 name="id_instructor"
                 value={formData.id_instructor}
                 onChange={handleChange}
@@ -200,8 +209,9 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
               </select>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Género / Tipo</label>
+              <label htmlFor="class-genero" className="block text-sm font-semibold text-slate-900 mb-2">Género / Tipo</label>
               <select
+                id="class-genero"
                 name="id_genero"
                 value={formData.id_genero}
                 onChange={handleChange}
@@ -212,12 +222,13 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
                 ))}
               </select>
             </div>
-          </div>
+          </fieldset>
 
           {/* Descripción */}
           <div>
-            <label className="block text-sm font-semibold text-slate-900 mb-2">Descripción</label>
+            <label htmlFor="class-descripcion" className="block text-sm font-semibold text-slate-900 mb-2">Descripción</label>
             <textarea
+              id="class-descripcion"
               name="descripcion"
               value={formData.descripcion}
               onChange={handleChange}
@@ -228,69 +239,107 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
           </div>
 
           {/* Fecha y Horarios */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <fieldset className="grid grid-cols-1 md:grid-cols-3 gap-4 border-0 p-0 m-0">
+            <legend className="sr-only">Fecha y horario</legend>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Fecha</label>
+              <label htmlFor="class-fecha" className="block text-sm font-semibold text-slate-900 mb-2">
+                Fecha <span className="text-red-500" aria-hidden="true">*</span>
+              </label>
               <input
+                id="class-fecha"
                 type="date"
                 name="fecha"
                 value={formData.fecha}
                 onChange={handleChange}
+                required
+                aria-required="true"
+                aria-invalid={!!errors.fecha}
+                aria-describedby={errors.fecha ? 'error-fecha' : undefined}
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 ${errors.fecha ? 'border-red-500' : 'border-slate-300'}`}
               />
-              {errors.fecha && <p className="text-red-600 text-xs mt-1">{errors.fecha}</p>}
+              {errors.fecha && <p id="error-fecha" className="text-red-600 text-xs mt-1" role="alert">{errors.fecha}</p>}
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Hora Inicio</label>
+              <label htmlFor="class-hora-inicio" className="block text-sm font-semibold text-slate-900 mb-2">
+                Hora Inicio <span className="text-red-500" aria-hidden="true">*</span>
+              </label>
               <input
+                id="class-hora-inicio"
                 type="time"
                 name="hora_inicio"
                 value={formData.hora_inicio}
                 onChange={handleChange}
+                required
+                aria-required="true"
+                aria-invalid={!!errors.hora_inicio}
+                aria-describedby={errors.hora_inicio ? 'error-hora_inicio' : undefined}
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 ${errors.hora_inicio ? 'border-red-500' : 'border-slate-300'}`}
               />
-              {errors.hora_inicio && <p className="text-red-600 text-xs mt-1">{errors.hora_inicio}</p>}
+              {errors.hora_inicio && <p id="error-hora_inicio" className="text-red-600 text-xs mt-1" role="alert">{errors.hora_inicio}</p>}
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Hora Fin</label>
+              <label htmlFor="class-hora-fin" className="block text-sm font-semibold text-slate-900 mb-2">
+                Hora Fin <span className="text-red-500" aria-hidden="true">*</span>
+              </label>
               <input
+                id="class-hora-fin"
                 type="time"
                 name="hora_fin"
                 value={formData.hora_fin}
                 onChange={handleChange}
+                required
+                aria-required="true"
+                aria-invalid={!!errors.hora_fin}
+                aria-describedby={errors.hora_fin ? 'error-hora_fin' : undefined}
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 ${errors.hora_fin ? 'border-red-500' : 'border-slate-300'}`}
               />
-              {errors.hora_fin && <p className="text-red-600 text-xs mt-1">{errors.hora_fin}</p>}
+              {errors.hora_fin && <p id="error-hora_fin" className="text-red-600 text-xs mt-1" role="alert">{errors.hora_fin}</p>}
             </div>
-          </div>
+          </fieldset>
 
           {/* Duración, Capacidad, Precio, Alumnos Mínimos */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <fieldset className="grid grid-cols-2 md:grid-cols-4 gap-4 border-0 p-0 m-0">
+            <legend className="sr-only">Detalles de la clase</legend>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Duración (min)</label>
+              <label htmlFor="class-duracion" className="block text-sm font-semibold text-slate-900 mb-2">
+                Duración (min) <span className="text-red-500" aria-hidden="true">*</span>
+              </label>
               <input
+                id="class-duracion"
                 type="number"
                 name="duracion_minutos"
                 value={formData.duracion_minutos}
                 onChange={handleChange}
+                required
+                aria-required="true"
+                aria-invalid={!!errors.duracion_minutos}
+                aria-describedby={errors.duracion_minutos ? 'error-duracion_minutos' : undefined}
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 ${errors.duracion_minutos ? 'border-red-500' : 'border-slate-300'}`}
               />
-              {errors.duracion_minutos && <p className="text-red-600 text-xs mt-1">{errors.duracion_minutos}</p>}
+              {errors.duracion_minutos && <p id="error-duracion_minutos" className="text-red-600 text-xs mt-1" role="alert">{errors.duracion_minutos}</p>}
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Capacidad</label>
+              <label htmlFor="class-capacidad" className="block text-sm font-semibold text-slate-900 mb-2">
+                Capacidad <span className="text-red-500" aria-hidden="true">*</span>
+              </label>
               <input
+                id="class-capacidad"
                 type="number"
                 name="cupos_totales"
                 value={formData.cupos_totales}
                 onChange={handleChange}
+                required
+                aria-required="true"
+                aria-invalid={!!errors.cupos_totales}
+                aria-describedby={errors.cupos_totales ? 'error-cupos_totales' : undefined}
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 ${errors.cupos_totales ? 'border-red-500' : 'border-slate-300'}`}
               />
-              {errors.cupos_totales && <p className="text-red-600 text-xs mt-1">{errors.cupos_totales}</p>}
+              {errors.cupos_totales && <p id="error-cupos_totales" className="text-red-600 text-xs mt-1" role="alert">{errors.cupos_totales}</p>}
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Precio (S/)</label>
+              <label htmlFor="class-precio" className="block text-sm font-semibold text-slate-900 mb-2">Precio (S/)</label>
               <input
+                id="class-precio"
                 type="number"
                 name="precio"
                 value={formData.precio}
@@ -301,8 +350,9 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Alumnos Mín.</label>
+              <label htmlFor="class-alumnos" className="block text-sm font-semibold text-slate-900 mb-2">Alumnos Mín.</label>
               <input
+                id="class-alumnos"
                 type="number"
                 name="alumnos_minimos"
                 value={formData.alumnos_minimos}
@@ -311,13 +361,15 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
                 className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
               />
             </div>
-          </div>
+          </fieldset>
 
           {/* Intensidad y Estado */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-4 border-0 p-0 m-0">
+            <legend className="sr-only">Configuración adicional</legend>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Intensidad</label>
+              <label htmlFor="class-intensidad" className="block text-sm font-semibold text-slate-900 mb-2">Intensidad</label>
               <select
+                id="class-intensidad"
                 name="intensidad"
                 value={formData.intensidad}
                 onChange={handleChange}
@@ -329,8 +381,9 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
               </select>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Estado</label>
+              <label htmlFor="class-estado" className="block text-sm font-semibold text-slate-900 mb-2">Estado</label>
               <select
+                id="class-estado"
                 name="estado"
                 value={formData.estado}
                 onChange={handleChange}
@@ -341,12 +394,13 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
                 ))}
               </select>
             </div>
-          </div>
+          </fieldset>
 
           {/* Reglas de Vestimenta */}
           <div>
-            <label className="block text-sm font-semibold text-slate-900 mb-2">Reglas de Vestimenta (opcional)</label>
+            <label htmlFor="class-vestimenta" className="block text-sm font-semibold text-slate-900 mb-2">Reglas de Vestimenta <span className="text-slate-400 text-xs font-normal">(opcional)</span></label>
             <textarea
+              id="class-vestimenta"
               name="reglas_vestimenta"
               value={formData.reglas_vestimenta}
               onChange={handleChange}
@@ -358,9 +412,10 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
 
           {/* Imagen */}
           <div>
-            <label className="block text-sm font-semibold text-slate-900 mb-2">Imagen de la Clase (opcional)</label>
+            <label htmlFor="class-imagen" className="block text-sm font-semibold text-slate-900 mb-2">Imagen de la Clase <span className="text-slate-400 text-xs font-normal">(opcional)</span></label>
             <div className="flex gap-2">
               <input
+                id="class-imagen"
                 type="text"
                 name="imagen_clase"
                 value={formData.imagen_clase}
@@ -372,8 +427,9 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
                 type="button"
                 onClick={handleOpenImagePicker}
                 className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg font-medium text-slate-700 hover:bg-slate-50 transition-colors shrink-0"
+                aria-label="Elegir imagen de la galería"
               >
-                <ImageIcon size={18} />
+                <ImageIcon size={18} aria-hidden="true" />
                 <span className="hidden sm:inline">Elegir</span>
               </button>
             </div>
@@ -381,7 +437,7 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
               <div className="mt-3 relative inline-block">
                 <img
                   src={formData.imagen_clase}
-                  alt="Vista previa"
+                  alt="Vista previa de la imagen seleccionada"
                   className="h-28 w-48 rounded-xl object-cover border border-slate-200"
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
@@ -391,28 +447,39 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
 
           {/* Image Picker Modal */}
           {showImagePicker && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-              <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl max-h-[80vh] flex flex-col">
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+              onClick={(e) => { if (e.target === e.currentTarget) setShowImagePicker(false); }}
+            >
+              <div
+                className="w-full max-w-lg rounded-2xl bg-white shadow-2xl max-h-[80vh] flex flex-col"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="image-picker-title"
+              >
                 <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
-                  <h3 className="text-lg font-bold text-slate-900">Elegir imagen</h3>
-                  <button onClick={() => setShowImagePicker(false)} className="p-1 hover:bg-slate-100 rounded-lg transition-colors">
-                    <X size={20} className="text-slate-500" />
+                  <h3 id="image-picker-title" className="text-lg font-bold text-slate-900">Elegir imagen</h3>
+                  <button onClick={() => setShowImagePicker(false)} className="p-1 hover:bg-slate-100 rounded-lg transition-colors" aria-label="Cerrar selector de imágenes">
+                    <X size={20} className="text-slate-500" aria-hidden="true" />
                   </button>
                 </div>
                 <div className="overflow-y-auto p-5">
                   {loadingImages ? (
-                    <div className="flex items-center justify-center py-10">
+                    <div className="flex items-center justify-center py-10" role="status">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-brand-500" />
+                      <span className="sr-only">Cargando imágenes...</span>
                     </div>
                   ) : availableImages.length === 0 ? (
                     <p className="text-center text-slate-400 py-10">No hay imágenes disponibles</p>
                   ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3" role="listbox" aria-label="Seleccionar imagen">
                       {availableImages.map((img, idx) => (
                         <button
                           key={idx}
                           type="button"
                           onClick={() => handleSelectImage(img.url)}
+                          role="option"
+                          aria-selected={formData.imagen_clase === img.url}
                           className={`group relative rounded-xl overflow-hidden border-2 transition-all ${
                             formData.imagen_clase === img.url
                               ? 'border-[#004aab] ring-2 ring-blue-200'
@@ -434,7 +501,7 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
                             <p className="text-[11px] font-semibold text-slate-700 truncate">{img.label}</p>
                           </div>
                           {formData.imagen_clase === img.url && (
-                            <div className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#004aab]">
+                            <div className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#004aab]" aria-hidden="true">
                               <svg width="10" height="10" viewBox="0 0 12 12" fill="white">
                                 <path d="M4 8.5L2 6.5L1 7.5L4 10.5L10 3.5L9 2.5Z" />
                               </svg>

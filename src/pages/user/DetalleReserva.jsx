@@ -196,8 +196,8 @@ function DetalleReserva() {
   if (error) {
     return (
       <main className="min-h-screen flex items-center justify-center p-4">
-        <div className="text-center">
-          <AlertTriangle className="mx-auto h-10 w-10 text-red-400 mb-3" />
+        <div className="text-center" role="alert">
+          <AlertTriangle className="mx-auto h-10 w-10 text-red-400 mb-3" aria-hidden="true" />
           <p className="text-red-500 font-bold">{error}</p>
           <button
             onClick={() => navigate(-1)}
@@ -448,14 +448,17 @@ function DetalleReserva() {
         >
           <div
             className="w-full sm:max-w-md rounded-[28px] bg-white shadow-2xl flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cancelar-reserva-title"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="overflow-y-auto px-4 sm:px-6 py-4 sm:p-6">
               <div className="text-center">
                 <div className="mx-auto mb-2 sm:mb-3 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner">
-                  <XCircle className="w-6 h-6 sm:w-7 sm:h-7 text-red-500" />
+                  <XCircle className="w-6 h-6 sm:w-7 sm:h-7 text-red-500" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg sm:text-2xl font-black text-slate-900">Cancelar reserva</h3>
+                <h3 id="cancelar-reserva-title" className="text-lg sm:text-2xl font-black text-slate-900">Cancelar reserva</h3>
                 <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed px-1">
                   Esta acción liberará tu espacio. Selecciona el motivo de cancelación.
                 </p>

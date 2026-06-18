@@ -8,6 +8,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={onClose}
+          aria-hidden="true"
         />
       )}
 
@@ -15,14 +16,18 @@ const MobileMenu = ({ isOpen, onClose }) => {
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:hidden ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
+        role="dialog"
+        aria-modal={isOpen}
+        aria-label="Menú de navegación"
       >
         <div className="p-4 border-b border-slate-200 flex items-center justify-between">
           <h2 className="text-xl font-bold text-slate-900">JM Gym</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+            aria-label="Cerrar menú"
           >
-            <X size={20} className="text-slate-600" />
+            <X size={20} className="text-slate-600" aria-hidden="true" />
           </button>
         </div>
         <div className="overflow-y-auto h-[calc(100vh-80px)]">

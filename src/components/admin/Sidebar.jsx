@@ -10,6 +10,7 @@ import {
   Bell,
   XCircle,
   LogOut,
+  Tags,
 } from 'lucide-react';
 
 const Sidebar = ({ onClose }) => {
@@ -29,6 +30,12 @@ const Sidebar = ({ onClose }) => {
       label: 'Clases',
       icon: Dumbbell,
       path: '/admin/clases',
+    },
+    {
+      id: 'categorias',
+      label: 'Categorías',
+      icon: Tags,
+      path: '/admin/categorias',
     },
     {
       id: 'reservas',
@@ -99,7 +106,7 @@ const Sidebar = ({ onClose }) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto" aria-label="Navegacion principal admin">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
@@ -108,13 +115,14 @@ const Sidebar = ({ onClose }) => {
             <button
               key={item.id}
               onClick={() => handleNavigation(item.path)}
+              aria-current={active ? 'page' : undefined}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                 active
                   ? 'bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-md'
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
-              <Icon size={20} />
+              <Icon size={20} aria-hidden="true" />
               <span className="font-medium">{item.label}</span>
             </button>
           );
@@ -130,8 +138,9 @@ const Sidebar = ({ onClose }) => {
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-colors"
+          aria-label="Cerrar sesión"
         >
-          <LogOut size={20} />
+          <LogOut size={20} aria-hidden="true" />
           <span className="font-medium">Cerrar Sesión</span>
         </button>
       </div>

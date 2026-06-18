@@ -240,11 +240,19 @@ const ClasesAdmin = () => {
       )}
 
       {usersModalClass && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => { if (e.target === e.currentTarget) handleCloseUsersModal(); }}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="users-modal-title"
+          >
             <div className="border-b border-slate-200 px-5 py-4 flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-lg font-bold text-slate-900">Usuarios de la clase</h2>
+                <h2 id="users-modal-title" className="text-lg font-bold text-slate-900">Usuarios de la clase</h2>
                 <p className="text-sm text-slate-500 mt-1">{usersModalClass.name}</p>
               </div>
               <button
@@ -253,7 +261,7 @@ const ClasesAdmin = () => {
                 className="text-slate-400 hover:text-slate-700 transition-colors"
                 aria-label="Cerrar usuarios de la clase"
               >
-                <X size={20} />
+                <X size={20} aria-hidden="true" />
               </button>
             </div>
 
@@ -263,7 +271,7 @@ const ClasesAdmin = () => {
                   <Loader size="sm" text="Cargando usuarios..." />
                 </div>
               ) : classUsersError ? (
-                <p className="text-sm text-red-600">{classUsersError}</p>
+                <p className="text-sm text-red-600" role="alert">{classUsersError}</p>
               ) : classUsers.length > 0 ? (
                 <ul className="divide-y divide-slate-100 rounded-xl border border-slate-100 overflow-hidden">
                   {classUsers.map((userName) => (

@@ -218,6 +218,7 @@ function ReservationCard({ reservation, onRefresh }) {
 
         {feedback && (
           <div
+            role="alert"
             className={`mt-4 rounded-2xl border px-4 py-3 text-sm font-medium ${
               feedback.toLowerCase().includes('cancelada')
                 ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
@@ -259,15 +260,16 @@ function ReservationCard({ reservation, onRefresh }) {
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="cancel-reserva-title"
             className="w-full sm:max-w-md rounded-[28px] bg-white shadow-2xl flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="overflow-y-auto px-4 sm:px-6 py-4 sm:p-6">
               <div className="text-center">
                 <div className="mx-auto mb-2 sm:mb-3 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner">
-                  <XCircle className="w-6 h-6 sm:w-7 sm:h-7 text-red-500" />
+                  <XCircle className="w-6 h-6 sm:w-7 sm:h-7 text-red-500" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg sm:text-2xl font-black text-slate-900">Cancelar reserva</h3>
+                <h3 id="cancel-reserva-title" className="text-lg sm:text-2xl font-black text-slate-900">Cancelar reserva</h3>
                 <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed px-1">
                   ¿Estás seguro? Esta acción no se puede deshacer. Al cancelar, el espacio{' '}
                   <span className="font-bold text-slate-700">{reservation.codigo_espacio}</span> quedará disponible.
@@ -284,26 +286,26 @@ function ReservationCard({ reservation, onRefresh }) {
                     <div className={`flex items-center gap-2.5 sm:gap-3 ${
                       cancelMotivo === 'CAMBIO_INSTRUCTOR' ? 'text-amber-800' : ''
                     }`}>
-                      <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-slate-400" />
+                      <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-slate-400" aria-hidden="true" />
                       <span className="font-semibold">Prof. {reservation.instructor_nombre}</span>
                     </div>
                   )}
                   <div className="flex items-center gap-2.5 sm:gap-3">
-                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-slate-400" />
+                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-slate-400" aria-hidden="true" />
                     <span className="font-semibold text-slate-800">{fecha}</span>
                   </div>
                   {reservation.hora_inicio && (
                     <div className="flex items-center gap-2.5 sm:gap-3">
-                      <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-slate-400" />
+                      <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-slate-400" aria-hidden="true" />
                       <span className="font-semibold text-slate-800">{reservation.hora_inicio.slice(0, 5)}</span>
                     </div>
                   )}
                   <div className="flex items-center gap-2.5 sm:gap-3">
-                    <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-[#004aab]" />
+                    <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-[#004aab]" aria-hidden="true" />
                     <span className="font-bold text-[#004aab]">{reservation.codigo_espacio}</span>
                   </div>
                   <div className="flex items-center gap-2.5 sm:gap-3">
-                    <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-slate-400" />
+                    <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-slate-400" aria-hidden="true" />
                     <span className="font-semibold text-slate-800">S/ {Number(reservation.monto).toFixed(2)}</span>
                   </div>
                 </div>
@@ -381,7 +383,7 @@ function ReservationCard({ reservation, onRefresh }) {
                     </span>
                   ) : (
                     <span className="inline-flex items-center justify-center gap-1.5">
-                      <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Cancelar
+                      <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" /> Cancelar
                     </span>
                   )}
                 </button>
