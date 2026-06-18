@@ -1,14 +1,37 @@
 import { useState } from 'react';
-import { Trash2, Edit2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Trash2, Edit2, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ClassTable = ({ 
   data = [], 
   loading = false, 
   onEdit, 
+  onViewUsers,
   onDelete,
   pagination = { page: 1, total: 0, pageSize: 10 },
   onPageChange 
 }) => {
+  const formatClassDay = (date) => {
+    if (!date) return '-';
+
+    const parsedDate = new Date(`${date}T00:00:00`);
+    if (Number.isNaN(parsedDate.getTime())) return '-';
+
+    return new Intl.DateTimeFormat('es-PE', { weekday: 'long' }).format(parsedDate);
+  };
+
+  const formatClassDate = (date) => {
+    if (!date) return '-';
+
+    const parsedDate = new Date(`${date}T00:00:00`);
+    if (Number.isNaN(parsedDate.getTime())) return '-';
+
+    return new Intl.DateTimeFormat('es-PE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).format(parsedDate);
+  };
+
   const statusColors = {
     activa: 'bg-green-100 text-green-800',
     inactiva: 'bg-slate-100 text-slate-800',
@@ -41,6 +64,8 @@ const ClassTable = ({
               <th className="text-left px-6 py-3 font-semibold text-slate-900">Nombre</th>
               <th className="text-left px-6 py-3 font-semibold text-slate-900">Instructor</th>
               <th className="text-left px-6 py-3 font-semibold text-slate-900">Horario</th>
+              <th className="text-left px-6 py-3 font-semibold text-slate-900">Día</th>
+              <th className="text-left px-6 py-3 font-semibold text-slate-900">Fecha</th>
               <th className="text-left px-6 py-3 font-semibold text-slate-900">Cupo</th>
               <th className="text-left px-6 py-3 font-semibold text-slate-900">Estado</th>
               <th className="text-center px-6 py-3 font-semibold text-slate-900">Acciones</th>
@@ -52,6 +77,8 @@ const ClassTable = ({
                 <td className="px-6 py-4 font-medium text-slate-900">{clase.name}</td>
                 <td className="px-6 py-4 text-slate-600">{clase.instructor}</td>
                 <td className="px-6 py-4 text-slate-600">{clase.schedule}</td>
+                <td className="px-6 py-4 text-slate-600 capitalize">{formatClassDay(clase.fecha)}</td>
+                <td className="px-6 py-4 text-slate-600">{formatClassDate(clase.fecha)}</td>
                 <td className="px-6 py-4">
                   <span className="text-slate-900">{clase.enrolled}</span>
                   <span className="text-slate-600">/{clase.capacity}</span>
@@ -64,14 +91,23 @@ const ClassTable = ({
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-center gap-2">
                     <button
+                      onClick={() => onViewUsers?.(clase)}
+                      className="p-2 hover:bg-sky-50 text-sky-600 rounded-lg transition-colors"
+                      aria-label={`Ver usuarios de ${clase.name}`}
+                    >
+                      <Eye size={16} />
+                    </button>
+                    <button
                       onClick={() => onEdit?.(clase)}
                       className="p-2 hover:bg-brand-50 text-brand-600 rounded-lg transition-colors"
+                      aria-label={`Editar ${clase.name}`}
                     >
                       <Edit2 size={16} />
                     </button>
                     <button
                       onClick={() => onDelete?.(clase.id)}
                       className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
+                      aria-label={`Eliminar ${clase.name}`}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -106,6 +142,14 @@ const ClassTable = ({
                 <span className="text-slate-900 font-medium">{clase.schedule}</span>
               </div>
               <div className="flex justify-between">
+                <span className="text-slate-600">Día:</span>
+                <span className="text-slate-900 font-medium capitalize">{formatClassDay(clase.fecha)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-600">Fecha:</span>
+                <span className="text-slate-900 font-medium">{formatClassDate(clase.fecha)}</span>
+              </div>
+              <div className="flex justify-between">
                 <span className="text-slate-600">Cupo:</span>
                 <span className="text-slate-900 font-medium">
                   {clase.enrolled}/{clase.capacity}
@@ -115,14 +159,23 @@ const ClassTable = ({
 
             <div className="flex gap-2">
               <button
+                onClick={() => onViewUsers?.(clase)}
+                className="flex-1 p-2 bg-sky-50 text-sky-600 rounded-lg font-medium text-sm hover:bg-sky-100 transition-colors"
+                aria-label={`Ver usuarios de ${clase.name}`}
+              >
+                <Eye size={16} className="mx-auto" />
+              </button>
+              <button
                 onClick={() => onEdit?.(clase)}
                 className="flex-1 p-2 bg-brand-50 text-brand-600 rounded-lg font-medium text-sm hover:bg-brand-100 transition-colors"
+                aria-label={`Editar ${clase.name}`}
               >
                 <Edit2 size={16} className="mx-auto" />
               </button>
               <button
                 onClick={() => onDelete?.(clase.id)}
                 className="flex-1 p-2 bg-red-50 text-red-600 rounded-lg font-medium text-sm hover:bg-red-100 transition-colors"
+                aria-label={`Eliminar ${clase.name}`}
               >
                 <Trash2 size={16} className="mx-auto" />
               </button>
