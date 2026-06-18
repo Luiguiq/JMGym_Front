@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { reservationService } from '../../services/reservationService.js';
 import PageLoader from '../../components/common/PageLoader.jsx';
 import { CheckCircle, XCircle, Flag, CreditCard, Clock, AlertTriangle, Undo2, Search, Calendar, Armchair, User } from 'lucide-react';
+import QRCode from 'react-qr-code';
 
 const MOTIVOS_LABEL = {
   CAMBIO_HORARIO: 'Cambio de horario',
@@ -62,6 +63,8 @@ function DetalleReserva() {
   const navigate = useNavigate();
 
   const [reservation, setReservation] = useState(null);
+  const qrValue = reservation?.qr_checkin || reservation?.qr_url || null;
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -261,15 +264,34 @@ function DetalleReserva() {
               )}
             </div>
 
-            {reservation.qr_url && (
-              <div className="mt-6 rounded-3xl border border-sky-100 p-6 text-center">
-                <h3 className="font-black text-slate-800 mb-4">Código QR</h3>
-                <img
-                  src={reservation.qr_url}
-                  alt="QR Reserva"
-                  className="w-48 h-48 mx-auto rounded-2xl"
-                />
-                <p className="mt-3 text-xs text-slate-400">Presenta este código al ingresar a la clase</p>
+            {qrValue ? (
+              <div className="rounded-3xl border border-sky-100 bg-white p-6">
+                <h3 className="mb-4 text-center font-black text-slate-800">
+                  Código QR de Check-in
+                </h3>
+
+                <div className="flex justify-center">
+                  <div className="rounded-2xl bg-white p-3 shadow-sm">
+                    <QRCode
+                      value={qrValue}
+                      size={220}
+                    />
+                  </div>
+                </div>
+
+                <p className="mt-4 text-center text-sm text-slate-500">
+                  Presenta este código al ingresar al salón.
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
+                <h3 className="font-bold text-slate-700">
+                  QR no disponible
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-500">
+                  Esta reserva todavía no tiene un código QR generado.
+                </p>
               </div>
             )}
 
@@ -338,7 +360,7 @@ function DetalleReserva() {
                       cancelMotivo === 'CAMBIO_INSTRUCTOR' ? 'text-amber-800' : ''
                     }`}>
                       <span className="text-slate-500 shrink-0">Instructor</span>
-                      <span className="font-bold text-slate-800 text-right">{reservation.instructor_nombre}</span>
+                      <span className="font-bold text-slate-800 text-right">{reservation.instructor_nombre || 'Instructor por asignar'}</span>
                     </div>
                   )}
                   <div className="flex justify-between gap-2 sm:gap-4">
