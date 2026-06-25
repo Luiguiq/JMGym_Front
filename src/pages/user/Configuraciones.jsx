@@ -44,6 +44,15 @@ function Configuraciones() {
     const val = e.target.value;
     setLanguage(val);
     localStorage.setItem('jmgym_lang', val);
+    try {
+      const el = document.querySelector('.goog-te-combo');
+      if (el) {
+        el.value = val;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    } catch (e) {
+      console.warn('GT error:', e);
+    }
   }
 
   function toggleNotif(key) {
