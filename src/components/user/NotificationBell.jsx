@@ -100,16 +100,16 @@ function NotificationBell({ floating }) {
       floating
         ? 'fixed bottom-[5.5rem] right-5 sm:right-8'
         : 'absolute right-0 top-full mt-2'
-    } z-50 w-[calc(100vw-32px)] rounded-2xl border border-slate-100 bg-white shadow-xl sm:w-[380px]`}>
-      <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-        <h3 className="text-sm font-bold text-slate-800">Notificaciones</h3>
+    } z-50 w-[calc(100vw-32px)] rounded-2xl border border-slate-100 bg-white shadow-xl sm:w-[380px] dark:border-slate-700 dark:bg-slate-800`}>
+      <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-slate-700">
+        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">Notificaciones</h3>
         <div className="flex items-center gap-2">
           {unread > 0 && (
             <button onClick={handleMarkAllRead} className="text-xs font-semibold text-brand-600 hover:text-brand-700">
               Marcar todo leído
             </button>
           )}
-          <button onClick={() => { setOpen(false); navigate('/cliente/notificaciones'); }} className="text-xs font-semibold text-slate-400 hover:text-slate-600">
+          <button onClick={() => { setOpen(false); navigate('/cliente/notificaciones'); }} className="text-xs font-semibold text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300">
             Ver todo
           </button>
         </div>
@@ -117,7 +117,7 @@ function NotificationBell({ floating }) {
 
       <div className="max-h-[360px] overflow-y-auto">
         {items.length === 0 ? (
-          <div className="flex flex-col items-center py-10 text-slate-400">
+          <div className="flex flex-col items-center py-10 text-slate-400 dark:text-slate-500">
             <Bell size={32} strokeWidth={1.5} />
             <p className="mt-2 text-sm">Sin notificaciones</p>
           </div>
@@ -130,18 +130,18 @@ function NotificationBell({ floating }) {
                 setOpen(false);
                 navigate(n.reservationId ? `/cliente/reservas/${n.reservationId}` : '/cliente/notificaciones');
               }}
-              className={`flex w-full gap-3 px-4 py-3 text-left transition hover:bg-slate-50 ${!n.read ? 'bg-brand-50/40' : ''}`}
+              className={`flex w-full gap-3 px-4 py-3 text-left transition hover:bg-slate-50 dark:hover:bg-slate-700/50 ${!n.read ? 'bg-brand-50/40 dark:bg-brand-500/10' : ''}`}
             >
               <span className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm ${typeColors[n.type] || 'bg-slate-100 text-slate-600'}`}>
                 {typeIcons[n.type] ? React.createElement(typeIcons[n.type], { size: 16 }) : <Bell size={16} />}
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
-                  <p className={`text-sm ${!n.read ? 'font-bold text-slate-800' : 'text-slate-600'}`}>{n.title}</p>
+                  <p className={`text-sm ${!n.read ? 'font-bold text-slate-800 dark:text-slate-100' : 'text-slate-600 dark:text-slate-300'}`}>{n.title}</p>
                   {!n.read && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-500" />}
                 </div>
-                <p className="mt-0.5 line-clamp-2 text-xs text-slate-500">{n.message}</p>
-                <p className="mt-1 text-[10px] text-slate-400">{formatTime(n.sentAt)}</p>
+                <p className="mt-0.5 line-clamp-2 text-xs text-slate-500 dark:text-slate-400">{n.message}</p>
+                <p className="mt-1 text-[10px] text-slate-400 dark:text-slate-500">{formatTime(n.sentAt)}</p>
               </div>
             </button>
           ))
@@ -154,7 +154,7 @@ function NotificationBell({ floating }) {
     <div ref={menuRef} className={floating ? '' : 'relative'}>
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className={`relative flex items-center justify-center rounded-full bg-white text-slate-600 shadow-lg ring-1 ring-slate-200 transition hover:ring-brand-200 ${
+        className={`relative flex items-center justify-center rounded-full bg-white text-slate-600 shadow-lg ring-1 ring-slate-200 transition hover:ring-brand-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 ${
           floating
             ? 'h-14 w-14 shadow-[0_8px_24px_rgba(0,0,0,0.15)]'
             : 'h-9 w-9 sm:h-10 sm:w-10 shadow-sm'

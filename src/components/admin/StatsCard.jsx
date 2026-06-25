@@ -10,10 +10,10 @@ const StatsCard = ({
   onClick 
 }) => {
   const colorClasses = {
-    brand: 'bg-gradient-to-br from-brand-50 to-brand-100 border-brand-200',
-    green: 'bg-gradient-to-br from-green-50 to-green-100 border-green-200',
-    amber: 'bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200',
-    red: 'bg-gradient-to-br from-red-50 to-red-100 border-red-200',
+    brand: 'bg-gradient-to-br from-brand-50 to-brand-100 border-brand-200 dark:from-brand-950 dark:to-brand-900 dark:border-brand-800',
+    green: 'bg-gradient-to-br from-green-50 to-green-100 border-green-200 dark:from-green-950 dark:to-green-900 dark:border-green-800',
+    amber: 'bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200 dark:from-amber-950 dark:to-amber-900 dark:border-amber-800',
+    red: 'bg-gradient-to-br from-red-50 to-red-100 border-red-200 dark:from-red-950 dark:to-red-900 dark:border-red-800',
   };
 
   const iconColorClasses = {
@@ -39,11 +39,11 @@ const StatsCard = ({
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <p className="text-slate-600 text-xs sm:text-sm font-medium mb-1 truncate">{title}</p>
-          <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1 sm:mb-2">{value}</h3>
+          <p className="text-slate-600 text-xs sm:text-sm font-medium mb-1 truncate dark:text-slate-300">{title}</p>
+          <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1 sm:mb-2 dark:text-white">{value}</h3>
           {subtitle && (
             <div className="flex items-center gap-2 flex-wrap">
-              <p className="text-slate-600 text-xs">{subtitle}</p>
+              <p className="text-slate-600 text-xs dark:text-slate-400">{subtitle}</p>
               {trend !== undefined && (
                 <div className={`flex items-center gap-1 text-xs font-semibold ${trendColorClasses[color]}`}>
                   {isTrendingUp ? (
@@ -58,7 +58,7 @@ const StatsCard = ({
           )}
         </div>
         {Icon && (
-          <div className={`${iconColorClasses[color]} p-2 sm:p-3 bg-white rounded-xl flex-shrink-0`}>
+          <div className={`${iconColorClasses[color]} p-2 sm:p-3 bg-white rounded-xl flex-shrink-0 dark:bg-slate-800`}>
             <Icon size={20} className="sm:hidden" />
             <Icon size={24} className="hidden sm:block" />
           </div>
