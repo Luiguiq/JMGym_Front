@@ -29,6 +29,7 @@ import AyudaSoporte from '../pages/user/AyudaSoporte.jsx';
 import CambiarAsiento from '../pages/user/CambiarAsiento.jsx';
 import CancelacionesAdmin from '../pages/admin/CancelacionesAdmin.jsx';
 import CategoriasAdmin from '../pages/admin/CategoriasAdmin.jsx';
+import ConfiguracionesAdmin from '../pages/admin/ConfiguracionesAdmin.jsx';
 import Configuraciones from '../pages/user/Configuraciones.jsx';
 import EditarPerfil from '../pages/user/EditarPerfil.jsx';
 import Pagos from '../pages/user/Pagos.jsx';
@@ -101,6 +102,7 @@ function AppRoutes() {
         <Route path="usuarios" element={<UsuariosAdmin />} />
         <Route path="crear-admin" element={<CrearAdmin />} />
         <Route path="notificaciones" element={<NotificacionesAdmin />} />
+        <Route path="configuraciones" element={<ConfiguracionesAdmin />} />
 
       </Route>
     </Routes>

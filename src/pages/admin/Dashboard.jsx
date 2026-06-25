@@ -66,8 +66,8 @@ const Dashboard = () => {
   return (
     <div className="space-y-6 md:space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl md:text-4xl">¡Bienvenido a JM Gym!</h1>
-        <p className="text-slate-600 mt-1 text-sm sm:text-base">
+        <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl md:text-4xl dark:text-white">¡Bienvenido a JM Gym!</h1>
+        <p className="text-slate-600 mt-1 text-sm sm:text-base dark:text-slate-400">
           {dateFormatted.charAt(0).toUpperCase() + dateFormatted.slice(1)}
         </p>
       </div>
@@ -109,12 +109,12 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
         <button
           onClick={() => navigate('/admin/clases/crear')}
-          className="bg-gradient-to-br from-brand-50 to-brand-100 border border-brand-200 rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow text-left"
+          className="bg-gradient-to-br from-brand-50 to-brand-100 border border-brand-200 rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow text-left dark:from-brand-950 dark:to-brand-900 dark:border-brand-800"
         >
           <div className="flex items-start justify-between mb-2 gap-3">
             <div>
-              <h3 className="font-bold text-slate-900 text-base sm:text-lg">Crear Nueva Clase</h3>
-              <p className="text-xs sm:text-sm text-slate-600">Agrega una nueva clase al catálogo</p>
+              <h3 className="font-bold text-slate-900 text-base sm:text-lg dark:text-white">Crear Nueva Clase</h3>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Agrega una nueva clase al catálogo</p>
             </div>
             <Plus className="text-brand-600 flex-shrink-0" size={20} />
           </div>
@@ -122,21 +122,21 @@ const Dashboard = () => {
 
         <button
           onClick={() => navigate('/admin/reservas')}
-          className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow text-left"
+          className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow text-left dark:from-green-950 dark:to-green-900 dark:border-green-800"
         >
           <div className="flex items-start justify-between mb-2 gap-3">
             <div>
-              <h3 className="font-bold text-slate-900 text-base sm:text-lg">Ver Reservas</h3>
-              <p className="text-xs sm:text-sm text-slate-600">Gestiona todas las reservas</p>
+              <h3 className="font-bold text-slate-900 text-base sm:text-lg dark:text-white">Ver Reservas</h3>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Gestiona todas las reservas</p>
             </div>
             <Calendar className="text-green-600 flex-shrink-0" size={20} />
           </div>
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-md">
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-md dark:bg-slate-800 dark:border-slate-700">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h2 className="text-lg sm:text-2xl font-bold text-slate-900">Reservas Recientes</h2>
+          <h2 className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">Reservas Recientes</h2>
           <button
             onClick={() => navigate('/admin/reservas')}
             className="text-brand-600 hover:text-brand-700 font-medium text-xs sm:text-sm whitespace-nowrap"
@@ -147,19 +147,19 @@ const Dashboard = () => {
 
         <div className="space-y-3">
           {recentReservations.length === 0 ? (
-            <p className="text-slate-500 text-center py-4">No hay reservas recientes</p>
+            <p className="text-slate-500 text-center py-4 dark:text-slate-400">No hay reservas recientes</p>
           ) : (
             recentReservations.map((reservation) => (
               <div
                 key={reservation.id}
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 sm:p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 sm:p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors dark:bg-slate-700/50 dark:hover:bg-slate-700"
               >
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-slate-900 truncate">{reservation.userName}</p>
-                  <p className="text-sm text-slate-600 truncate">{reservation.className}</p>
+                  <p className="font-medium text-slate-900 truncate dark:text-slate-100">{reservation.userName}</p>
+                  <p className="text-sm text-slate-600 truncate dark:text-slate-400">{reservation.className}</p>
                 </div>
                 <div className="flex items-center justify-between sm:justify-end gap-3 sm:text-right">
-                  <p className="text-sm text-slate-600 whitespace-nowrap">{reservation.date}</p>
+                  <p className="text-sm text-slate-600 whitespace-nowrap dark:text-slate-400">{reservation.date}</p>
                   <span className={`inline-block px-2 sm:px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
                     reservation.status === 'ACTIVA' || reservation.status === 'confirmada'
                       ? 'bg-green-100 text-green-800'

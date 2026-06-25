@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Lock, Globe, Bell, BellRing, CalendarClock, TimerReset, Users, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Lock, Globe, Bell, BellRing, CalendarClock, TimerReset, Users, CheckCircle, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { useTheme } from '../../context/ThemeContext.jsx';
 import { userService } from '../../services/userService.js';
 import Field from '../../components/user/Field.jsx';
 
@@ -19,6 +20,7 @@ const NOTIF_OPTIONS = [
 function Configuraciones() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -108,18 +110,18 @@ function Configuraciones() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-20">
+    <main className="min-h-screen bg-slate-50 pb-20 dark:bg-slate-900">
       <section className="mx-auto max-w-2xl px-4 pt-8 sm:px-6 sm:pt-12">
         <div className="mb-6 flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
-            className="grid h-11 w-11 place-items-center rounded-xl bg-white text-slate-600 shadow-[0_4px_12px_rgba(33,45,58,0.08)] transition hover:bg-slate-100"
+            className="grid h-11 w-11 place-items-center rounded-xl bg-white text-slate-600 shadow-[0_4px_12px_rgba(33,45,58,0.08)] transition hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
           >
             <ArrowLeft size={22} />
           </button>
           <div>
-            <h2 className="font-display text-3xl font-bold text-slate-900 sm:text-4xl">Configuraciones</h2>
-            <p className="mt-1 text-slate-500">Personaliza tu experiencia</p>
+            <h2 className="font-display text-3xl font-bold text-slate-900 sm:text-4xl dark:text-white">Configuraciones</h2>
+            <p className="mt-1 text-slate-500 dark:text-slate-400">Personaliza tu experiencia</p>
           </div>
         </div>
 
@@ -135,16 +137,16 @@ function Configuraciones() {
           </div>
         )}
 
-        <div className="mb-5 overflow-hidden rounded-3xl bg-white shadow-[0_14px_32px_rgba(33,45,58,0.1)]">
-          <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
+        <div className="mb-5 overflow-hidden rounded-3xl bg-white shadow-[0_14px_32px_rgba(33,45,58,0.1)] dark:bg-slate-800 dark:shadow-[0_14px_32px_rgba(0,0,0,0.3)]">
+          <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 dark:border-slate-700">
             <Globe size={20} className="text-brand-600" />
-            <h3 className="font-bold text-slate-800">Idioma</h3>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">Idioma</h3>
           </div>
           <div className="px-5 py-4">
             <select
               value={language}
               onChange={handleLanguageChange}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
             >
               {LANGUAGES.map((l) => (
                 <option key={l.value} value={l.value}>{l.label}</option>
@@ -153,21 +155,45 @@ function Configuraciones() {
           </div>
         </div>
 
-        <div className="mb-5 overflow-hidden rounded-3xl bg-white shadow-[0_14px_32px_rgba(33,45,58,0.1)]">
-          <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
-            <Bell size={20} className="text-brand-600" />
-            <h3 className="font-bold text-slate-800">Notificaciones</h3>
+        <div className="mb-5 overflow-hidden rounded-3xl bg-white shadow-[0_14px_32px_rgba(33,45,58,0.1)] dark:bg-slate-800 dark:shadow-[0_14px_32px_rgba(0,0,0,0.3)]">
+          <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 dark:border-slate-700">
+            {theme === 'dark' ? <Moon size={20} className="text-brand-600" /> : <Sun size={20} className="text-brand-600" />}
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">Apariencia</h3>
           </div>
-          <div className="divide-y divide-slate-100">
+          <div className="flex items-center justify-between px-5 py-4">
+            <div>
+              <p className="text-sm font-bold text-slate-800 dark:text-slate-200">Modo oscuro</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Cambia entre tema claro y oscuro</p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={theme === 'dark'}
+              onClick={toggleTheme}
+              className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 ${theme === 'dark' ? 'bg-brand-600' : 'bg-slate-200'}`}
+            >
+              <span
+                className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition ${theme === 'dark' ? 'translate-x-5' : 'translate-x-0'}`}
+              />
+            </button>
+          </div>
+        </div>
+
+        <div className="mb-5 overflow-hidden rounded-3xl bg-white shadow-[0_14px_32px_rgba(33,45,58,0.1)] dark:bg-slate-800 dark:shadow-[0_14px_32px_rgba(0,0,0,0.3)]">
+          <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 dark:border-slate-700">
+            <Bell size={20} className="text-brand-600" />
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">Notificaciones</h3>
+          </div>
+          <div className="divide-y divide-slate-100 dark:divide-slate-700">
             {NOTIF_OPTIONS.map((opt) => {
               const Icon = opt.icon;
               const isOn = notifPrefs[opt.key];
               return (
                 <div key={opt.key} className="flex items-center gap-3 px-5 py-4">
-                  <Icon size={20} className="text-slate-400 shrink-0" />
+                  <Icon size={20} className="text-slate-400 shrink-0 dark:text-slate-500" />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold text-slate-800">{opt.label}</p>
-                    <p className="text-xs text-slate-500">{opt.desc}</p>
+                    <p className="text-sm font-bold text-slate-800 dark:text-slate-200">{opt.label}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{opt.desc}</p>
                   </div>
                   <button
                     type="button"
@@ -186,10 +212,10 @@ function Configuraciones() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-3xl bg-white shadow-[0_14px_32px_rgba(33,45,58,0.1)]">
-          <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
+        <div className="overflow-hidden rounded-3xl bg-white shadow-[0_14px_32px_rgba(33,45,58,0.1)] dark:bg-slate-800 dark:shadow-[0_14px_32px_rgba(0,0,0,0.3)]">
+          <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 dark:border-slate-700">
             <Lock size={20} className="text-brand-600" />
-            <h3 className="font-bold text-slate-800">Cambiar contraseña</h3>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">Cambiar contraseña</h3>
           </div>
           <form onSubmit={handlePasswordSubmit} className="space-y-4 px-5 py-4">
             <Field label="Contraseña actual" icon={Lock} error={fieldErrors.oldPassword}>

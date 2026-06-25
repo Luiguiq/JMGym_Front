@@ -44,14 +44,14 @@ function NotificationResponseOverlay() {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md rounded-[28px] bg-white shadow-2xl overflow-hidden animate-in">
+      <div className="w-full max-w-md rounded-[28px] bg-white shadow-2xl overflow-hidden animate-in dark:bg-slate-800">
         <div className="p-6 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-3xl">
-            <AlertTriangle size={32} className="text-amber-600" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-3xl dark:bg-amber-900/50">
+            <AlertTriangle size={32} className="text-amber-600 dark:text-amber-400" />
           </div>
 
-          <h2 className="text-xl font-black text-slate-900">{pending.title}</h2>
-          <p className="mt-2 text-sm text-slate-500 leading-relaxed">{pending.message}</p>
+          <h2 className="text-xl font-black text-slate-900 dark:text-white">{pending.title}</h2>
+          <p className="mt-2 text-sm text-slate-500 leading-relaxed dark:text-slate-400">{pending.message}</p>
 
           <div className="mt-6 space-y-3">
             <button
@@ -65,7 +65,7 @@ function NotificationResponseOverlay() {
             <button
               onClick={() => handleRespond('CANCELADO', '/cliente/clases')}
               disabled={loading}
-              className="w-full rounded-2xl border border-slate-200 py-3.5 font-bold text-sm text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+              className="w-full rounded-2xl border border-slate-200 py-3.5 font-bold text-sm text-slate-700 transition hover:bg-slate-50 disabled:opacity-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
             >
               Elegir otra clase disponible
             </button>
@@ -73,7 +73,7 @@ function NotificationResponseOverlay() {
             <button
               onClick={() => handleRespond('CANCELADO', '/cliente/reservas')}
               disabled={loading}
-              className="w-full rounded-2xl bg-red-50 py-3.5 font-bold text-sm text-red-600 transition hover:bg-red-100 disabled:opacity-50"
+              className="w-full rounded-2xl bg-red-50 py-3.5 font-bold text-sm text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50"
             >
               Cancelar reserva
             </button>
