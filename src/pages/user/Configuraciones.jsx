@@ -4,6 +4,7 @@ import { ArrowLeft, Lock, Globe, Bell, BellRing, CalendarClock, TimerReset, User
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useTheme } from '../../context/ThemeContext.jsx';
 import { userService } from '../../services/userService.js';
+import TextSizeSetting from '../../components/common/TextSizeSetting.jsx';
 import Field from '../../components/user/Field.jsx';
 
 const LANGUAGES = [
@@ -178,6 +179,8 @@ function Configuraciones() {
             </button>
           </div>
         </div>
+
+        <TextSizeSetting />
 
         <div className="mb-5 overflow-hidden rounded-3xl bg-white shadow-[0_14px_32px_rgba(33,45,58,0.1)] dark:bg-slate-800 dark:shadow-[0_14px_32px_rgba(0,0,0,0.3)]">
           <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 dark:border-slate-700">

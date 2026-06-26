@@ -20,6 +20,19 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 100%;
+}
+
+html[data-text-size="2"] {
+  font-size: 106.25%;
+}
+
+html[data-text-size="3"] {
+  font-size: 112.5%;
+}
+
+html[data-text-size="4"] {
+  font-size: 118.75%;
 }
 
 body {

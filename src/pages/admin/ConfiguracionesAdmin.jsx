@@ -1,5 +1,6 @@
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext.jsx';
+import TextSizeSetting from '../../components/common/TextSizeSetting.jsx';
 
 function ConfiguracionesAdmin() {
   const { theme, toggleTheme } = useTheme();
@@ -31,6 +32,10 @@ function ConfiguracionesAdmin() {
             />
           </button>
         </div>
+      </div>
+
+      <div className="mt-5">
+        <TextSizeSetting />
       </div>
     </div>
   );
