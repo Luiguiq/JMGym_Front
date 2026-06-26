@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
+import { AccessibilityProvider } from './context/AccessibilityContext.jsx';
 import { ThemeProvider } from './context/ThemeContext.jsx';
 import GtsErrorBoundary from './components/common/GtsErrorBoundary.jsx';
 import './index.css';
@@ -12,11 +13,13 @@ createRoot(document.getElementById('root')).render(
   <GtsErrorBoundary>
     <BrowserRouter>
       <ThemeProvider>
-        <AuthProvider>
-          <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#07111f] text-white">Cargando...</div>}>
-            <App />
-          </Suspense>
-        </AuthProvider>
+        <AccessibilityProvider>
+          <AuthProvider>
+            <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#07111f] text-white">Cargando...</div>}>
+              <App />
+            </Suspense>
+          </AuthProvider>
+        </AccessibilityProvider>
       </ThemeProvider>
     </BrowserRouter>
   </GtsErrorBoundary>,
