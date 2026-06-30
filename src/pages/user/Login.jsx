@@ -48,7 +48,7 @@ function Login() {
   }
 
   return (
-    <main className="min-h-dvh overflow-x-hidden bg-[#eef7fd] p-3 sm:p-4 lg:p-5">
+    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5">
       <section
         className="
           mx-auto
@@ -57,7 +57,7 @@ function Login() {
           max-w-7xl
           overflow-hidden
           rounded-[32px]
-          bg-white
+          bg-card
           shadow-[0_24px_70px_rgba(15,23,42,.08)]
           lg:grid-cols-[0.92fr_1.08fr]
         "
@@ -69,9 +69,9 @@ function Login() {
             justify-between
             gap-6
             bg-gradient-to-br
-            from-[#004aab]
-            via-[#0a58ca]
-            to-[#1576ff]
+            from-brand-600
+              via-[#0a58ca]
+              to-[#1576ff]
             p-6
             text-white
             sm:p-8
@@ -180,10 +180,10 @@ function Login() {
           onSubmit={handleSubmit}
         >
           <div>
-            <h2 className="font-display text-4xl font-bold text-slate-900 sm:text-5xl">
+            <h2 className="font-display text-4xl font-bold text-foreground sm:text-5xl">
               Acceder
             </h2>
-            <p className="mt-2 text-slate-500">
+            <p className="mt-2 text-secondary">
               Continúa con tu cuenta.
             </p>
           </div>
@@ -194,12 +194,12 @@ function Login() {
             </div>
           )}
 
-          <label className="grid gap-2 font-semibold text-slate-700">
+          <label className="grid gap-2 font-semibold text-foreground">
             Correo electrónico
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
               <span aria-hidden="true"><Mail size={20} /></span>
               <input
-                className="w-full bg-transparent outline-none"
+                className="w-full bg-transparent outline-none text-foreground placeholder:text-muted"
                 type="email"
                 placeholder="tu@correo.com"
                 value={email}
@@ -209,12 +209,12 @@ function Login() {
             </div>
           </label>
 
-          <label className="grid gap-2 font-semibold text-slate-700">
+          <label className="grid gap-2 font-semibold text-foreground">
             Contraseña
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
               <span aria-hidden="true"><Lock size={20} /></span>
               <input
-                className="w-full bg-transparent outline-none"
+                className="w-full bg-transparent outline-none text-foreground placeholder:text-muted"
                 type="password"
                 placeholder="Tu contraseña"
                 value={password}
@@ -224,7 +224,7 @@ function Login() {
             </div>
           </label>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500">
+          <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-secondary">
             <label className="flex items-center gap-2">
               <input
                 className="h-5 w-5 accent-brand-600"

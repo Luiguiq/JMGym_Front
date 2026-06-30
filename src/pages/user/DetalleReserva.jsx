@@ -21,7 +21,7 @@ function getReservationStatusStyle(status) {
       return 'bg-red-50 text-red-700 border-red-200';
     case 'COMPLETADA':
     case 'FINALIZADA':
-      return 'bg-slate-100 text-slate-700 border-slate-200';
+      return 'bg-surface text-muted border-border-light';
     default:
       return 'bg-amber-50 text-amber-700 border-amber-200';
   }
@@ -38,7 +38,7 @@ function getPaymentStatusStyle(status) {
     case 'REEMBOLSADO':
       return 'bg-purple-50 text-purple-700 border-purple-200';
     default:
-      return 'bg-slate-100 text-slate-700 border-slate-200';
+      return 'bg-surface text-muted border-border-light';
   }
 }
 
@@ -201,7 +201,7 @@ function DetalleReserva() {
           <p className="text-red-500 font-bold">{error}</p>
           <button
             onClick={() => navigate(-1)}
-            className="mt-4 rounded-xl bg-[#004aab] px-6 py-2.5 text-sm font-bold text-white"
+            className="mt-4 rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-bold text-white"
           >
             Volver
           </button>
@@ -214,11 +214,11 @@ function DetalleReserva() {
     return (
       <main className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center">
-          <Search className="mx-auto h-10 w-10 text-slate-400 mb-3" />
-          <p className="text-slate-600 font-bold">Reserva no encontrada</p>
+          <Search className="mx-auto h-10 w-10 text-muted mb-3" />
+          <p className="text-secondary font-bold">Reserva no encontrada</p>
           <button
             onClick={() => navigate('/cliente/reservas')}
-            className="mt-4 rounded-xl bg-[#004aab] px-6 py-2.5 text-sm font-bold text-white"
+            className="mt-4 rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-bold text-white"
           >
             Mis reservas
           </button>
@@ -228,18 +228,18 @@ function DetalleReserva() {
   }
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] px-5 py-6 pb-24">
+    <main className="min-h-screen bg-surface px-5 py-6 pb-24">
       <div className="max-w-3xl mx-auto lg:max-w-4xl">
         <button
           onClick={() => navigate(-1)}
-          className="mb-5 flex items-center gap-2 font-bold text-slate-700 hover:text-slate-900 transition"
+          className="mb-5 flex items-center gap-2 font-bold text-secondary hover:text-foreground transition"
         >
           ← Volver
         </button>
 
-        <div className="overflow-hidden rounded-[32px] bg-white shadow-[0_15px_40px_rgba(15,86,130,.12)] border border-sky-100">
+        <div className="overflow-hidden rounded-[32px] bg-card shadow-[0_15px_40px_rgba(15,86,130,.12)] border border-blue-100/50">
           <div className={`p-8 text-center ${
-            isCanceled ? 'bg-red-600' : isCompleted ? 'bg-slate-700' : 'bg-[#004aab]'
+            isCanceled ? 'bg-red-600' : isCompleted ? 'bg-slate-600' : 'bg-brand-600'
           } text-white`}>
             <p className="text-xs uppercase tracking-[4px] opacity-80">Reserva</p>
             <h1 className="mt-3 text-4xl font-black">#{reservation.codigo_reserva}</h1>
@@ -247,10 +247,10 @@ function DetalleReserva() {
           </div>
 
           <div className="p-6">
-            <h2 className="text-3xl font-black text-slate-900">{reservation.className}</h2>
+            <h2 className="text-3xl font-black text-foreground">{reservation.className}</h2>
 
             {reservation.instructor_nombre && (
-              <p className="mt-1 text-slate-500">Prof. {reservation.instructor_nombre}</p>
+              <p className="mt-1 text-secondary">Prof. {reservation.instructor_nombre}</p>
             )}
 
             <div className="flex flex-wrap gap-3 mt-5">
@@ -296,40 +296,40 @@ function DetalleReserva() {
             )}
 
             <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="rounded-2xl bg-sky-50 p-4">
-                <p className="text-xs text-slate-500 uppercase">Fecha</p>
-                <p className="font-black text-slate-800">
+              <div className="rounded-2xl bg-surface p-4">
+                <p className="text-xs text-muted uppercase">Fecha</p>
+                <p className="font-black text-foreground">
                   <Calendar className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {reservation.fecha_clase}
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-sky-50 p-4">
-                <p className="text-xs text-slate-500 uppercase">Hora</p>
-                <p className="font-black text-slate-800">
+              <div className="rounded-2xl bg-surface p-4">
+                <p className="text-xs text-muted uppercase">Hora</p>
+                <p className="font-black text-foreground">
                   <Clock className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {reservation.hora_inicio}
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-sky-50 p-4">
-                <p className="text-xs text-slate-500 uppercase">Espacio</p>
-                <p className="font-black text-[#004aab]">{reservation.codigo_espacio}</p>
+              <div className="rounded-2xl bg-surface p-4">
+                <p className="text-xs text-muted uppercase">Espacio</p>
+                <p className="font-black text-brand-600">{reservation.codigo_espacio}</p>
               </div>
 
-              <div className="rounded-2xl bg-sky-50 p-4">
-                <p className="text-xs text-slate-500 uppercase">Monto</p>
-                <p className="font-black text-[#004aab]">S/ {Number(reservation.monto).toFixed(2)}</p>
+              <div className="rounded-2xl bg-surface p-4">
+                <p className="text-xs text-muted uppercase">Monto</p>
+                <p className="font-black text-brand-600">S/ {Number(reservation.monto).toFixed(2)}</p>
               </div>
 
               {reservation.metodo_pago && (
-                <div className="rounded-2xl bg-sky-50 p-4">
-                  <p className="text-xs text-slate-500 uppercase">Método de pago</p>
-                  <p className="font-black text-slate-800">{reservation.metodo_pago}</p>
+                <div className="rounded-2xl bg-surface p-4">
+                  <p className="text-xs text-muted uppercase">Método de pago</p>
+                  <p className="font-black text-foreground">{reservation.metodo_pago}</p>
                 </div>
               )}
 
-              <div className="rounded-2xl bg-sky-50 p-4">
-                <p className="text-xs text-slate-500 uppercase">Reservado el</p>
-                <p className="font-black text-slate-800">
+              <div className="rounded-2xl bg-surface p-4">
+                <p className="text-xs text-muted uppercase">Reservado el</p>
+                <p className="font-black text-foreground">
                   <Calendar className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {new Date(reservation.fecha_reserva).toLocaleDateString('es-PE', {
                     day: 'numeric',
                     month: 'long',
@@ -341,9 +341,9 @@ function DetalleReserva() {
               </div>
 
               {reservation.usuarioNombre && (
-                <div className="rounded-2xl bg-sky-50 p-4">
-                  <p className="text-xs text-slate-500 uppercase">Reservado por</p>
-                  <p className="font-black text-slate-800">
+                <div className="rounded-2xl bg-surface p-4">
+                  <p className="text-xs text-muted uppercase">Reservado por</p>
+                  <p className="font-black text-foreground">
                     <User className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {reservation.usuarioNombre}
                   </p>
                 </div>
@@ -351,13 +351,13 @@ function DetalleReserva() {
             </div>
 
             {canShowQR && qrValue ? (
-              <div className="rounded-3xl border border-sky-100 bg-white p-6">
-                <h3 className="mb-4 text-center font-black text-slate-800">
+              <div className="rounded-3xl border border-blue-100/50 bg-card p-6">
+                <h3 className="mb-4 text-center font-black text-foreground">
                   Código QR de Check-in
                 </h3>
 
                 <div className="flex justify-center">
-                  <div className="rounded-2xl bg-white p-3 shadow-sm">
+                  <div className="rounded-2xl bg-card p-3 shadow-sm">
                     <QRCode
                       value={qrValue}
                       size={220}
@@ -365,18 +365,18 @@ function DetalleReserva() {
                   </div>
                 </div>
 
-                <p className="mt-4 text-center text-sm text-slate-500">
+                <p className="mt-4 text-center text-sm text-secondary">
                   Presenta este código al ingresar al salón.
                 </p>
               </div>
             ) : (
-              <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
-                <p className="mt-2 text-sm text-slate-500">
+              <div className="rounded-3xl border border-dashed border-border bg-surface p-6 text-center">
+                <p className="mt-2 text-sm text-secondary">
                   El código QR solo está disponible para reservas activas
                   pendientes o pagadas.
                 </p>
 
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-secondary">
                   Esta reserva todavía no tiene un código QR generado.
                 </p>
               </div>
@@ -447,7 +447,7 @@ function DetalleReserva() {
           onClick={(e) => { if (e.target === e.currentTarget) setShowCancelModal(false); }}
         >
           <div
-            className="w-full sm:max-w-md rounded-[28px] bg-white shadow-2xl flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]"
+            className="w-full sm:max-w-md rounded-[28px] bg-card shadow-2xl flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]"
             role="dialog"
             aria-modal="true"
             aria-labelledby="cancelar-reserva-title"
@@ -458,8 +458,8 @@ function DetalleReserva() {
                 <div className="mx-auto mb-2 sm:mb-3 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner">
                   <XCircle className="w-6 h-6 sm:w-7 sm:h-7 text-red-500" aria-hidden="true" />
                 </div>
-                <h3 id="cancelar-reserva-title" className="text-lg sm:text-2xl font-black text-slate-900">Cancelar reserva</h3>
-                <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed px-1">
+                <h3 id="cancelar-reserva-title" className="text-lg sm:text-2xl font-black text-foreground">Cancelar reserva</h3>
+                <p className="mt-1 text-xs sm:text-sm text-secondary leading-relaxed px-1">
                   Esta acción liberará tu espacio. Selecciona el motivo de cancelación.
                 </p>
               </div>
@@ -467,65 +467,65 @@ function DetalleReserva() {
               <div className={`mt-3 sm:mt-5 rounded-2xl border p-3 sm:p-4 ${
                   cancelMotivo === 'CAMBIO_INSTRUCTOR'
                     ? 'border-amber-200 bg-amber-50/80'
-                    : 'border-slate-100 bg-slate-50/80'
+                    : 'border-border-light bg-surface/80'
                 }`}>
                 <div className="space-y-2 text-xs sm:text-sm">
                   {reservation.instructor_nombre && (
                     <div className={`flex justify-between gap-2 sm:gap-4 ${
                       cancelMotivo === 'CAMBIO_INSTRUCTOR' ? 'text-amber-800' : ''
                     }`}>
-                      <span className="text-slate-500 shrink-0">Instructor</span>
-                      <span className="font-bold text-slate-800 text-right">{reservation.instructor_nombre || 'Instructor por asignar'}</span>
+                      <span className="text-muted shrink-0">Instructor</span>
+                      <span className="font-bold text-foreground text-right">{reservation.instructor_nombre || 'Instructor por asignar'}</span>
                     </div>
                   )}
                   <div className="flex justify-between gap-2 sm:gap-4">
-                    <span className="text-slate-500 shrink-0">Reserva</span>
-                    <span className="font-bold text-slate-800 text-right">#{reservation.codigo_reserva}</span>
+                    <span className="text-muted shrink-0">Reserva</span>
+                    <span className="font-bold text-foreground text-right">#{reservation.codigo_reserva}</span>
                   </div>
                   <div className="flex justify-between gap-2 sm:gap-4">
-                    <span className="text-slate-500 shrink-0">Clase</span>
-                    <span className="font-bold text-slate-800 text-right truncate max-w-[140px] sm:max-w-none">{reservation.className}</span>
+                    <span className="text-muted shrink-0">Clase</span>
+                    <span className="font-bold text-foreground text-right truncate max-w-[140px] sm:max-w-none">{reservation.className}</span>
                   </div>
                   <div className="flex justify-between gap-2 sm:gap-4">
-                    <span className="text-slate-500 shrink-0">Fecha</span>
-                    <span className="font-bold text-slate-800 text-right">{reservation.fecha_clase}</span>
+                    <span className="text-muted shrink-0">Fecha</span>
+                    <span className="font-bold text-foreground text-right">{reservation.fecha_clase}</span>
                   </div>
                   {reservation.hora_inicio && (
                     <div className="flex justify-between gap-2 sm:gap-4">
-                      <span className="text-slate-500 shrink-0">Hora</span>
-                      <span className="font-bold text-slate-800 text-right">{reservation.hora_inicio.slice(0, 5)}</span>
+                      <span className="text-muted shrink-0">Hora</span>
+                      <span className="font-bold text-foreground text-right">{reservation.hora_inicio.slice(0, 5)}</span>
                     </div>
                   )}
                   <div className="flex justify-between gap-2 sm:gap-4">
-                    <span className="text-slate-500 shrink-0">Espacio</span>
-                    <span className="font-bold text-[#004aab] text-right">{reservation.codigo_espacio}</span>
+                    <span className="text-muted shrink-0">Espacio</span>
+                    <span className="font-bold text-brand-600 text-right">{reservation.codigo_espacio}</span>
                   </div>
                   <div className="flex justify-between gap-2 sm:gap-4">
-                    <span className="text-slate-500 shrink-0">Monto</span>
-                    <span className="font-bold text-slate-800 text-right">S/ {Number(reservation.monto).toFixed(2)}</span>
+                    <span className="text-muted shrink-0">Monto</span>
+                    <span className="font-bold text-foreground text-right">S/ {Number(reservation.monto).toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
               <div className="mt-3 sm:mt-5">
-                <label className="text-xs sm:text-sm font-bold text-slate-700 block mb-2 sm:mb-2.5">Motivo de cancelación</label>
+                <label className="text-xs sm:text-sm font-bold text-foreground block mb-2 sm:mb-2.5">Motivo de cancelación</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
                   {motivosCancelacion.map((m) => (
                     <label
                       key={m.value}
                       className={`flex items-center gap-2 sm:gap-2.5 rounded-xl border-2 px-3 py-2 sm:px-3.5 sm:py-3 cursor-pointer transition-all duration-200 ${
                         cancelMotivo === m.value
-                          ? 'border-[#004aab] bg-blue-50/70 shadow-sm'
-                          : 'border-slate-100 bg-white hover:border-slate-200 hover:bg-slate-50'
+                          ? 'border-brand-600 bg-blue-50/70 shadow-sm'
+                          : 'border-border-light bg-card hover:border-border hover:bg-surface'
                       }`}
                     >
                       <div className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors duration-200 ${
                         cancelMotivo === m.value
-                          ? 'border-[#004aab]'
-                          : 'border-slate-300'
+                           ? 'border-brand-600'
+                           : 'border-border'
                       }`}>
                         {cancelMotivo === m.value && (
-                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#004aab]" />
+                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-brand-600" />
                         )}
                       </div>
                       <input
@@ -536,7 +536,7 @@ function DetalleReserva() {
                         onChange={(e) => setCancelMotivo(e.target.value)}
                         className="sr-only"
                       />
-                      <span className="text-xs sm:text-sm font-medium text-slate-700 leading-tight">{m.label}</span>
+                      <span className="text-xs sm:text-sm font-medium text-foreground leading-tight">{m.label}</span>
                     </label>
                   ))}
                 </div>
@@ -548,7 +548,7 @@ function DetalleReserva() {
                     value={cancelDetalle}
                     onChange={(e) => setCancelDetalle(e.target.value)}
                     placeholder="Describe el motivo (opcional)..."
-                    className="w-full rounded-xl border-2 border-slate-100 bg-white px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm outline-none transition-all duration-200 focus:border-[#004aab] focus:ring-2 focus:ring-blue-100 resize-none"
+                    className="w-full rounded-xl border-2 border-border-light bg-card px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm outline-none transition-all duration-200 focus:border-brand-600 focus:ring-2 focus:ring-blue-100 resize-none text-foreground placeholder:text-muted"
                     rows={2}
                   />
                 </div>
@@ -558,7 +558,7 @@ function DetalleReserva() {
                 <button
                   onClick={() => setShowCancelModal(false)}
                   disabled={canceling}
-                  className="flex-1 rounded-xl sm:rounded-2xl border-2 border-slate-100 py-3 sm:py-3.5 font-bold text-slate-600 text-xs sm:text-sm transition-all duration-200 hover:bg-slate-50 hover:border-slate-200 active:scale-[0.98] disabled:opacity-60"
+                  className="flex-1 rounded-xl sm:rounded-2xl border-2 border-border-light py-3 sm:py-3.5 font-bold text-secondary text-xs sm:text-sm transition-all duration-200 hover:bg-surface hover:border-border active:scale-[0.98] disabled:opacity-60"
                 >
                   Mantener reserva
                 </button>

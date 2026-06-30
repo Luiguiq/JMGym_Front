@@ -20,6 +20,9 @@ const ClasesAdmin = () => {
   const [classUsers, setClassUsers] = useState([]);
   const [loadingClassUsers, setLoadingClassUsers] = useState(false);
   const [classUsersError, setClassUsersError] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
@@ -237,6 +240,72 @@ const ClasesAdmin = () => {
           }}
           loading={loading}
         />
+      )}
+
+      {deleteTarget && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => { if (e.target === e.currentTarget && !deleting) setDeleteTarget(null); }}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-modal-title"
+          >
+            <div className="border-b border-slate-200 px-5 py-4 flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
+                  <AlertTriangle size={20} className="text-red-600" />
+                </div>
+                <div>
+                  <h2 id="delete-modal-title" className="text-lg font-bold text-slate-900">Eliminar clase</h2>
+                  <p className="text-sm text-slate-500 mt-1">{deleteTarget.name}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+                className="text-slate-400 hover:text-slate-700 transition-colors"
+                aria-label="Cerrar"
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="p-5">
+              <p className="text-sm text-slate-600">
+                ¿Estás seguro de eliminar esta clase? Esta acción no se puede deshacer.
+              </p>
+
+              {deleteError && (
+                <div className="mt-3 rounded-lg bg-red-50 px-4 py-2 text-sm font-medium text-red-600" role="alert">
+                  {deleteError}
+                </div>
+              )}
+
+              <div className="mt-5 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setDeleteTarget(null)}
+                  disabled={deleting}
+                  className="flex-1 rounded-xl border border-slate-200 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmDelete}
+                  disabled={deleting}
+                  className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-bold text-white transition hover:bg-red-700 disabled:opacity-50"
+                >
+                  {deleting ? 'Eliminando...' : 'Eliminar'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {usersModalClass && (

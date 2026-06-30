@@ -54,18 +54,18 @@ function AyudaSoporte() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-20">
+    <main className="min-h-screen bg-surface pb-20">
       <section className="mx-auto max-w-2xl px-4 pt-8 sm:px-6 sm:pt-12">
         <div className="mb-6 flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
-            className="grid h-11 w-11 place-items-center rounded-xl bg-white text-slate-600 shadow-[0_4px_12px_rgba(33,45,58,0.08)] transition hover:bg-slate-100"
+            className="grid h-11 w-11 place-items-center rounded-xl bg-card text-secondary shadow-[0_4px_12px_rgba(33,45,58,0.08)] transition hover:bg-border-light"
           >
             <ArrowLeft size={22} />
           </button>
           <div>
-            <h2 className="font-display text-3xl font-bold text-slate-900 sm:text-4xl">Ayuda y soporte</h2>
-            <p className="mt-1 text-slate-500">Respuestas a tus preguntas frecuentes</p>
+            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">Ayuda y soporte</h2>
+            <p className="mt-1 text-secondary">Respuestas a tus preguntas frecuentes</p>
           </div>
         </div>
 
@@ -85,23 +85,23 @@ function AyudaSoporte() {
             return (
               <div
                 key={index}
-                className="overflow-hidden rounded-2xl bg-white shadow-[0_4px_12px_rgba(33,45,58,0.06)] transition"
+                className="overflow-hidden rounded-2xl bg-card shadow-[0_4px_12px_rgba(33,45,58,0.06)] transition"
               >
                 <button
                   onClick={() => toggleFaq(index)}
-                  className="flex w-full items-center gap-3 px-5 py-4 text-left transition hover:bg-slate-50"
+                  className="flex w-full items-center gap-3 px-5 py-4 text-left transition hover:bg-border-light"
                 >
                   <BookOpen size={18} className="shrink-0 text-brand-500" />
-                  <span className="flex-1 text-sm font-bold text-slate-800">{faq.question}</span>
+                  <span className="flex-1 text-sm font-bold text-foreground">{faq.question}</span>
                   {isOpen ? (
-                    <ChevronDown size={18} className="shrink-0 text-slate-400" />
+                    <ChevronDown size={18} className="shrink-0 text-muted" />
                   ) : (
-                    <ChevronRight size={18} className="shrink-0 text-slate-400" />
+                    <ChevronRight size={18} className="shrink-0 text-muted" />
                   )}
                 </button>
                 {isOpen && (
-                  <div className="border-t border-slate-100 px-5 py-4">
-                    <p className="text-sm leading-relaxed text-slate-600">{faq.answer}</p>
+                  <div className="border-t border-border-light px-5 py-4">
+                    <p className="text-sm leading-relaxed text-muted">{faq.answer}</p>
                   </div>
                 )}
               </div>
@@ -109,28 +109,28 @@ function AyudaSoporte() {
           })}
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-3xl bg-white shadow-[0_14px_32px_rgba(33,45,58,0.1)]">
-          <div className="border-b border-slate-100 px-5 py-4">
-            <h3 className="flex items-center gap-2 font-bold text-slate-800">
+        <div className="mt-6 overflow-hidden rounded-3xl bg-card shadow-[0_14px_32px_rgba(33,45,58,0.1)]">
+          <div className="border-b border-border-light px-5 py-4">
+            <h3 className="flex items-center gap-2 font-bold text-foreground">
               <MessageCircle size={18} className="text-brand-600" />
               Contacto directo
             </h3>
           </div>
-          <div className="divide-y divide-slate-100">
-            <a href="mailto:soporte@jmgym.pe" className="flex items-center gap-3 px-5 py-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
-              <Mail size={18} className="text-slate-400" />
+          <div className="divide-y divide-border-light">
+            <a href="mailto:soporte@jmgym.pe" className="flex items-center gap-3 px-5 py-4 text-sm font-semibold text-foreground transition hover:bg-border-light">
+              <Mail size={18} className="text-muted" />
               soporte@jmgym.pe
             </a>
-            <a href="tel:+51015551234" className="flex items-center gap-3 px-5 py-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
-              <Phone size={18} className="text-slate-400" />
+            <a href="tel:+51015551234" className="flex items-center gap-3 px-5 py-4 text-sm font-semibold text-foreground transition hover:bg-border-light">
+              <Phone size={18} className="text-muted" />
               (01) 555-1234
             </a>
-            <div className="flex items-center gap-3 px-5 py-4 text-sm font-semibold text-slate-700">
-              <MapPin size={18} className="text-slate-400" />
+            <div className="flex items-center gap-3 px-5 py-4 text-sm font-semibold text-foreground">
+              <MapPin size={18} className="text-muted" />
               Av. Principal 123, Lima
             </div>
-            <div className="flex items-center gap-3 px-5 py-4 text-sm font-semibold text-slate-700">
-              <Clock size={18} className="text-slate-400" />
+            <div className="flex items-center gap-3 px-5 py-4 text-sm font-semibold text-foreground">
+              <Clock size={18} className="text-muted" />
               Lun - Sáb: 6:00 a.m. - 8:00 p.m.
             </div>
           </div>

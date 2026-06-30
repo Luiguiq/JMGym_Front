@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, X, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, X, SlidersHorizontal, ChevronLeft, Calendar, Flame, Music, Dumbbell, Zap, Clock } from 'lucide-react';
 import ClassCard from '../../components/user/ClassCard.jsx';
 import { classService } from '../../services/classService.js';
 
-const mesNombres = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const diasCorto = ['Do','Lu','Ma','Mi','Ju','Vi','Sá'];
+const mesNombres = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'];
+const diasCorto = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
 
 function toDateStr(date) {
   const y = date.getFullYear();
@@ -14,141 +15,162 @@ function toDateStr(date) {
   return `${y}-${m}-${d}`;
 }
 
-function CalendarOverlay({ mode, selectedDates, onSelect, onClose }) {
-  const [viewDate, setViewDate] = useState(new Date());
-  const initial = Array.isArray(selectedDates) ? [...selectedDates] : (selectedDates ? [selectedDates] : []);
-  const [localSelected, setLocalSelected] = useState(initial);
+const catChips = [
+  { val: 'todos', label: 'Todas', icon: Flame },
+  { val: 'cardio', label: 'Cardio', icon: Zap },
+  { val: 'baile', label: 'Baile', icon: Music },
+  { val: 'fuerza', label: 'Fuerza', icon: Dumbbell },
+];
 
-  const year = viewDate.getFullYear();
-  const month = viewDate.getMonth();
-
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  const today = toDateStr(new Date());
-
-  const cells = [];
-  for (let i = 0; i < firstDay; i++) cells.push(null);
-  for (let d = 1; d <= daysInMonth; d++) cells.push(d);
-
-  function prevMonth() { setViewDate(new Date(year, month - 1, 1)); }
-  function nextMonth() { setViewDate(new Date(year, month + 1, 1)); }
-
-  function handleDayClick(day) {
-    if (!day) return;
-    const dateStr = toDateStr(new Date(year, month, day));
-    setLocalSelected((prev) =>
-      prev.includes(dateStr) ? prev.filter((d) => d !== dateStr) : [...prev, dateStr]
-    );
-  }
-
-  function handleAccept() {
-    if (mode === 'custom') {
-      onSelect(localSelected.length > 0 ? localSelected[localSelected.length - 1] : '');
-    } else {
-      localSelected.forEach((d) => onSelect(d));
-    }
-    onClose();
-  }
-
+function SkeletonCard() {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-sm mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
-        <div className="flex items-center justify-between px-5 pt-5 pb-2">
-          <button onClick={prevMonth} className="p-1 rounded-full hover:bg-slate-100 transition">
-            <ChevronLeft size={20} className="text-slate-600" />
-          </button>
-          <h3 className="font-extrabold text-slate-800 text-base">
-            {mesNombres[month]} {year}
-          </h3>
-          <button onClick={nextMonth} className="p-1 rounded-full hover:bg-slate-100 transition">
-            <ChevronRight size={20} className="text-slate-600" />
-          </button>
+    <div className="animate-pulse rounded-2xl bg-card p-4 shadow-sm">
+      <div className="flex items-center gap-4">
+        <div className="h-14 w-14 shrink-0 rounded-2xl bg-border" />
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="h-4 w-2/3 rounded bg-border" />
+          <div className="h-3 w-1/3 rounded bg-border-light" />
         </div>
-
-        <div className="px-5 pb-2 grid grid-cols-7 gap-0.5">
-          {diasCorto.map((d) => (
-            <div key={d} className="text-center text-[11px] font-bold text-slate-400 py-1">{d}</div>
-          ))}
-        </div>
-
-        <div className="px-5 pb-5 grid grid-cols-7 gap-0.5">
-          {cells.map((day, i) => {
-            if (!day) return <div key={`e${i}`} />;
-            const dateStr = toDateStr(new Date(year, month, day));
-            const isToday = dateStr === today;
-            const isSelected = localSelected.includes(dateStr);
-            const isPast = dateStr < today;
-            return (
-              <button
-                key={dateStr}
-                onClick={() => !isPast && handleDayClick(day)}
-                disabled={isPast}
-                className={`relative flex items-center justify-center rounded-xl py-2.5 text-sm font-bold transition ${
-                  isSelected
-                    ? 'bg-[#004aab] text-white shadow-md'
-                    : isToday
-                      ? 'bg-brand-100 text-[#004aab]'
-                      : isPast
-                        ? 'text-slate-300 cursor-not-allowed'
-                        : 'text-slate-700 hover:bg-slate-100'
-                }`}
-              >
-                {day}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="border-t border-slate-100 px-5 py-3 flex justify-between items-center">
-          <p className="text-xs text-slate-500">
-            {localSelected.length > 0
-              ? `${localSelected.length} día(s) seleccionado(s)`
-              : 'Selecciona uno o más días'}
-          </p>
-          <div className="flex gap-2">
-            <button onClick={onClose} className="text-xs font-bold text-slate-600 bg-slate-100 rounded-full px-4 py-1.5 hover:bg-slate-200 transition">
-              Cerrar
-            </button>
-            <button onClick={handleAccept} className="text-xs font-bold text-white bg-[#004aab] rounded-full px-5 py-1.5 hover:opacity-90 transition">
-              Aceptar
-            </button>
-          </div>
-        </div>
+        <div className="h-8 w-16 rounded-lg bg-border" />
       </div>
     </div>
   );
 }
 
-const catOptions = [
-  { val: 'todos', label: 'Todas' },
-  { val: 'cardio', label: 'Cardio' },
-  { val: 'baile',  label: 'Baile' },
-  { val: 'fuerza', label: 'Fuerza' },
-];
+function FilterDrawer({ open, onClose, filters, setFilters, onClear }) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[60] bg-black/40"
+            onClick={onClose}
+          />
+          <motion.div
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+            className="fixed inset-x-0 bottom-0 z-[60] flex flex-col rounded-t-3xl bg-card shadow-xl"
+            style={{ maxHeight: '85vh' }}
+          >
+            <div className="shrink-0 px-6 pt-6">
+              <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-border-light" />
+              <div className="mb-5 flex items-center justify-between">
+                <h3 className="text-lg font-bold text-foreground">Filtros</h3>
+                <button onClick={onClose} className="rounded-full bg-border-light p-2 text-muted transition hover:bg-border">
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
 
-const hourOptions = [
-  { val: '',      label: 'Cualquier hora' },
-  { val: '6-12',  label: 'Mañana (6-12)' },
-  { val: '12-18', label: 'Tarde (12-18)' },
-  { val: '18-24', label: 'Noche (18-24)' },
-];
+            <div className="overflow-y-auto px-6 pb-4 space-y-5 flex-1">
+              <div>
+                <p className="mb-2 text-[13px] font-bold text-secondary">Categoría</p>
+                <div className="flex flex-wrap gap-2">
+                  {catChips.map(({ val, label, icon: Icon }) => (
+                    <button
+                      key={val}
+                      onClick={() => setFilters((p) => ({ ...p, cat: val }))}
+                      className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition ${
+                        filters.cat === val
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'bg-border-light text-secondary hover:bg-border'
+                      }`}
+                    >
+                      <Icon size={15} />
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-2 text-[13px] font-bold text-secondary">Fecha</p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { val: '', label: 'Todas' },
+                    { val: 'hoy', label: 'Hoy' },
+                    { val: 'manana', label: 'Mañana' },
+                    { val: 'semana', label: 'Esta semana' },
+                  ].map(({ val, label }) => (
+                    <button
+                      key={val}
+                      onClick={() => setFilters((p) => ({ ...p, time: val }))}
+                      className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition ${
+                        filters.time === val
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'bg-border-light text-secondary hover:bg-border'
+                      }`}
+                    >
+                      <Calendar size={15} />
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-2 text-[13px] font-bold text-secondary">Hora</p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { val: '', label: 'Cualquiera' },
+                    { val: '6-12', label: 'Manana 6-12' },
+                    { val: '12-18', label: 'Tarde 12-18' },
+                    { val: '18-24', label: 'Noche 18-24' },
+                  ].map(({ val, label }) => (
+                    <button
+                      key={val}
+                      onClick={() => setFilters((p) => ({ ...p, hour: p.hour === val ? '' : val }))}
+                      className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition ${
+                        filters.hour === val
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'bg-border-light text-secondary hover:bg-border'
+                      }`}
+                    >
+                      <Clock size={15} />
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="shrink-0 border-t border-border-light px-6 py-4">
+              <div className="flex gap-3">
+                <button
+                  onClick={onClear}
+                  className="flex-1 rounded-xl border border-border py-3 text-sm font-bold text-secondary transition hover:bg-surface"
+                >
+                  Limpiar
+                </button>
+                <button
+                  onClick={onClose}
+                  className="flex-1 rounded-xl bg-blue-600 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+                >
+                  Ver resultados
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
 
 function ListaClases() {
   const navigate = useNavigate();
-  const searchRef = useRef(null);
-
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
   const [search, setSearch] = useState('');
-  const [timeFilter, setTimeFilter] = useState('');
-  const [selectedDates, setSelectedDates] = useState([]);
-  const [catFilter, setCatFilter] = useState('todos');
-  const [hourFilter, setHourFilter] = useState('');
-  const [customDate, setCustomDate] = useState('');
-  const [showCalendar, setShowCalendar] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({ cat: 'todos', time: '', hour: '' });
 
   useEffect(() => {
     classService
@@ -160,221 +182,124 @@ function ListaClases() {
 
   const todayStr = useMemo(() => toDateStr(new Date()), []);
 
-  function getFilteredClasses() {
+  const visibleClasses = useMemo(() => {
     let filtered = classes;
 
     if (search.trim()) {
       const q = search.toLowerCase();
       filtered = filtered.filter(
-        (c) =>
-          c.name.toLowerCase().includes(q) ||
-          (c.trainer && c.trainer.toLowerCase().includes(q))
+        (c) => c.name.toLowerCase().includes(q) || (c.trainer && c.trainer.toLowerCase().includes(q))
       );
     }
 
-    if (timeFilter === 'hoy') {
+    if (filters.time === 'hoy') {
       filtered = filtered.filter((c) => c.date === todayStr);
-    } else if (timeFilter === 'manana') {
+    } else if (filters.time === 'manana') {
       const tomorrow = toDateStr(new Date(Date.now() + 86400000));
       filtered = filtered.filter((c) => c.date === tomorrow);
-    } else if (timeFilter === 'semana' || timeFilter === 'custom') {
-      if (timeFilter === 'semana' && selectedDates.length > 0) {
-        filtered = filtered.filter((c) => selectedDates.includes(c.date));
-      } else if (timeFilter === 'semana') {
-        const dates = [];
-        const d = new Date();
-        const day = d.getDay();
-        const mon = new Date(d);
-        mon.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
-        for (let i = 0; i < 7; i++) {
-          const dd = new Date(mon);
-          dd.setDate(mon.getDate() + i);
-          dates.push(toDateStr(dd));
-        }
-        filtered = filtered.filter((c) => dates.includes(c.date));
-      } else if (timeFilter === 'custom' && customDate) {
-        filtered = filtered.filter((c) => c.date === customDate);
-      } else if (timeFilter === 'custom' && selectedDates.length > 0) {
-        filtered = filtered.filter((c) => selectedDates.includes(c.date));
-      }
     }
 
-    if (catFilter !== 'todos') {
+    if (filters.cat !== 'todos') {
       filtered = filtered.filter((c) => {
         const name = (c.name || '').toLowerCase();
-        if (catFilter === 'cardio') return name.includes('cardio');
-        if (catFilter === 'baile') return c.id_genero === 1 || name.includes('zumba') || name.includes('baile');
-        if (catFilter === 'fuerza') return c.id_genero === 3 || name.includes('tren') || name.includes('fuerza');
+        if (filters.cat === 'cardio') return name.includes('cardio');
+        if (filters.cat === 'baile') return c.id_genero === 2 || name.includes('zumba') || name.includes('baile');
+        if (filters.cat === 'fuerza') return c.id_genero === 3 || name.includes('tren') || name.includes('fuerza');
         return true;
       });
     }
 
-    if (hourFilter) {
+    if (filters.hour) {
       filtered = filtered.filter((c) => {
         if (!c.time) return false;
         const hour = parseInt(c.time.split(':')[0], 10);
-        const [minH, maxH] = hourFilter.split('-').map(Number);
+        const [minH, maxH] = filters.hour.split('-').map(Number);
         return hour >= minH && hour < maxH;
       });
     }
 
     return filtered;
-  }
+  }, [classes, search, filters]);
 
-  const visibleClasses = useMemo(
-    getFilteredClasses,
-    [classes, search, timeFilter, selectedDates, catFilter, hourFilter, customDate, todayStr]
-  );
-
-  const hasActiveFilters = search || timeFilter !== '' || selectedDates.length > 0 || catFilter !== 'todos' || hourFilter;
+  const hasActiveFilters = search || filters.cat !== 'todos' || filters.time !== '' || filters.hour !== '';
 
   function clearFilters() {
     setSearch('');
-    setTimeFilter('');
-    setSelectedDates([]);
-    setCatFilter('todos');
-    setHourFilter('');
-    setCustomDate('');
-    searchRef.current?.focus();
+    setFilters({ cat: 'todos', time: '', hour: '' });
   }
-
-  function handleCalendarSelect(dateStr) {
-    if (showCalendar === 'semana') {
-      setSelectedDates((prev) =>
-        prev.includes(dateStr) ? prev.filter((d) => d !== dateStr) : [...prev, dateStr]
-      );
-    } else {
-      setCustomDate(dateStr);
-    }
-  }
-
-  const activeCount = visibleClasses.length;
-  const totalCount = classes.length;
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] px-5 py-6 pb-28 sm:px-6 sm:py-8">
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-4 flex items-center gap-2 text-sm font-bold text-slate-700"
-      >
-        <ArrowLeft size={18} />
-        Volver
-      </button>
+    <main className="min-h-screen bg-surface pb-28">
+      <section className="mx-auto max-w-lg px-5 py-5 sm:px-6 sm:py-6">
 
-      <section className="mx-auto max-w-6xl">
-        <h1 className="text-2xl font-extrabold text-slate-800 sm:text-3xl">Clases disponibles</h1>
-        <p className="mt-1 text-sm text-slate-500">Encuentra tu próxima clase y reserva tu lugar</p>
+        <div className="mb-6 flex items-center gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-card text-secondary shadow-sm transition hover:bg-border-light"
+          >
+            <ChevronLeft size={20} strokeWidth={2.5} />
+          </button>
+          <div>
+            <h1 className="text-xl font-bold text-foreground">Clases</h1>
+            <p className="text-[13px] text-muted">Encuentra tu próxima clase</p>
+          </div>
+        </div>
 
-        {/* Search */}
-        <div className="mt-5 relative">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+        <div className="relative mb-4">
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
           <input
-            ref={searchRef}
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar clase o instructor..."
-            className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-10 pr-10 text-sm outline-none transition focus:border-[#004aab] focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded-2xl border-0 bg-card py-3.5 pl-11 pr-10 text-sm shadow-[0_2px_8px_rgba(0,0,0,0.04)] outline-none transition focus:shadow-[0_4px_16px_rgba(59,130,246,0.15)] focus:ring-2 focus:ring-blue-200"
           />
           {search && (
-            <button onClick={() => setSearch('')} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+            <button onClick={() => setSearch('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-secondary">
               <X size={16} />
             </button>
           )}
         </div>
 
-        {/* Time filter */}
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mb-2 flex items-center gap-2">
+          {catChips.slice(0, 3).map(({ val, label, icon: Icon }) => (
+            <button
+              key={val}
+              onClick={() => setFilters((p) => ({ ...p, cat: val }))}
+              className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12px] font-semibold transition ${
+                filters.cat === val
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-card text-muted shadow-sm hover:bg-border-light'
+              }`}
+            >
+              <Icon size={14} />
+              {label}
+            </button>
+          ))}
           <button
-            onClick={() => { setTimeFilter(''); setSelectedDates([]); setCustomDate(''); }}
-            className={`rounded-full px-4 py-2 text-xs font-bold transition whitespace-nowrap ${
-              timeFilter === ''
-                ? 'bg-[#004aab] text-white shadow-md'
-                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
+            onClick={() => setShowFilters(true)}
+            className={`ml-auto flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12px] font-semibold transition ${
+              hasActiveFilters && filters.cat === 'todos'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'bg-card text-muted shadow-sm hover:bg-border-light'
             }`}
           >
-            <Calendar size={14} className="-ml-0.5 inline-block" /> Todas
-          </button>
-          <button
-            onClick={() => { setTimeFilter('hoy'); setSelectedDates([]); setCustomDate(''); }}
-            className={`rounded-full px-4 py-2 text-xs font-bold transition whitespace-nowrap ${
-              timeFilter === 'hoy'
-                ? 'bg-[#004aab] text-white shadow-md'
-                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
-            }`}
-          >
-            <Calendar size={14} className="-ml-0.5 inline-block" /> Hoy
-          </button>
-          <button
-            onClick={() => { setTimeFilter('manana'); setSelectedDates([]); setCustomDate(''); }}
-            className={`rounded-full px-4 py-2 text-xs font-bold transition whitespace-nowrap ${
-              timeFilter === 'manana'
-                ? 'bg-[#004aab] text-white shadow-md'
-                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
-            }`}
-          >
-            <Calendar size={14} className="-ml-0.5 inline-block" /> Mañana
-          </button>
-          <button
-            onClick={() => { setTimeFilter('semana'); setShowCalendar('semana'); }}
-            className={`rounded-full px-4 py-2 text-xs font-bold transition whitespace-nowrap ${
-              timeFilter === 'semana'
-                ? 'bg-[#004aab] text-white shadow-md'
-                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
-            }`}
-          >
-            <Calendar size={14} className="-ml-0.5 inline-block" /> {timeFilter === 'semana' && selectedDates.length > 0 ? `${selectedDates.length} día(s)` : 'Esta semana'}
-          </button>
-          <button
-            onClick={() => { setTimeFilter('custom'); setShowCalendar('custom'); }}
-            className={`rounded-full px-4 py-2 text-xs font-bold transition whitespace-nowrap ${
-              timeFilter === 'custom'
-                ? 'bg-[#004aab] text-white shadow-md'
-                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
-            }`}
-          >
-            <Calendar size={14} className="-ml-0.5 inline-block" /> {customDate || 'Elegir fecha'}
+            <SlidersHorizontal size={14} />
+            Filtros
+            {(filters.time || filters.hour) && (
+              <span className="ml-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[9px] font-bold text-white">
+                {(filters.time ? 1 : 0) + (filters.hour ? 1 : 0)}
+              </span>
+            )}
           </button>
         </div>
 
-        {/* Category + Hour */}
-        <div className="mt-3 flex flex-wrap gap-2">
-          {catOptions.map((opt) => (
-            <button
-              key={opt.val}
-              onClick={() => setCatFilter(opt.val)}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
-                catFilter === opt.val
-                  ? 'bg-[#004aab] text-white shadow-md'
-                  : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-          <span className="hidden sm:block w-px bg-slate-200 self-stretch mx-1" />
-          {hourOptions.map((opt) => (
-            <button
-              key={opt.val}
-              onClick={() => setHourFilter(opt.val === hourFilter ? '' : opt.val)}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
-                hourFilter === opt.val
-                  ? 'bg-[#004aab] text-white shadow-md'
-                  : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Status */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3">
-          <p className="text-xs text-slate-500">
+        <div className="mb-1 mt-4 flex items-center justify-between border-t border-border pt-3">
+          <p className="text-[13px] text-muted">
             {loading ? (
               <span className="flex items-center gap-1.5">
                 <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-amber-400" />
-                Cargando clases...
+                Cargando...
               </span>
             ) : error ? (
               <span className="flex items-center gap-1.5 text-red-500">
@@ -382,59 +307,64 @@ function ListaClases() {
                 {error}
               </span>
             ) : (
-              <span>{activeCount} de {totalCount} clase{totalCount !== 1 ? 's' : ''}</span>
+              <span className="font-medium">{visibleClasses.length} clase{visibleClasses.length !== 1 ? 's' : ''} disponible{visibleClasses.length !== 1 ? 's' : ''}</span>
             )}
           </p>
           {hasActiveFilters && !loading && !error && (
-            <button onClick={clearFilters} className="text-xs font-semibold text-slate-500 hover:text-slate-700 transition">
-              Limpiar filtros
+            <button onClick={clearFilters} className="text-[12px] font-semibold text-blue-600 hover:text-blue-700 transition">
+              Limpiar
             </button>
           )}
         </div>
 
-        {/* Results */}
-        <div className="mt-4 grid gap-4">
+        <div className="mt-3 space-y-3">
           {loading ? (
-            <p className="py-10 text-center text-sm text-slate-400">Cargando clases...</p>
+            <>
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </>
           ) : error ? (
             <div className="rounded-2xl border border-red-200 bg-red-50 py-10 text-center">
               <p className="text-sm font-bold text-red-600">{error}</p>
-              <button onClick={() => window.location.reload()} className="mt-4 rounded-full bg-red-600 px-5 py-2 text-xs font-bold text-white hover:bg-red-700 transition">
+              <button onClick={() => window.location.reload()} className="mt-4 rounded-full bg-red-600 px-5 py-2 text-xs font-bold text-white transition hover:bg-red-700">
                 Reintentar
               </button>
             </div>
           ) : visibleClasses.length === 0 ? (
             <div className="py-16 text-center">
-              <p className="text-lg font-bold text-slate-500">Sin resultados</p>
-              <p className="mt-1 text-sm text-slate-400">
+              <p className="text-lg font-bold text-muted">Sin resultados</p>
+              <p className="mt-1 text-sm text-muted-foreground">
                 {hasActiveFilters ? 'No hay clases con los filtros seleccionados' : 'No hay clases disponibles'}
               </p>
               {hasActiveFilters && (
-                <button onClick={clearFilters} className="mt-4 rounded-full bg-[#004aab] px-5 py-2 text-xs font-bold text-white hover:opacity-90 transition">
+                <button onClick={clearFilters} className="mt-4 rounded-full bg-blue-600 px-5 py-2 text-xs font-bold text-white transition hover:bg-blue-700">
                   Mostrar todas
                 </button>
               )}
             </div>
           ) : (
-            visibleClasses.map((classItem) => (
-              <ClassCard classItem={classItem} key={classItem.id} />
+            visibleClasses.map((classItem, i) => (
+              <motion.div
+                key={classItem.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: i * 0.05 }}
+              >
+                <ClassCard classItem={classItem} />
+              </motion.div>
             ))
           )}
         </div>
       </section>
 
-      {/* Calendar Overlay */}
-      {showCalendar && (
-        <CalendarOverlay
-          mode={showCalendar}
-          selectedDates={showCalendar === 'semana' ? selectedDates : customDate}
-          onSelect={handleCalendarSelect}
-          onClose={() => {
-            if (showCalendar === 'custom' && !customDate) setTimeFilter('');
-            setShowCalendar(null);
-          }}
-        />
-      )}
+      <FilterDrawer
+        open={showFilters}
+        onClose={() => setShowFilters(false)}
+        filters={filters}
+        setFilters={setFilters}
+        onClear={clearFilters}
+      />
     </main>
   );
 }

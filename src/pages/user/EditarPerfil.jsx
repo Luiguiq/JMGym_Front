@@ -164,8 +164,8 @@ function EditarPerfil() {
 
   if (pageLoading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#eef7fd]">
-        <p className="text-slate-400">Cargando...</p>
+      <main className="flex min-h-screen items-center justify-center bg-surface">
+        <p className="text-muted">Cargando...</p>
       </main>
     );
   }
@@ -173,20 +173,20 @@ function EditarPerfil() {
   const fotoSrc = fotoPreview || (fotoPerfil ? `${BACKEND_URL}${fotoPerfil}` : null);
 
   return (
-    <main className="min-h-dvh overflow-x-hidden bg-[#eef7fd] p-3 sm:p-4 lg:p-5">
-      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-3xl overflow-hidden rounded-[32px] bg-white shadow-[0_24px_70px_rgba(15,23,42,.08)]">
+    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5">
+      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-3xl overflow-hidden rounded-[32px] bg-card shadow-[0_24px_70px_rgba(15,23,42,.08)]">
         <form className="flex flex-col justify-center gap-5 p-6 sm:p-8 lg:p-10" onSubmit={handleSubmit}>
           <div className="flex items-center gap-4">
             <button
               type="button"
               onClick={() => navigate('/cliente/perfil')}
-              className="grid h-12 w-12 place-items-center rounded-2xl bg-slate-100 text-slate-600 transition hover:bg-slate-200"
+              className="grid h-12 w-12 place-items-center rounded-2xl bg-surface text-secondary transition hover:bg-border-light"
             >
               <ArrowLeft size={22} />
             </button>
             <div>
-              <h2 className="font-display text-3xl font-bold text-slate-900 sm:text-4xl">Editar perfil</h2>
-              <p className="mt-1 text-slate-500">Actualiza tus datos personales</p>
+              <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">Editar perfil</h2>
+              <p className="mt-1 text-secondary">Actualiza tus datos personales</p>
             </div>
           </div>
 
@@ -204,13 +204,13 @@ function EditarPerfil() {
 
           {success && (
             <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-              <div className="flex flex-col items-center gap-5 rounded-[32px] bg-white px-10 py-12 shadow-2xl text-center max-w-sm w-full">
+              <div className="flex flex-col items-center gap-5 rounded-[32px] bg-card px-10 py-12 shadow-2xl text-center max-w-sm w-full">
                 <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
                   <CheckCircle size={40} className="text-emerald-600" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black text-slate-900">¡Cambios guardados!</h3>
-                  <p className="mt-2 text-sm text-slate-500">Tu perfil se actualizó correctamente.</p>
+                  <h3 className="text-2xl font-black text-foreground">¡Cambios guardados!</h3>
+                  <p className="mt-2 text-sm text-secondary">Tu perfil se actualizó correctamente.</p>
                 </div>
               </div>
             </div>
@@ -243,7 +243,7 @@ function EditarPerfil() {
             {fotoError && (
               <p className="text-xs font-semibold text-red-500">{fotoError}</p>
             )}
-            <p className="text-xs text-slate-400">Toca la cámara para cambiar tu foto</p>
+            <p className="text-xs text-muted">Toca la cámara para cambiar tu foto</p>
           </div>
 
           <Field label="Nombre completo" icon={User} error={fieldErrors.nombre}>
@@ -289,8 +289,8 @@ function EditarPerfil() {
             />
           </Field>
 
-          <div className="border-t border-slate-100 pt-5">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-500">Cambiar contraseña</h3>
+          <div className="border-t border-border-light pt-5">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-muted">Cambiar contraseña</h3>
 
             <Field label="Contraseña actual" icon={Lock} error={fieldErrors.oldPassword} className="mb-4">
               <input
