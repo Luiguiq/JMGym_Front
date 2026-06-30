@@ -37,9 +37,9 @@ function Register() {
   }
 
   return (
-    <main className="min-h-dvh overflow-x-hidden bg-[#eef7fd] p-3 sm:p-4 lg:p-5">
-      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-7xl overflow-hidden rounded-[32px] bg-white shadow-[0_24px_70px_rgba(15,23,42,.08)] lg:grid-cols-[0.92fr_1.08fr]">
-        <aside className="flex flex-col justify-between gap-6 bg-gradient-to-br from-[#004aab] via-[#0a58ca] to-[#1576ff] p-6 text-white sm:p-8 lg:p-10">
+    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5">
+      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-7xl overflow-hidden rounded-[32px] bg-card shadow-[0_24px_70px_rgba(15,23,42,.08)] lg:grid-cols-[0.92fr_1.08fr]">
+        <aside className="flex flex-col justify-between gap-6 bg-gradient-to-br from-brand-600 via-[#0a58ca] to-[#1576ff] p-6 text-white sm:p-8 lg:p-10">
           <Link className="grid h-12 w-12 place-items-center rounded-2xl bg-white/15 text-2xl font-black text-white transition hover:bg-white/20" to="/cliente/login" aria-label="Volver al inicio">
             <ArrowLeft size={24} />
           </Link>
@@ -70,43 +70,43 @@ function Register() {
 
         <form className="flex flex-col justify-center gap-5 p-6 sm:p-8 lg:p-10" onSubmit={handleSubmit}>
           <div>
-            <h2 className="font-display text-4xl font-bold text-slate-900 sm:text-5xl">Registro</h2>
-            <p className="mt-2 text-slate-500">Crea una cuenta nueva.</p>
+            <h2 className="font-display text-4xl font-bold text-foreground sm:text-5xl">Registro</h2>
+            <p className="mt-2 text-secondary">Crea una cuenta nueva.</p>
           </div>
 
           {error && (
             <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">{error}</div>
           )}
 
-          <label className="grid gap-2 font-semibold text-slate-700">
+          <label className="grid gap-2 font-semibold text-foreground">
             Nombre completo
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
               <span aria-hidden="true"><User size={20} /></span>
-              <input className="w-full bg-transparent outline-none" type="text" placeholder="Tu nombre" value={name} onChange={(e) => setName(e.target.value)} required />
+              <input className="w-full bg-transparent outline-none text-foreground placeholder:text-muted" type="text" placeholder="Tu nombre" value={name} onChange={(e) => setName(e.target.value)} required />
             </div>
           </label>
 
-          <label className="grid gap-2 font-semibold text-slate-700">
+          <label className="grid gap-2 font-semibold text-foreground">
             DNI
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
               <span aria-hidden="true"><IdCard size={20} /></span>
-              <input className="w-full bg-transparent outline-none" type="text" placeholder="12345678" value={dni} onChange={(e) => setDni(e.target.value)} required />
+              <input className="w-full bg-transparent outline-none text-foreground placeholder:text-muted" type="text" placeholder="12345678" value={dni} onChange={(e) => setDni(e.target.value)} required />
             </div>
           </label>
 
-          <label className="grid gap-2 font-semibold text-slate-700">
+          <label className="grid gap-2 font-semibold text-foreground">
             Correo electrónico
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
               <span aria-hidden="true"><Mail size={20} /></span>
-              <input className="w-full bg-transparent outline-none" type="email" placeholder="tu@correo.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <input className="w-full bg-transparent outline-none text-foreground placeholder:text-muted" type="email" placeholder="tu@correo.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
             </div>
           </label>
 
-          <label className="grid gap-2 font-semibold text-slate-700">
+          <label className="grid gap-2 font-semibold text-foreground">
             Contraseña
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
               <span aria-hidden="true"><Lock size={20} /></span>
-              <input className="w-full bg-transparent outline-none" type="password" placeholder="Tu contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <input className="w-full bg-transparent outline-none text-foreground placeholder:text-muted" type="password" placeholder="Tu contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </div>
           </label>
 

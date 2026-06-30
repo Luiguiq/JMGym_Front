@@ -26,7 +26,7 @@ function PageLoader({ text = 'Cargando información...' }) {
 
         <p className="
           mt-4
-          text-slate-500
+          text-muted
           font-medium
         ">
           {text}

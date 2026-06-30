@@ -65,27 +65,27 @@ function Pagos() {
     .reduce((sum, p) => sum + p.monto, 0);
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-20">
+    <main className="min-h-screen bg-surface pb-20">
       <section className="mx-auto max-w-2xl px-4 pt-8 sm:px-6 sm:pt-12">
         <div className="mb-6 flex items-center gap-4">
           <button
             type="button"
             onClick={() => navigate(-1)}
             aria-label="Volver a la pantalla anterior"
-            className="grid h-11 w-11 place-items-center rounded-xl bg-white text-slate-600 shadow-[0_4px_12px_rgba(33,45,58,0.08)] transition hover:bg-slate-100"
+            className="grid h-11 w-11 place-items-center rounded-xl bg-card text-secondary shadow-[0_4px_12px_rgba(33,45,58,0.08)] transition hover:bg-border-light"
           >
             <ArrowLeft size={22} aria-hidden="true" />
           </button>
           <div>
-            <h2 className="font-display text-3xl font-bold text-slate-900 sm:text-4xl">Historial de pagos</h2>
-            <p className="mt-1 text-slate-500">Todos tus pagos realizados</p>
+            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">Historial de pagos</h2>
+            <p className="mt-1 text-secondary">Todos tus pagos realizados</p>
           </div>
         </div>
 
         <div className="relative mb-5">
-          <Search size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
           <input
-            className="w-full rounded-2xl border border-slate-200 bg-white py-3.5 pl-11 pr-4 text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+            className="w-full rounded-2xl border border-border bg-card py-3.5 pl-11 pr-4 text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 text-foreground placeholder:text-muted"
             type="text"
             aria-label="Buscar pagos por clase, código, método o estado"
             placeholder="Buscar por clase, código, método..."
@@ -107,16 +107,16 @@ function Pagos() {
         {loading ? (
           <div className="space-y-3" role="status" aria-label="Cargando pagos">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-28 animate-pulse rounded-2xl bg-slate-200" />
+              <div key={i} className="h-28 animate-pulse rounded-2xl bg-border-light" />
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="mt-16 flex flex-col items-center gap-3 text-center">
-            <CreditCard size={48} className="text-slate-300" aria-hidden="true" />
-            <p className="text-lg font-bold text-slate-500">
+            <CreditCard size={48} className="text-muted" aria-hidden="true" />
+            <p className="text-lg font-bold text-secondary">
               {search ? 'Sin resultados' : 'Aún no tienes pagos'}
             </p>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-muted">
               {search ? 'Intenta con otro término de búsqueda' : 'Tus pagos aparecerán aquí cuando reserves una clase'}
             </p>
           </div>
@@ -129,22 +129,22 @@ function Pagos() {
               return (
                 <div
                   key={p.id}
-                  className="rounded-2xl bg-white p-4 shadow-[0_4px_16px_rgba(33,45,58,0.06)] transition hover:shadow-[0_8px_24px_rgba(33,45,58,0.1)] sm:p-5"
+                  className="rounded-2xl bg-card p-4 shadow-[0_4px_16px_rgba(33,45,58,0.06)] transition hover:shadow-[0_8px_24px_rgba(33,45,58,0.1)] sm:p-5"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-lg font-bold text-slate-900">{p.nombreClase || 'Clase'}</p>
-                      <p className="mt-0.5 text-xs text-slate-500">Código de reserva #{p.codigoReserva}</p>
+                      <p className="truncate text-lg font-bold text-foreground">{p.nombreClase || 'Clase'}</p>
+                      <p className="mt-0.5 text-xs text-secondary">Código de reserva #{p.codigoReserva}</p>
                       {p.fechaClase && (
-                        <p className="mt-1.5 flex items-center gap-1.5 text-sm text-slate-600">
-                          <Clock size={14} className="text-slate-400" />
+                        <p className="mt-1.5 flex items-center gap-1.5 text-sm text-muted">
+                          <Clock size={14} className="text-muted" />
                           {formatDate(p.fechaClase)}
                           {p.horaInicio && ` · ${p.horaInicio.slice(0, 5)}`}
                         </p>
                       )}
                     </div>
                     <div className="text-right">
-                      <p className="text-xl font-black text-slate-900">S/ {p.monto.toFixed(2)}</p>
+                      <p className="text-xl font-black text-foreground">S/ {p.monto.toFixed(2)}</p>
                       <span
                         className={`mt-1.5 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${estadoStyle.bg} ${estadoStyle.text}`}
                         aria-label={`Estado del pago: ${estadoStyle.label}`}
@@ -154,7 +154,7 @@ function Pagos() {
                       </span>
                     </div>
                   </div>
-                  <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-3 text-xs text-slate-500">
+                  <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-border-light pt-3 text-xs text-secondary">
                     <span className="flex items-center gap-1">
                       <MetodoIcon size={14} aria-hidden="true" />
                       Método: {p.metodoPago}
@@ -166,7 +166,7 @@ function Pagos() {
                       </span>
                     )}
                     {p.codigoOperacion && (
-                      <span className="text-slate-500">Operación {p.codigoOperacion}</span>
+                      <span className="text-secondary">Operación {p.codigoOperacion}</span>
                     )}
                   </div>
                 </div>

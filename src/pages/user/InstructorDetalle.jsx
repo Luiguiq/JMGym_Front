@@ -1,18 +1,41 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { instructorService } from '../../services/instructorService.js';
 import { classService } from '../../services/classService.js';
-import PageLoader from '../../components/common/PageLoader.jsx';
-import { AlertTriangle, Search, Dumbbell, ClipboardList, Zap, Music } from 'lucide-react';
+import {
+  ArrowLeft, Star, User, Dumbbell, Zap, Music,
+  Clock, MapPin
+} from 'lucide-react';
 
 const genreIcons = {
-  cardio: <Zap className="h-6 w-6 text-slate-500" />,
-  baile: <Music className="h-6 w-6 text-slate-500" />,
-  fuerza: <Dumbbell className="h-6 w-6 text-slate-500" />,
+  cardio: <Zap size={20} className="text-orange-500" />,
+  baile: <Music size={20} className="text-purple-500" />,
+  fuerza: <Dumbbell size={20} className="text-blue-500" />,
 };
 
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
-const BACKEND_URL = API_BASE.replace('/api', '');
+const genreColors = {
+  cardio: { bg: 'bg-orange-50', text: 'text-orange-700', dot: 'bg-orange-400' },
+  baile: { bg: 'bg-purple-50', text: 'text-purple-700', dot: 'bg-purple-400' },
+  fuerza: { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-400' },
+};
+
+const SPECIALTY_COLORS = [
+  { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500' },
+  { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
+  { bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-500' },
+  { bg: 'bg-rose-50', text: 'text-rose-700', dot: 'bg-rose-500' },
+  { bg: 'bg-violet-50', text: 'text-violet-700', dot: 'bg-violet-500' },
+  { bg: 'bg-cyan-50', text: 'text-cyan-700', dot: 'bg-cyan-500' },
+];
+
+const DEMO_REVIEWS = [
+  { name: 'María G.', rating: 5, text: 'Excelente energía, sus clases son muy dinámicas.' },
+  { name: 'Carlos R.', rating: 5, text: 'Motiva muchísimo a seguir entrenando.' },
+  { name: 'Andrea L.', rating: 4, text: 'Muy profesional y paciente con principiantes.' },
+];
+
+const BACKEND_URL = (import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api').replace('/api', '');
 
 function fotoUrl(path) {
   if (!path) return '';
@@ -25,19 +48,11 @@ function getYouTubeEmbedUrl(url) {
   const trimmed = url.trim();
   if (trimmed.includes('youtube.com/embed/')) return trimmed;
   let videoId = '';
-  const matchWatch = trimmed.match(/(?:youtube\.com\/watch\?v=|youtube\.com\/v\/|m\.youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/);
-  if (matchWatch) videoId = matchWatch[1];
-  if (!videoId) {
-    const matchShort = trimmed.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
-    if (matchShort) videoId = matchShort[1];
-  }
-  if (!videoId) {
-    const matchShorts = trimmed.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
-    if (matchShorts) videoId = matchShorts[1];
-  }
-  if (videoId) {
-    return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
-  }
+  const m = trimmed.match(/(?:youtube\.com\/watch\?v=|youtube\.com\/v\/|m\.youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/);
+  if (m) videoId = m[1];
+  if (!videoId) { const s = trimmed.match(/youtu\.be\/([a-zA-Z0-9_-]+)/); if (s) videoId = s[1]; }
+  if (!videoId) { const sh = trimmed.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/); if (sh) videoId = sh[1]; }
+  if (videoId) return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
   return trimmed;
 }
 
@@ -53,25 +68,43 @@ function calcYears(dateStr) {
 function dominantIntensity(classes) {
   if (!classes.length) return null;
   const counts = {};
-  classes.forEach((c) => {
-    const key = c.level?.toLowerCase() || '';
-    if (key) counts[key] = (counts[key] || 0) + 1;
-  });
+  classes.forEach((c) => { const k = c.level?.toLowerCase() || ''; if (k) counts[k] = (counts[k] || 0) + 1; });
   return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || null;
 }
 
-const LEVEL_LABELS = {
+const LEVEL_META = {
   'energia alta': { label: 'Alta', color: 'text-red-500', bg: 'bg-red-50' },
   alta: { label: 'Alta', color: 'text-red-500', bg: 'bg-red-50' },
   moderado: { label: 'Media', color: 'text-amber-500', bg: 'bg-amber-50' },
   media: { label: 'Media', color: 'text-amber-500', bg: 'bg-amber-50' },
-  principiante: { label: 'Baja', color: 'text-green-500', bg: 'bg-green-50' },
-  baja: { label: 'Baja', color: 'text-green-500', bg: 'bg-green-50' },
+  principiante: { label: 'Baja', color: 'text-emerald-500', bg: 'bg-emerald-50' },
+  baja: { label: 'Baja', color: 'text-emerald-500', bg: 'bg-emerald-50' },
 };
+
+function Stars({ count, size = 14 }) {
+  return (
+    <span className="inline-flex gap-0.5">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <Star key={i} size={size} className={i <= count ? 'fill-amber-400 text-amber-400' : 'text-muted'} />
+      ))}
+    </span>
+  );
+}
+
+function SkeletonHero() {
+  return (
+    <div className="h-[300px] w-full animate-pulse bg-border sm:h-[380px]" />
+  );
+}
+
+function SkeletonBlock({ className = 'h-24' }) {
+  return <div className={`animate-pulse rounded-2xl bg-border-light ${className}`} />;
+}
 
 export default function InstructorDetalle() {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [instructor, setInstructor] = useState(null);
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -80,66 +113,56 @@ export default function InstructorDetalle() {
 
   useEffect(() => {
     Promise.all([
-      instructorService.getById(id),
-      classService.getByInstructor(id),
+      instructorService.getById(id).catch(() => null),
+      classService.getByInstructor(id).catch(() => []),
     ])
-      .then(([instData, classData]) => {
-        setInstructor(instData);
-        setClasses(classData);
-      })
+      .then(([inst, cls]) => { setInstructor(inst); setClasses(cls); })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [id]);
 
   const experienceYears = useMemo(() => {
     const y = calcYears(instructor?.fecha_registro);
-    if (!y || y < 1) return 1;
-    return y;
+    return y && y >= 1 ? y : 1;
   }, [instructor]);
+
   const intensity = useMemo(() => dominantIntensity(classes), [classes]);
-  const intensityMeta = LEVEL_LABELS[intensity] || { label: '—', color: 'text-slate-400', bg: 'bg-slate-50' };
+  const intensityMeta = LEVEL_META[intensity] || { label: '—', color: 'text-muted-foreground', bg: 'bg-surface' };
 
   const specialties = useMemo(() => {
     if (!instructor?.especialidad) return [];
     return instructor.especialidad.split(',').map((s) => s.trim()).filter(Boolean);
   }, [instructor]);
 
+  const formatClassDate = (dateStr) => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'short' });
+  };
+
   if (loading) {
     return (
-      <PageLoader
-        text="Cargando información..."
-      />
-    );
-  }
-
-  if (error) {
-    return (
-      <main className="min-h-screen bg-brand-50 p-8 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-3xl shadow-soft max-w-md w-full text-center border border-red-100">
-          <AlertTriangle className="mx-auto h-10 w-10 text-red-400" aria-hidden="true" />
-          <h2 className="text-xl font-bold text-slate-800 mt-3">Hubo un error</h2>
-          <p className="text-red-500 mt-2 text-sm">{error}</p>
-          <button
-            onClick={() => navigate(-1)}
-            className="mt-5 px-6 py-2.5 bg-brand-600 text-white font-bold rounded-2xl text-sm"
-          >
-            Volver atrás
-          </button>
-        </div>
+      <main className="min-h-screen bg-surface pb-24">
+        <SkeletonHero />
+        <section className="mx-auto max-w-lg px-5 -mt-8 relative z-10 space-y-4">
+          <SkeletonBlock className="h-8 w-48" />
+          <SkeletonBlock className="h-4 w-32" />
+          <SkeletonBlock className="h-16" />
+          <SkeletonBlock className="h-32" />
+          <SkeletonBlock className="h-24" />
+        </section>
       </main>
     );
   }
 
-  if (!instructor) {
+  if (error || !instructor) {
     return (
-      <main className="min-h-screen bg-brand-50 p-8 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-3xl shadow-soft max-w-md w-full text-center">
-          <Search className="mx-auto h-10 w-10 text-slate-400" aria-hidden="true" />
-          <h2 className="text-xl font-bold text-slate-800 mt-3">Instructor no encontrado</h2>
-          <button
-            onClick={() => navigate('/cliente/clases')}
-            className="mt-5 px-6 py-2.5 bg-brand-600 text-white font-bold rounded-2xl text-sm"
-          >
+      <main className="flex min-h-screen items-center justify-center bg-surface p-6">
+        <div className="max-w-sm text-center">
+          <User className="mx-auto h-10 w-10 text-muted" />
+          <h2 className="mt-4 text-lg font-bold text-foreground">Instructor no encontrado</h2>
+          <p className="mt-1 text-sm text-muted">{error || 'No encontramos este perfil.'}</p>
+          <button onClick={() => navigate('/cliente/clases')} className="mt-6 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">
             Ver clases
           </button>
         </div>
@@ -148,298 +171,221 @@ export default function InstructorDetalle() {
   }
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)] pb-28 text-slate-700">
-      <section className="mx-auto max-w-2xl lg:max-w-3xl">
-        {/* Hero header */}
-        <div className="relative h-[33vh] min-h-[260px] overflow-hidden bg-sky-900">
-          {instructor.video_presentacion && !videoError ? (
-            <iframe
-              src={getYouTubeEmbedUrl(instructor.video_presentacion)}
-              title="Video de presentación"
-              className="absolute inset-0 h-full w-full"
-              allow="autoplay; encrypted-media"
-              onError={() => setVideoError(true)}
-            />
-          ) : instructor.foto ? (
-            <img
-              src={fotoUrl(instructor.foto) || '/public/default-instructor.jpg'}
-              alt={instructor.nombre_completo}
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#004aab] to-sky-500">
-              <div className="text-center text-white">
+    <main className="min-h-screen bg-surface pb-24">
+      {/* ─── Hero ─── */}
+      <div className="relative h-[300px] w-full overflow-hidden sm:h-[380px]">
+        {instructor.video_presentacion && !videoError ? (
+          <iframe
+            src={getYouTubeEmbedUrl(instructor.video_presentacion)}
+            title="Video de presentación"
+            className="absolute inset-0 h-full w-full"
+            allow="autoplay; encrypted-media"
+            onError={() => setVideoError(true)}
+          />
+        ) : instructor.foto ? (
+          <img
+            src={fotoUrl(instructor.foto)}
+            alt={instructor.nombre_completo}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-600 to-cyan-500">
+            <User size={80} className="text-white/30" />
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-                <div className="
-                  mx-auto
-                  h-28
-                  w-28
-                  rounded-full
-                  bg-white/20
-                  flex
-                  items-center
-                  justify-center
-                  text-5xl
-                  font-black
-                  backdrop-blur-sm
-                  border
-                  border-white/20
-                ">
-                  {instructor.nombre_completo?.charAt(0)}
-                </div>
+        <motion.button
+          initial={{ opacity: 0, x: -8 }}
+          animate={{ opacity: 1, x: 0 }}
+          onClick={() => navigate(-1)}
+          className="absolute left-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-card/80 text-secondary shadow-sm backdrop-blur-md transition hover:bg-card"
+          aria-label="Volver"
+        >
+          <ArrowLeft size={20} />
+        </motion.button>
 
-                <p className="mt-4 text-xl font-bold">
-                  {instructor.nombre_completo}
-                </p>
-
-                <p className="mt-1 text-sm text-sky-100">
-                  Instructor JMGym
-                </p>
-
-              </div>
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-sky-950/80 via-sky-800/30 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-transparent" />
-
-          <button
-            onClick={() => navigate(-1)}
-            className="absolute top-5 left-5 z-20 flex items-center gap-1.5 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/30"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
-            Volver
-          </button>
-
-          <div className="absolute bottom-0 left-0 right-0 z-10 p-6 pb-5">
-            <h1 className="text-4xl font-black text-white drop-shadow-xl md:text-5xl">
+        <div className="absolute bottom-0 left-0 right-0 z-10 p-6 pb-5">
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.1 }}>
+            <h1 className="text-3xl font-black text-white drop-shadow-lg sm:text-4xl">
               {instructor.nombre_completo}
             </h1>
-            {instructor.especialidad && (
-              <p className="mt-2 text-lg font-bold text-sky-100">
-                {instructor.especialidad}
-              </p>
-            )}
-          </div>
+            <div className="mt-1 flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-300">
+                <Stars count={5} size={12} />
+                5.0
+              </span>
+              <span className="text-[13px] text-white/70">Instructor certificado</span>
+            </div>
+          </motion.div>
         </div>
+      </div>
 
-        <div className="px-4 -mt-5 relative z-20 space-y-5">
-          {/* Quick stats */}
-          <div className="grid grid-cols-3 gap-4">
-            {/* Experiencia */}
-            <div className="
-              rounded-3xl
-              bg-white
-              p-4
-              text-center
-              shadow-[0_4px_16px_rgba(15,86,130,0.08)]
-              ring-1
-              ring-sky-100
-              transition-all
-              duration-300
-              hover:-translate-y-1
-            ">
-              <p className="text-[#004aab] font-black text-2xl">
-                {experienceYears} {experienceYears === 1 ? 'año' : 'años'}
-              </p>
+      {/* ─── Content ─── */}
+      <section className="relative -mt-6 rounded-t-3xl bg-surface px-5 pt-6 sm:px-6">
+        <div className="mx-auto max-w-lg space-y-6">
 
-              <p className="mt-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-                Experiencia
-              </p>
-            </div>
-            {/* Clases */}
-            <div className="
-              rounded-3xl
-              bg-white
-              p-4
-              text-center
-              shadow-[0_4px_16px_rgba(15,86,130,0.08)]
-              ring-1
-              ring-sky-100
-              transition-all
-              duration-300
-              hover:-translate-y-1
-            ">
-              <p className="text-[#004aab] font-black text-2xl">
-                {classes.length}
-              </p>
-
-              <p className="mt-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-                Clases activas
-              </p>
-            </div>
-            {/* Intensidad */}
-            <div className="
-              rounded-3xl
-              bg-white
-              p-4
-              text-center
-              shadow-[0_4px_16px_rgba(15,86,130,0.08)]
-              ring-1
-              ring-sky-100
-              transition-all
-              duration-300
-              hover:-translate-y-1
-            ">
-              <p className={`text-2xl font-black ${intensityMeta.color}`}>
-                {intensityMeta.label}
-              </p>
-
-              <p className="mt-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-                Intensidad
-              </p>
-            </div>
-          </div>
+          {/* Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.15 }}
+            className="grid grid-cols-3 gap-2"
+          >
+            {[
+              { value: `${experienceYears} ${experienceYears === 1 ? 'año' : 'años'}`, label: 'Experiencia', color: 'text-blue-600' },
+              { value: classes.length, label: 'Clases activas', color: 'text-emerald-600' },
+              { value: intensityMeta.label, label: 'Intensidad', color: intensityMeta.color },
+            ].map(({ value, label, color }) => (
+              <div key={label} className="rounded-xl bg-card p-3 text-center shadow-sm">
+                <p className={`text-lg font-black ${color}`}>{value}</p>
+                <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
+              </div>
+            ))}
+          </motion.div>
 
           {/* Specialty chips */}
           {specialties.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {specialties.map((s) => (
-                <span
-                  key={s}
-                  className="rounded-full bg-brand-100 px-4 py-1.5 text-sm font-semibold text-brand-700"
-                >
-                  {s}
-                </span>
-              ))}
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+              className="flex flex-wrap gap-2"
+            >
+              {specialties.map((s, i) => {
+                const c = SPECIALTY_COLORS[i % SPECIALTY_COLORS.length];
+                return (
+                  <span key={s} className={`inline-flex items-center gap-1.5 rounded-full ${c.bg} px-3.5 py-1.5 text-[13px] font-semibold ${c.text}`}>
+                    <span className={`inline-block h-2 w-2 rounded-full ${c.dot}`} />
+                    {s}
+                  </span>
+                );
+              })}
+            </motion.div>
           )}
 
           {/* Bio */}
-          <section className="rounded-3xl bg-white p-5 shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
-            <h2 className="text-base font-extrabold text-slate-800">
-              Conoce a tu instructor
-              <p className="text-xs text-slate-400 mt-1">
-                Profesional certificado del equipo JMGym
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.25 }}
+          >
+            <h2 className="mb-2 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Sobre mí</h2>
+            <div className="rounded-2xl bg-card p-4 shadow-sm">
+              <p className="text-sm leading-relaxed text-secondary">
+                {instructor.biografia || `${instructor.nombre_completo} es instructor${instructor.nombre_completo?.toLowerCase().endsWith('a') ? 'a' : ''} certificado${instructor.nombre_completo?.toLowerCase().endsWith('a') ? 'a' : ''} con más de ${experienceYears} año${experienceYears !== 1 ? 's' : ''} de experiencia en ${instructor.especialidad?.toLowerCase() || 'entrenamiento físico'}, comprometido${instructor.nombre_completo?.toLowerCase().endsWith('a') ? 'a' : ''} con ayudar a cada alumno a alcanzar sus metas.`}
               </p>
-            </h2>
-            
-            <p className="mt-2 text-sm leading-relaxed text-slate-500">
-              {instructor.biografia
-                ? instructor.biografia
-                : `${instructor.nombre_completo} forma parte del equipo profesional de JMGym. Especialista en ${instructor.especialidad?.toLowerCase()}, acompaña a los alumnos en el desarrollo de sus objetivos físicos mediante entrenamientos seguros, dinámicos y adaptados a diferentes niveles de experiencia.`
-              }
-            </p>
-          </section>
+            </div>
+          </motion.section>
 
-          {/* Próximas clases */}
-          <section>
-            <h2 className="text-base font-extrabold text-slate-800 mb-3">Próximas clases</h2>
+          {/* Classes */}
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.3 }}
+          >
+            <h2 className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Próximas clases</h2>
 
             {classes.length > 0 ? (
               <div className="space-y-3">
-                {classes.slice(0,3).map((cls) => {
-                  const classDate = cls.date
-                    ? new Date(cls.date + 'T00:00:00').toLocaleDateString('es-PE', {
-                        weekday: 'long',
-                        day: '2-digit',
-                        month: 'short',
-                      })
-                    : '';
+                {classes.slice(0, 5).map((cls, i) => {
+                  const gc = genreColors[cls.icon] || genreColors.fuerza;
+                  const spotsLeft = cls.availableSpots ?? 0;
                   return (
-                    <button
+                    <motion.button
                       key={cls.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: 0.3 + i * 0.05 }}
+                      whileHover={{ y: -2 }}
                       onClick={() => navigate(`/cliente/clases/${cls.id}`)}
-                      className="w-full flex items-center gap-3 rounded-2xl bg-white p-3 text-left shadow-sm ring-1 ring-sky-100 transition hover:bg-sky-50"
+                      className="w-full overflow-hidden rounded-2xl bg-card text-left shadow-sm transition hover:shadow-md"
                     >
-                      {cls.imagen_clase ? (
-                        <img
-                          src={fotoUrl(cls.imagen_clase)}
-                          alt={cls.name}
-                          className="h-14 w-14 shrink-0 rounded-xl object-cover"
-                        />
-                      ) : (
-                        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-2xl"
-                          style={{ backgroundColor: cls.color === 'orange' ? '#FFF7ED' : '#EFF6FF' }}
-                        >
-                          {genreIcons[cls.icon] || <Dumbbell className="h-6 w-6 text-slate-500" />}
-                        </span>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="font-bold text-slate-800 truncate">{cls.name}</p>
-                        <p className="mt-0.5 text-xs text-slate-400">
-                          {classDate} · {cls.time} · {cls.duration}
-                        </p>
+                      <div className="flex">
+                        <div className={`flex w-20 shrink-0 items-center justify-center ${gc.bg}`}>
+                          {genreIcons[cls.icon] || <Dumbbell size={20} className="text-muted-foreground" />}
+                        </div>
+                        <div className="flex min-w-0 flex-1 items-center gap-3 p-3">
+                          <div className="min-w-0 flex-1">
+                            <p className="font-bold text-foreground">{cls.name}</p>
+                            <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12px] text-muted">
+                              <span className="inline-flex items-center gap-1">
+                                <Clock size={12} /> {cls.time}
+                              </span>
+                              <span className="inline-flex items-center gap-1">
+                                <MapPin size={12} /> Sala
+                              </span>
+                            </div>
+                            <p className="mt-1 text-[12px] text-muted-foreground">{formatClassDate(cls.date)}</p>
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <p className="text-sm font-black text-blue-600">S/ {Number(cls.price || 0).toFixed(2)}</p>
+                            <span className={`mt-1 inline-block rounded-full px-2 py-[2px] text-[10px] font-bold ${
+                              spotsLeft <= 5 ? 'bg-red-50 text-red-600' : spotsLeft <= 15 ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'
+                            }`}>
+                              {spotsLeft <= 5 ? 'Últimos' : spotsLeft <= 15 ? 'Pocos' : `${spotsLeft} cupos`}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-sm font-black text-[#004aab]">
-                          S/ {Number(cls.price || 0).toFixed(2)}
-                        </p>
-                        <p className="text-sm font-bold text-sky-600">
-                          {cls.availableSpots} cupos
-                          <span
-                            className={`inline-block mt-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                              cls.availableSpots <= 5
-                                ? 'bg-red-50 text-red-600'
-                                : cls.availableSpots <= 15
-                                ? 'bg-amber-50 text-amber-600'
-                                : 'bg-emerald-50 text-emerald-600'
-                            }`}
-                          >
-                            {cls.availableSpots <= 5
-                              ? 'Últimos'
-                              : cls.availableSpots <= 15
-                              ? 'Pocos'
-                              : 'Disponible'}
-                          </span>
-                        </p>
-                      </div>
-                    </button>
+                    </motion.button>
                   );
                 })}
               </div>
             ) : (
-              <div className="rounded-2xl bg-white p-8 text-center shadow-[0_4px_16px_rgba(15,86,130,0.08)] ring-1 ring-sky-100">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-sky-50">
-                  <ClipboardList className="h-8 w-8 text-sky-500" />
-                </div>
-                <h3 className="text-base font-bold text-slate-700">Sin clases programadas</h3>
-                <p className="mt-1 text-sm text-slate-400">
-                  Este instructor no tiene clases disponibles por el momento.
-                </p>
-                <button
-                  onClick={() => navigate('/cliente/clases')}
-                  className="mt-4 rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-brand-700"
-                >
-                  Explorar clases
-                </button>
+              <div className="rounded-2xl bg-card p-8 text-center shadow-sm">
+                <p className="font-bold text-muted">Sin clases programadas</p>
+                <p className="mt-1 text-sm text-muted-foreground">Este instructor no tiene clases disponibles por ahora.</p>
               </div>
             )}
-          </section>
-        </div>
-        <div className="grid grid-cols-2 gap-3 pt-2">
-          <button
-            onClick={() => navigate(-1)}
-            className="
-              rounded-2xl
-              border
-              border-slate-200
-              bg-white
-              py-4
-              font-bold
-              text-slate-700
-              transition
-              hover:bg-slate-50
-            "
-          >
-            ← Volver
-          </button>
+          </motion.section>
 
-          <button
-            onClick={() => navigate('/cliente/clases')}
-            className="
-              rounded-2xl
-              bg-[#004aab]
-              py-4
-              font-bold
-              text-white
-              transition
-              hover:opacity-90
-            "
+          {/* Reviews */}
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.35 }}
           >
-            Ver clases
-          </button>
+            <h2 className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Opiniones</h2>
+            <div className="space-y-2">
+              {DEMO_REVIEWS.map((review, i) => (
+                <div key={i} className="rounded-2xl bg-card p-4 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-border-light">
+                        <User size={14} className="text-muted-foreground" />
+                      </div>
+                      <p className="text-sm font-bold text-secondary">{review.name}</p>
+                    </div>
+                    <Stars count={review.rating} size={12} />
+                  </div>
+                  <p className="mt-2 text-[13px] text-muted">{review.text}</p>
+                </div>
+              ))}
+            </div>
+          </motion.section>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.4 }}
+            className="flex gap-3 pb-4"
+          >
+            <button
+              onClick={() => navigate(-1)}
+              className="flex-1 rounded-xl border border-border bg-card py-3 text-sm font-bold text-secondary transition hover:bg-surface"
+            >
+              ← Volver
+            </button>
+            <button
+              onClick={() => navigate('/cliente/clases')}
+              className="flex-1 rounded-xl bg-blue-600 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
+            >
+              Ver clases →
+            </button>
+          </motion.div>
+
         </div>
       </section>
     </main>

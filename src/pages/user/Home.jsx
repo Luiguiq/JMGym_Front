@@ -1,9 +1,46 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { Mail } from 'lucide-react';
+import { Calendar, Clock, Users, ChevronRight, Zap, Sparkles, Mail } from 'lucide-react';
 import ClassCard from '../../components/user/ClassCard.jsx';
 import { classService } from '../../services/classService.js';
+
+function getNowHHMM() {
+  const d = new Date();
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+function isClassActive(classItem) {
+  if (!classItem.hora_inicio || !classItem.hora_fin) return false;
+  const now = getNowHHMM();
+  return now >= classItem.hora_inicio && now <= classItem.hora_fin;
+}
+
+function SkeletonCard() {
+  return (
+    <div className="animate-pulse rounded-xl bg-card p-4 shadow-sm">
+      <div className="flex items-center gap-4">
+        <div className="h-14 w-14 shrink-0 rounded-xl bg-border-light" />
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="h-4 w-2/3 rounded bg-border-light" />
+          <div className="h-3 w-1/3 rounded bg-border-light" />
+        </div>
+        <div className="h-8 w-16 rounded-lg bg-border-light" />
+      </div>
+    </div>
+  );
+}
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08 } },
+};
+
+const itemAnim = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
+};
 
 function Home() {
   const { user } = useAuth();
@@ -13,112 +50,151 @@ function Home() {
 
   useEffect(() => {
     classService
-      .getAllClasses()
+      .getTodayClasses()
       .then(setTodayClasses)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
+  const activeClasses = useMemo(() => todayClasses.filter(isClassActive), [todayClasses]);
   const nextClass = todayClasses[0];
   const totalAvailableSpots = todayClasses.reduce(
     (acc, classItem) => acc + Number(classItem.availableSpots ?? 0),
     0
   );
 
+  const greeting = (() => {
+    const h = new Date().getHours();
+    if (h < 12) return 'Buenos días';
+    if (h < 18) return 'Buenas tardes';
+    return 'Buenas noches';
+  })();
+
   return (
-    <main className="min-h-screen bg-[#f7fbff] pb-28">
-      <section className="mx-auto max-w-6xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
-        <div className="grid gap-4 sm:gap-6 lg:grid-cols-[1.08fr_0.92fr]">
-          <article className="overflow-hidden rounded-[24px] bg-gradient-to-br from-[#004aab] via-[#0a58ca] to-[#1576ff] p-5 text-white shadow-[0_20px_60px_rgba(0,74,171,.18)] sm:rounded-[34px] sm:p-8">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-semibold text-white/85">
-                Bienvenida, {user?.name ?? 'usuaria'}
-              </p>
-              <Link
-                to="/cliente/clases"
-                className="shrink-0 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold text-white transition hover:bg-white/25 sm:text-sm"
-              >
-                Ver clases
-              </Link>
-            </div>
+    <motion.main
+      className="min-h-screen bg-surface pb-28"
+      variants={container}
+      initial="hidden"
+      animate="show"
+    >
+      <section className="mx-auto max-w-lg px-5 py-5 sm:px-6 sm:py-6 lg:px-8">
 
-            <div className="mt-4 grid grid-cols-3 gap-1.5 sm:gap-3">
-              <div className="rounded-2xl bg-white/10 p-3 text-center ring-1 ring-white/10 sm:p-4">
-                <p className="text-lg font-black leading-none text-white sm:text-2xl">{todayClasses.length}</p>
-                <p className="mt-1 text-[10px] text-white/70 sm:text-xs">Disponibles</p>
-              </div>
-              <div className="rounded-2xl bg-white/10 p-3 text-center ring-1 ring-white/10 sm:p-4">
-                <p className="text-lg font-black leading-none text-white sm:text-2xl">{totalAvailableSpots}</p>
-                <p className="mt-1 text-[10px] text-white/70 sm:text-xs">Cupos libres</p>
-              </div>
-              <div className="rounded-2xl bg-white/10 p-3 text-center ring-1 ring-white/10 sm:p-4">
-                <p className="text-lg font-black leading-none text-white sm:text-2xl">{nextClass?.time ?? '--:--'}</p>
-                <p className="mt-1 text-[10px] text-white/70 sm:text-xs">Próxima</p>
-              </div>
-            </div>
+        <motion.div variants={itemAnim} className="mb-6">
+          <p className="text-lg font-semibold text-foreground">
+            {greeting}, {user?.name?.split(' ')[0] ?? 'usuaria'}
+          </p>
+        </motion.div>
 
-            {nextClass && (
-              <Link
-                to={`/cliente/clases/${nextClass.id}`}
-                className="mt-4 flex items-center justify-between rounded-2xl bg-white/10 p-4 ring-1 ring-white/10 transition hover:bg-white/15 sm:mt-5 sm:p-5"
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-white/70">Próxima clase</p>
-                  <h2 className="mt-0.5 truncate text-lg font-black text-white sm:text-xl">{nextClass.name}</h2>
-                  <p className="mt-0.5 text-xs text-white/75">
-                    {nextClass.time} · {nextClass.availableSpots} cupos
-                  </p>
-                </div>
-                <span className="ml-3 shrink-0 text-xl sm:text-2xl">→</span>
-              </Link>
+        <motion.div
+          variants={itemAnim}
+          className="overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-blue-500 to-sky-400 p-6 text-white shadow-lg shadow-blue-200/40"
+        >
+          <div className="mb-5 flex items-center justify-between">
+            <span className="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold tracking-wide">
+              <Sparkles size={13} />
+              Hoy
+            </span>
+            <Link
+              to="/cliente/clases"
+              className="rounded-full bg-white/15 px-3.5 py-1.5 text-[12px] font-bold transition hover:bg-white/25"
+            >
+              Ver todas
+            </Link>
+          </div>
+
+          <div className="mb-5 flex items-center gap-6">
+            <div className="text-center">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/60">Disponibles</p>
+              <p className="mt-0.5 text-2xl font-black">{todayClasses.length}</p>
+            </div>
+            <div className="h-8 w-px bg-white/15" />
+            <div className="text-center">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/60">Cupos</p>
+              <p className="mt-0.5 text-2xl font-black">{totalAvailableSpots}</p>
+            </div>
+            <div className="h-8 w-px bg-white/15" />
+            <div className="text-center">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/60">Próxima</p>
+              <p className="mt-0.5 text-2xl font-black">{nextClass?.time ?? '--:--'}</p>
+            </div>
+          </div>
+
+          {nextClass && (
+            <Link
+              to={`/cliente/clases/${nextClass.id}`}
+              className="flex items-center justify-between rounded-2xl bg-white/10 p-4 transition hover:bg-white/15"
+            >
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-white/60">Próxima clase</p>
+                <p className="mt-0.5 text-lg font-bold text-white">{nextClass.name}</p>
+                <p className="mt-0.5 text-[13px] text-white/70">
+                  {nextClass.time} &middot; {nextClass.availableSpots} cupos
+                </p>
+              </div>
+              <ChevronRight size={22} className="text-white/60" />
+            </Link>
+          )}
+        </motion.div>
+
+        {!loading && activeClasses.length > 0 && (
+          <motion.div variants={itemAnim} className="mt-6">
+            <div className="mb-3 flex items-center gap-2">
+              <span className="inline-block h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse" />
+              <h2 className="text-[15px] font-bold text-foreground">Clases activas ahora</h2>
+            </div>
+            <div className="space-y-3">
+              {activeClasses.map((classItem) => (
+                <ClassCard classItem={{ ...classItem, _isActive: true }} key={classItem.id} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        <motion.div variants={itemAnim} className="mt-6">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-[15px] font-bold text-foreground">Clases disponibles</h2>
+            {todayClasses.length > 0 && (
+              <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-[12px] font-semibold text-blue-600">
+                {todayClasses.length}
+              </span>
             )}
-          </article>
+          </div>
 
-          <article className="rounded-[24px] bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,.08)] ring-1 ring-slate-100 sm:rounded-[34px] sm:p-8">
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0 flex-1">
-                <h2 className="text-xl font-black text-black sm:text-2xl">Clases</h2>
-                <p className="mt-0.5 text-xs text-slate-400 sm:text-sm">Revisa y reserva tu lugar</p>
+          <div className="space-y-3">
+            {loading ? (
+              <>
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+              </>
+            ) : error ? (
+              <div className="rounded-2xl bg-red-50 p-4 text-center text-sm font-medium text-red-600">{error}</div>
+            ) : todayClasses.length === 0 ? (
+              <div className="flex flex-col items-center gap-3 py-12 text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-border-light">
+                  <Mail size={28} className="text-muted-foreground" />
+                </div>
+                <p className="text-base font-bold text-secondary">No hay clases disponibles</p>
+                <p className="text-sm text-muted-foreground">Vuelve pronto para ver nuevas opciones.</p>
               </div>
-              {todayClasses.length > 0 && (
-                <span className="shrink-0 rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-600">
-                  {todayClasses.length}
-                </span>
-              )}
-            </div>
-
-            <div className="mt-4 grid gap-4 sm:mt-5">
-              {loading ? (
-                <div className="flex items-center justify-center py-10">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-200 border-t-brand-600" />
-                </div>
-              ) : error ? (
-                <div className="rounded-2xl bg-red-50 p-4 text-center text-sm text-red-600">{error}</div>
-              ) : todayClasses.length === 0 ? (
-                <div className="rounded-2xl bg-slate-50 p-8 text-center">
-                  <Mail size={40} className="mx-auto text-slate-300" />
-                  <p className="mt-2 font-bold text-slate-600">No hay clases disponibles</p>
-                  <p className="mt-1 text-xs text-slate-400">Vuelve pronto para ver nuevas opciones.</p>
-                </div>
-              ) : (
-                todayClasses.slice(0, 3).map((classItem) => (
-                  <ClassCard classItem={classItem} key={classItem.id} />
-                ))
-              )}
-            </div>
-
-            {todayClasses.length > 3 && (
-              <Link
-                to="/cliente/clases"
-                className="mt-4 flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-200 py-3 text-sm font-bold text-slate-500 transition hover:border-brand-200 hover:text-brand-600"
-              >
-                Ver todas las clases ({todayClasses.length}) →
-              </Link>
+            ) : (
+              todayClasses.slice(0, 3).map((classItem) => (
+                <ClassCard classItem={classItem} key={classItem.id} />
+              ))
             )}
-          </article>
-        </div>
+          </div>
+
+          {!loading && todayClasses.length > 3 && (
+            <Link
+              to="/cliente/clases"
+              className="mt-4 flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border py-3 text-sm font-bold text-muted transition hover:border-blue-200 hover:text-blue-600"
+            >
+              Ver todas las clases ({todayClasses.length})
+            </Link>
+          )}
+        </motion.div>
       </section>
-    </main>
+    </motion.main>
   );
 }
 

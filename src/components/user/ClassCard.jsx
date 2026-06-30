@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Clock, Timer, Flame, Users, Dumbbell, Music, Zap } from 'lucide-react';
+import { Calendar, Clock, Timer, Flame, Users, Dumbbell, Music, Zap, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const genreIcons = {
   cardio: <Zap className="w-6 h-6 sm:w-7 sm:h-7" />,
@@ -23,9 +24,9 @@ function getClassImage(className = '') {
 }
 
 function getAvailabilityMeta(availableSpots = 0) {
-  if (availableSpots === 0) return { label: 'Completo', dot: 'bg-red-500', text: 'text-red-600' };
-  if (availableSpots <= 5) return { label: 'Pocos cupos', dot: 'bg-amber-500', text: 'text-amber-600' };
-  return { label: 'Disponible', dot: 'bg-emerald-500', text: 'text-emerald-600' };
+  if (availableSpots === 0) return { label: 'Completo', bg: 'bg-red-50', text: 'text-red-700' };
+  if (availableSpots <= 5) return { label: 'Pocos cupos', bg: 'bg-amber-50', text: 'text-amber-700' };
+  return { label: 'Disponible', bg: 'bg-emerald-50', text: 'text-emerald-700' };
 }
 
 function getIntensityMeta(level = '') {
@@ -43,43 +44,46 @@ function ClassCard({ classItem }) {
   const formattedDate = classItem.date
     ? new Date(classItem.date + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })
     : 'Próximamente';
+  const isActive = classItem._isActive;
 
   return (
-    <button
+    <motion.button
+      whileTap={{ scale: 0.98 }}
       onClick={() => navigate(`/cliente/clases/${classItem.id}`)}
-      className="w-full rounded-2xl bg-white p-3 text-left shadow-sm ring-1 ring-slate-100 transition hover:ring-2 hover:ring-brand-200 sm:p-4"
+      className="w-full rounded-2xl bg-card p-4 text-left shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] active:scale-[0.98]"
     >
-      <div className="flex items-center gap-3 sm:gap-4">
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl sm:h-20 sm:w-20">
+      <div className="flex items-center gap-4">
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl sm:h-[72px] sm:w-[72px]">
           {image ? (
             <img src={image} alt="" className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-400 to-brand-600 text-2xl text-white sm:text-3xl">
-              {genreIcons[classItem.icon] || <Dumbbell className="w-6 h-6 sm:w-7 sm:h-7" />}
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600 text-2xl text-white">
+              {genreIcons[classItem.icon] || <Dumbbell className="w-6 h-6" />}
             </div>
           )}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="truncate text-base font-black text-slate-800 sm:text-lg">{classItem.name}</h3>
-            <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${availability.text} bg-slate-50`}>
-              <span className={`mr-1 inline-block h-1.5 w-1.5 rounded-full ${availability.dot}`} />
+            <h3 className="truncate text-base font-bold text-foreground">{classItem.name}</h3>
+            <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${availability.bg} ${availability.text}`}>
               {availability.label}
             </span>
           </div>
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-slate-500">
-            <span><Calendar className="inline-block w-3.5 h-3.5 mr-1" />{formattedDate}</span>
-            <span><Clock className="inline-block w-3.5 h-3.5 mr-1" />{classItem.time}</span>
-            <span><Timer className="inline-block w-3.5 h-3.5 mr-1" />{classItem.duration}</span>
-            <span className={`font-bold ${intensity.text}`}><Flame className="inline-block w-3.5 h-3.5 mr-1" />{intensity.label}</span>
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-[12px] text-muted">
+            <span className="flex items-center gap-1"><Calendar size={13} />{formattedDate}</span>
+            <span className="flex items-center gap-1"><Clock size={13} />{classItem.time}</span>
+            <span className="flex items-center gap-1"><Timer size={13} />{classItem.duration}</span>
           </div>
-          <div className="mt-1.5 flex items-center justify-between gap-2">
-            <p className="text-lg font-black text-[#004aab] sm:text-xl">S/ {Number(classItem.price || 0).toFixed(2)}</p>
-            <p className="text-xs text-slate-400"><Users className="inline-block w-3.5 h-3.5 mr-1" />{classItem.availableSpots} cupos</p>
+          <div className="mt-2 flex items-center justify-between">
+            <p className="text-xl font-black text-blue-600">S/ {Number(classItem.price || 0).toFixed(2)}</p>
+            <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
+              <span className="flex items-center gap-1"><Users size={14} />{classItem.availableSpots} cupos</span>
+              <ChevronRight size={16} className="text-muted-foreground" />
+            </div>
           </div>
         </div>
       </div>
-    </button>
+    </motion.button>
   );
 }
 

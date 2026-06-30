@@ -11,25 +11,29 @@ const items = [
 function BottomNav() {
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 px-4 pb-3 sm:pb-4 sm:px-6 lg:px-8"
+      className="fixed inset-x-0 bottom-0 z-50 px-4 pb-3 sm:pb-4"
       aria-label="Navegacion cliente"
     >
-      <div className="mx-auto grid max-w-[520px] grid-cols-4 gap-2 rounded-[28px] border border-white/80 bg-white/95 p-2 shadow-[0_-14px_34px_rgba(15,23,42,.08)] backdrop-blur dark:border-slate-700/80 dark:bg-slate-800/95 dark:shadow-[0_-14px_34px_rgba(0,0,0,.2)]">
+      <div className="mx-auto flex max-w-[480px] items-center justify-around rounded-[28px] bg-card/90 px-2 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] backdrop-blur-xl">
         {items.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={label}
             to={to}
             className={({ isActive }) =>
               [
-                'flex flex-col items-center justify-center gap-1 rounded-[22px] px-3 py-3 text-[11px] font-semibold transition',
+                'flex flex-col items-center gap-0.5 rounded-2xl px-4 py-2 text-[10px] font-semibold transition-all duration-200',
                 isActive
-                  ? 'bg-[#004aab] text-white shadow-[0_10px_20px_rgba(0,74,171,.18)]'
-                  : 'text-slate-500 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-700',
+                  ? 'bg-blue-50 text-blue-600'
+                  : 'text-muted-foreground hover:text-secondary',
               ].join(' ')
             }
           >
-            <Icon size={18} strokeWidth={2.2} />
-            <span>{label}</span>
+            {({ isActive }) => (
+              <>
+                <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
+                <span>{label}</span>
+              </>
+            )}
           </NavLink>
         ))}
       </div>

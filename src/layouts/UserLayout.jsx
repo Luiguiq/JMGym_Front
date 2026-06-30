@@ -1,37 +1,23 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../components/user/Navbar.jsx';
 import BottomNav from '../components/user/BottomNav.jsx';
-import NotificationBell from '../components/user/NotificationBell.jsx';
-import NotificationResponseOverlay from '../components/user/NotificationResponseOverlay.jsx';
 
-const noNavRoutes = [
-  '/cliente/login',
-  '/cliente/registro'
-];
+const noNavExact = ['/cliente/login', '/cliente/registro'];
+const noNavPrefixes = ['/cliente/clases/', '/cliente/seleccion-espacio/', '/cliente/pago/'];
 
 function UserLayout() {
   const location = useLocation();
-  const showNav = !noNavRoutes.includes(location.pathname);
+  const showNav = !noNavExact.includes(location.pathname) && !noNavPrefixes.some((p) => location.pathname.startsWith(p));
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#f7fbff] text-black dark:bg-slate-900 dark:text-slate-100">
+    <div className="min-h-screen overflow-x-hidden bg-surface text-foreground">
       {showNav && (
-        <div className="mx-auto max-w-6xl px-4 pt-4 sm:px-6 sm:pt-5 lg:px-8">
+        <div className="mx-auto max-w-lg px-4 pt-4 sm:px-6 sm:pt-5">
           <Navbar />
         </div>
       )}
       <Outlet />
       {showNav && <BottomNav />}
-
-      {/* Floating notification bell */}
-      {showNav && (
-        <div className="fixed bottom-24 right-5 sm:right-8 z-50">
-          <NotificationBell floating />
-        </div>
-      )}
-
-      {/* Response overlay for notifications that require action */}
-      {showNav && <NotificationResponseOverlay />}
     </div>
   );
 }
