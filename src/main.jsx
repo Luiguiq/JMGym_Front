@@ -15,7 +15,7 @@ createRoot(document.getElementById('root')).render(
       <ThemeProvider>
         <AccessibilityProvider>
           <AuthProvider>
-            <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#07111f] text-white">Cargando...</div>}>
+            <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#07111f] text-primary-foreground">Cargando...</div>}>
               <App />
             </Suspense>
           </AuthProvider>

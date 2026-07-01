@@ -24,9 +24,9 @@ function getClassImage(className = '') {
 }
 
 function getAvailabilityMeta(availableSpots = 0) {
-  if (availableSpots === 0) return { label: 'Completo', bg: 'bg-red-50', text: 'text-red-700' };
-  if (availableSpots <= 5) return { label: 'Pocos cupos', bg: 'bg-amber-50', text: 'text-amber-700' };
-  return { label: 'Disponible', bg: 'bg-emerald-50', text: 'text-emerald-700' };
+  if (availableSpots === 0) return { label: 'Completo', bg: 'bg-red-50 dark:bg-red-500/10', text: 'text-red-700 dark:text-red-300' };
+  if (availableSpots <= 5) return { label: 'Pocos cupos', bg: 'bg-amber-50 dark:bg-amber-500/10', text: 'text-amber-700 dark:text-amber-300' };
+  return { label: 'Disponible', bg: 'bg-emerald-50 dark:bg-emerald-500/10', text: 'text-emerald-700 dark:text-emerald-300' };
 }
 
 function getIntensityMeta(level = '') {
@@ -57,7 +57,7 @@ function ClassCard({ classItem }) {
           {image ? (
             <img src={image} alt="" className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600 text-2xl text-white">
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600 text-2xl text-primary-foreground">
               {genreIcons[classItem.icon] || <Dumbbell className="w-6 h-6" />}
             </div>
           )}

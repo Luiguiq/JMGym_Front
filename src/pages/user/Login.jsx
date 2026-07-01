@@ -73,7 +73,7 @@ function Login() {
               via-[#0a58ca]
               to-[#1576ff]
             p-6
-            text-white
+            text-primary-foreground
             sm:p-8
             lg:p-10
           "
@@ -85,12 +85,12 @@ function Login() {
               w-12
               place-items-center
               rounded-2xl
-              bg-white/15
+              bg-primary-foreground/15
               text-2xl
               font-black
-              text-white
+              text-primary-foreground
               transition
-              hover:bg-white/20
+              hover:bg-primary-foreground/20
             "
             to="/"
             aria-label="Volver al inicio"
@@ -105,7 +105,7 @@ function Login() {
                   h-20
                   w-20
                   rounded-3xl
-                  bg-white
+                  bg-card
                   object-contain
                   shadow-[0_12px_28px_rgba(0,0,0,.12)]
                   sm:h-24
@@ -119,20 +119,20 @@ function Login() {
                 <h1 className="font-display text-4xl font-bold leading-none sm:text-5xl lg:text-6xl">
                   JMGym
                 </h1>
-                <p className="mt-2 text-sm text-white/85 sm:text-base">
+                <p className="mt-2 text-sm text-primary-foreground/85 sm:text-base">
                   Tu espacio de reservas de baile, simple y claro.
                 </p>
               </div>
             </div>
 
             <div className="max-w-xl">
-              <p className="text-xs font-black uppercase tracking-[0.28em] text-white/75">
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-primary-foreground/75">
                 Bienvenido
               </p>
               <h2 className="mt-4 max-w-[12ch] font-display text-4xl font-bold leading-[0.95] sm:text-5xl lg:text-6xl">
                 Inicia sesión y reserva
               </h2>
-              <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/85 sm:text-base lg:text-lg">
+              <p className="mt-4 max-w-lg text-sm leading-relaxed text-primary-foreground/85 sm:text-base lg:text-lg">
                 Encuentra clases, selecciona espacios y administra tus reservas
                 desde una sola plataforma.
               </p>
@@ -145,7 +145,7 @@ function Login() {
                 key={item.title}
                 className="
                   rounded-[24px]
-                  bg-white/10
+                  bg-primary-foreground/10
                   p-4
                   ring-1
                   ring-white/10
@@ -156,10 +156,10 @@ function Login() {
                 <div className="mb-3 text-2xl">
                   {item.icon}
                 </div>
-                <h3 className="font-bold text-white">
+                <h3 className="font-bold text-primary-foreground">
                   {item.title}
                 </h3>
-                <p className="mt-1 text-sm leading-relaxed text-white/80">
+                <p className="mt-1 text-sm leading-relaxed text-primary-foreground/80">
                   {item.text}
                 </p>
               </article>
@@ -249,7 +249,7 @@ function Login() {
               rounded-2xl
               bg-brand-600
               font-bold
-              text-white
+              text-primary-foreground
               shadow-soft
               transition
               hover:bg-brand-700

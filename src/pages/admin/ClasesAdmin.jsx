@@ -171,15 +171,15 @@ const ClasesAdmin = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Gestión de Clases</h1>
-          <p className="text-slate-600 text-sm mt-1">Administra todas las clases disponibles</p>
+          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Gestión de Clases</h1>
+          <p className="text-secondary text-sm mt-1">Administra todas las clases disponibles</p>
         </div>
         <button
           onClick={() => {
             setSelectedClass(null);
             setShowForm(true);
           }}
-          className="flex items-center justify-center gap-2 bg-gradient-to-r from-brand-500 to-brand-600 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl font-medium hover:shadow-lg transition-shadow w-full md:w-auto"
+          className="flex items-center justify-center gap-2 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl font-medium hover:shadow-lg transition-shadow w-full md:w-auto"
         >
           <Plus size={20} />
           Nueva Clase
@@ -188,19 +188,19 @@ const ClasesAdmin = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
         <div className="relative">
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             placeholder="Buscar por nombre o instructor..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
         >
           <option value="todas">Todas las clases</option>
           <option value="activa">Activas</option>
@@ -209,7 +209,7 @@ const ClasesAdmin = () => {
         </select>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-6 shadow-md">
+      <div className="bg-card rounded-2xl border border-border p-3 sm:p-6 shadow-md">
         {loading ? (
           <div className="flex justify-center items-center py-12">
             <Loader size="md" text="Cargando clases..." />
@@ -248,26 +248,26 @@ const ClasesAdmin = () => {
           onClick={(e) => { if (e.target === e.currentTarget && !deleting) setDeleteTarget(null); }}
         >
           <div
-            className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden"
+            className="bg-card rounded-2xl shadow-xl max-w-md w-full overflow-hidden"
             role="dialog"
             aria-modal="true"
             aria-labelledby="delete-modal-title"
           >
-            <div className="border-b border-slate-200 px-5 py-4 flex items-start justify-between gap-4">
+            <div className="border-b border-border px-5 py-4 flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-                  <AlertTriangle size={20} className="text-red-600" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/10">
+                  <AlertTriangle size={20} className="text-red-600 dark:text-red-300" />
                 </div>
                 <div>
-                  <h2 id="delete-modal-title" className="text-lg font-bold text-slate-900">Eliminar clase</h2>
-                  <p className="text-sm text-slate-500 mt-1">{deleteTarget.name}</p>
+                  <h2 id="delete-modal-title" className="text-lg font-bold text-foreground">Eliminar clase</h2>
+                  <p className="text-sm text-muted mt-1">{deleteTarget.name}</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setDeleteTarget(null)}
                 disabled={deleting}
-                className="text-slate-400 hover:text-slate-700 transition-colors"
+                className="text-muted-foreground hover:text-secondary transition-colors"
                 aria-label="Cerrar"
               >
                 <X size={20} aria-hidden="true" />
@@ -275,12 +275,12 @@ const ClasesAdmin = () => {
             </div>
 
             <div className="p-5">
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-secondary">
                 ¿Estás seguro de eliminar esta clase? Esta acción no se puede deshacer.
               </p>
 
               {deleteError && (
-                <div className="mt-3 rounded-lg bg-red-50 px-4 py-2 text-sm font-medium text-red-600" role="alert">
+                <div className="mt-3 rounded-lg bg-red-50 px-4 py-2 text-sm font-medium text-red-600 dark:bg-red-500/10 dark:text-red-300" role="alert">
                   {deleteError}
                 </div>
               )}
@@ -290,7 +290,7 @@ const ClasesAdmin = () => {
                   type="button"
                   onClick={() => setDeleteTarget(null)}
                   disabled={deleting}
-                  className="flex-1 rounded-xl border border-slate-200 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+                  className="flex-1 rounded-xl border border-border py-2.5 text-sm font-bold text-secondary transition hover:bg-surface disabled:opacity-50"
                 >
                   Cancelar
                 </button>
@@ -298,7 +298,7 @@ const ClasesAdmin = () => {
                   type="button"
                   onClick={handleConfirmDelete}
                   disabled={deleting}
-                  className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-bold text-white transition hover:bg-red-700 disabled:opacity-50"
+                  className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-bold text-primary-foreground transition hover:bg-red-700 disabled:opacity-50"
                 >
                   {deleting ? 'Eliminando...' : 'Eliminar'}
                 </button>
@@ -314,20 +314,20 @@ const ClasesAdmin = () => {
           onClick={(e) => { if (e.target === e.currentTarget) handleCloseUsersModal(); }}
         >
           <div
-            className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden"
+            className="bg-card rounded-2xl shadow-xl max-w-md w-full overflow-hidden"
             role="dialog"
             aria-modal="true"
             aria-labelledby="users-modal-title"
           >
-            <div className="border-b border-slate-200 px-5 py-4 flex items-start justify-between gap-4">
+            <div className="border-b border-border px-5 py-4 flex items-start justify-between gap-4">
               <div>
-                <h2 id="users-modal-title" className="text-lg font-bold text-slate-900">Usuarios de la clase</h2>
-                <p className="text-sm text-slate-500 mt-1">{usersModalClass.name}</p>
+                <h2 id="users-modal-title" className="text-lg font-bold text-foreground">Usuarios de la clase</h2>
+                <p className="text-sm text-muted mt-1">{usersModalClass.name}</p>
               </div>
               <button
                 type="button"
                 onClick={handleCloseUsersModal}
-                className="text-slate-400 hover:text-slate-700 transition-colors"
+                className="text-muted-foreground hover:text-secondary transition-colors"
                 aria-label="Cerrar usuarios de la clase"
               >
                 <X size={20} aria-hidden="true" />
@@ -342,15 +342,15 @@ const ClasesAdmin = () => {
               ) : classUsersError ? (
                 <p className="text-sm text-red-600" role="alert">{classUsersError}</p>
               ) : classUsers.length > 0 ? (
-                <ul className="divide-y divide-slate-100 rounded-xl border border-slate-100 overflow-hidden">
+                <ul className="divide-y divide-border-light rounded-xl border border-border-light overflow-hidden">
                   {classUsers.map((userName) => (
-                    <li key={userName} className="px-4 py-3 text-sm font-medium text-slate-800">
+                    <li key={userName} className="px-4 py-3 text-sm font-medium text-foreground">
                       {userName}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-slate-600">No hay usuarios registrados para esta clase.</p>
+                <p className="text-sm text-secondary">No hay usuarios registrados para esta clase.</p>
               )}
             </div>
           </div>

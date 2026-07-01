@@ -121,7 +121,7 @@ export default function InstructoresAdmin() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#004aab]" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
   }
@@ -131,12 +131,12 @@ export default function InstructoresAdmin() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Instructores</h1>
-          <p className="text-sm text-slate-400 mt-0.5">{instructors.length} registrados</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-foreground">Instructores</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{instructors.length} registrados</p>
         </div>
         <button
           onClick={() => { setEditInstructor(null); setShowForm(true); }}
-          className="flex items-center gap-2 rounded-2xl bg-[#004aab] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 transition hover:opacity-90 active:scale-[0.97]"
+          className="flex items-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-[0_16px_36px_rgba(37,99,235,0.22)] transition hover:opacity-90 active:scale-[0.97]"
         >
           <span className="text-lg leading-none">+</span>
           <span className="hidden sm:inline">Nuevo</span>
@@ -147,8 +147,8 @@ export default function InstructoresAdmin() {
       {alert && (
         <div className={`mb-4 flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold shadow-sm ${
           alert.type === 'error'
-            ? 'bg-red-50 text-red-700 border border-red-200'
-            : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+            ? 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/30'
+            : 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30'
         }`}>
           <span>{alert.message}</span>
           <button onClick={() => setAlert(null)} className="opacity-60 hover:opacity-100 ml-3"><X size={18} /></button>
@@ -158,13 +158,13 @@ export default function InstructoresAdmin() {
       {/* Search + Filter */}
       <div className="mb-5 flex gap-2">
         <div className="relative flex-1">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar instructor..."
-            className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder:text-slate-400 outline-none transition focus:border-[#004aab] focus:ring-[3px] focus:ring-blue-100"
+            className="w-full rounded-2xl border border-border bg-card py-3 pl-10 pr-4 text-sm font-medium text-foreground placeholder:text-muted-foreground outline-none transition focus:border-primary focus:ring-[3px] focus:ring-primary/20"
           />
         </div>
 
@@ -173,8 +173,8 @@ export default function InstructoresAdmin() {
             onClick={() => setFilterOpen(!filterOpen)}
             className={`flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-bold transition ${
               activeFilter !== 'TODOS'
-                ? 'border-[#004aab] bg-blue-50 text-[#004aab]'
-                : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                ? 'border-primary bg-primary/10 text-primary'
+                : 'border-border bg-card text-secondary hover:border-border'
             }`}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -187,21 +187,21 @@ export default function InstructoresAdmin() {
           {filterOpen && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setFilterOpen(false)} />
-              <div className="absolute right-0 top-full mt-2 z-20 w-44 rounded-2xl border border-slate-100 bg-white py-2 shadow-xl">
+              <div className="absolute right-0 top-full mt-2 z-20 w-44 rounded-2xl border border-border-light bg-card py-2 shadow-xl">
                 {FILTER_OPTIONS.map((opt) => (
                   <button
                     key={opt.value}
                     onClick={() => { setActiveFilter(opt.value); setFilterOpen(false); }}
                     className={`flex w-full items-center gap-3 px-4 py-2.5 text-sm font-bold transition ${
                       activeFilter === opt.value
-                        ? 'text-[#004aab] bg-blue-50'
-                        : 'text-slate-600 hover:bg-slate-50'
+                        ? 'text-primary bg-primary/10'
+                        : 'text-secondary hover:bg-surface'
                     }`}
                   >
                     <span className={`flex h-4 w-4 items-center justify-center rounded-full border-2 ${
                       activeFilter === opt.value
-                        ? 'border-[#004aab] bg-[#004aab]'
-                        : 'border-slate-300'
+                        ? 'border-primary bg-primary'
+                        : 'border-border'
                     }`}>
                       {activeFilter === opt.value && (
                         <svg width="8" height="8" viewBox="0 0 12 12" fill="white">
@@ -230,24 +230,24 @@ export default function InstructoresAdmin() {
       {/* Confirm deactivate modal */}
       {confirmId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm rounded-[28px] bg-white p-6 shadow-2xl text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-2xl">
+          <div className="w-full max-w-sm rounded-[28px] bg-card p-6 shadow-2xl text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-2xl dark:bg-amber-500/10">
               <AlertTriangle size={28} className="text-amber-600" />
             </div>
-            <h3 className="text-xl font-black text-slate-900">Cambiar estado</h3>
-            <p className="mt-2 text-sm text-slate-500">
+            <h3 className="text-xl font-black text-foreground">Cambiar estado</h3>
+            <p className="mt-2 text-sm text-muted">
               ¿Estás seguro de cambiar el estado de este instructor?
             </p>
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setConfirmId(null)}
-                className="flex-1 rounded-2xl border border-slate-200 py-3 font-bold text-sm text-slate-700 transition hover:bg-slate-50"
+                className="flex-1 rounded-2xl border border-border py-3 font-bold text-sm text-secondary transition hover:bg-surface"
               >
                 Cancelar
               </button>
               <button
                 onClick={() => handleToggleStatus(confirmId)}
-                className="flex-1 rounded-2xl bg-[#004aab] py-3 font-bold text-sm text-white transition hover:opacity-90"
+                className="flex-1 rounded-2xl bg-primary py-3 font-bold text-sm text-primary-foreground transition hover:opacity-90"
               >
                 Confirmar
               </button>
@@ -258,14 +258,14 @@ export default function InstructoresAdmin() {
 
       {/* Empty state */}
       {filtered.length === 0 && (
-        <div className="rounded-3xl bg-white border border-slate-100 p-10 text-center shadow-sm">
+        <div className="rounded-3xl bg-card border border-border-light p-10 text-center shadow-sm">
           <div className="text-5xl mb-4">
-            {search || activeFilter !== 'TODOS' ? <Search size={48} className="mx-auto text-slate-300" /> : <User size={48} className="mx-auto text-slate-300" />}
+            {search || activeFilter !== 'TODOS' ? <Search size={48} className="mx-auto text-muted-foreground" /> : <User size={48} className="mx-auto text-muted-foreground" />}
           </div>
-          <h3 className="text-lg font-bold text-slate-700">
+          <h3 className="text-lg font-bold text-secondary">
             {search || activeFilter !== 'TODOS' ? 'Sin resultados' : 'No hay instructores'}
           </h3>
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-muted-foreground">
             {search || activeFilter !== 'TODOS'
               ? 'Prueba con otros términos o filtros.'
               : 'Agrega el primer instructor para empezar.'}
@@ -284,7 +284,7 @@ export default function InstructoresAdmin() {
           return (
             <div
               key={inst.id_instructor}
-              className="rounded-3xl bg-white border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition hover:shadow-md"
+              className="rounded-3xl bg-card border border-border-light p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition hover:shadow-md"
             >
               <div className="flex items-start gap-4">
                 {/* Avatar */}
@@ -293,10 +293,10 @@ export default function InstructoresAdmin() {
                     <img
                       src={fotoUrl}
                       alt={inst.nombre_completo}
-                      className="h-16 w-16 rounded-full object-cover border-2 border-slate-100 sm:h-20 sm:w-20"
+                      className="h-16 w-16 rounded-full object-cover border-2 border-border-light sm:h-20 sm:w-20"
                     />
                   ) : (
-                    <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#004aab] to-blue-400 text-white font-black text-lg sm:text-xl border-2 border-slate-100">
+                    <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-400 text-primary-foreground font-black text-lg sm:text-xl border-2 border-border-light">
                       {getInitials(inst.nombre_completo)}
                     </div>
                   )}
@@ -305,13 +305,13 @@ export default function InstructoresAdmin() {
                 {/* Info */}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-base sm:text-lg font-extrabold text-slate-800 truncate">
+                    <h3 className="text-base sm:text-lg font-extrabold text-foreground truncate">
                       {inst.nombre_completo}
                     </h3>
                     <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide ${
                       isActive
-                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-                        : 'bg-slate-100 text-slate-500 border border-slate-200'
+                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30'
+                        : 'bg-border-light text-muted border border-border'
                     }`}>
                       {isActive ? 'Activo' : 'Inactivo'}
                     </span>
@@ -319,13 +319,13 @@ export default function InstructoresAdmin() {
 
                   {/* Especialidades */}
                   {especialidades.length > 0 && (
-                    <p className="mt-1.5 text-sm text-slate-500 font-medium truncate">
+                    <p className="mt-1.5 text-sm text-muted font-medium truncate">
                       {especialidades.join(' • ')}
                     </p>
                   )}
 
                   {/* Clases count */}
-                  <div className="mt-2.5 inline-flex items-center gap-1.5 rounded-xl bg-blue-50 px-3 py-1.5 text-xs font-bold text-[#004aab]">
+                  <div className="mt-2.5 inline-flex items-center gap-1.5 rounded-xl bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                       <line x1="16" y1="2" x2="16" y2="6" />
@@ -337,16 +337,16 @@ export default function InstructoresAdmin() {
 
                   {/* Phone */}
                   {inst.telefono && (
-                    <p className="mt-1.5 text-xs text-slate-400">{inst.telefono}</p>
+                    <p className="mt-1.5 text-xs text-muted-foreground">{inst.telefono}</p>
                   )}
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="mt-4 flex gap-2 border-t border-slate-100 pt-4">
+              <div className="mt-4 flex gap-2 border-t border-border-light pt-4">
                 <button
                   onClick={() => { setEditInstructor(inst); setShowForm(true); }}
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-50 py-2.5 text-xs font-bold text-[#004aab] transition hover:bg-brand-100 active:scale-[0.97]"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-50 py-2.5 text-xs font-bold text-primary transition hover:bg-brand-100 active:scale-[0.97] dark:bg-primary/10 dark:text-blue-300 dark:hover:bg-primary/15"
                 >
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
@@ -356,7 +356,7 @@ export default function InstructoresAdmin() {
 
                 <button
                   onClick={() => setAlert({ type: 'success', message: `Gestión de horarios de ${inst.nombre_completo} — próximamente` })}
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-50 py-2.5 text-xs font-bold text-[#004aab] transition hover:bg-brand-100 active:scale-[0.97]"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-50 py-2.5 text-xs font-bold text-primary transition hover:bg-brand-100 active:scale-[0.97] dark:bg-primary/10 dark:text-blue-300 dark:hover:bg-primary/15"
                 >
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -369,7 +369,7 @@ export default function InstructoresAdmin() {
 
                 <button
                   onClick={() => setConfirmId(inst.id_instructor)}
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-red-50 py-2.5 text-xs font-bold text-red-500 transition hover:bg-red-100 active:scale-[0.97]"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-red-50 py-2.5 text-xs font-bold text-red-500 transition hover:bg-red-100 active:scale-[0.97] dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
                 >
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />

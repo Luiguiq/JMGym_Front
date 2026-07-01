@@ -228,7 +228,7 @@ function EditarPerfil() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="absolute -bottom-1 -right-1 grid h-8 w-8 place-items-center rounded-full bg-brand-600 text-white shadow transition hover:bg-brand-700"
+                className="absolute -bottom-1 -right-1 grid h-8 w-8 place-items-center rounded-full bg-brand-600 text-primary-foreground shadow transition hover:bg-brand-700"
               >
                 <Camera size={16} />
               </button>
@@ -314,7 +314,7 @@ function EditarPerfil() {
           </div>
 
           <button
-            className="min-h-14 rounded-2xl bg-brand-600 font-bold text-white shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-16"
+            className="min-h-14 rounded-2xl bg-brand-600 font-bold text-primary-foreground shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-16"
             type="submit"
             disabled={loading}
           >

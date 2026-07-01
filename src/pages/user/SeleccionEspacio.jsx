@@ -117,7 +117,7 @@ function SeleccionEspacio() {
           transition={{ delay: 0.05 }}
           className="mt-3 flex items-center gap-3 rounded-2xl bg-card p-3 shadow-sm"
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-sm">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-primary-foreground shadow-sm">
             <Dumbbell size={18} />
           </div>
           <div className="min-w-0 flex-1">
@@ -153,8 +153,8 @@ function SeleccionEspacio() {
         >
           {/* Front indicator */}
           <div className="mb-4 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 py-2.5 text-center shadow-sm">
-            <p className="text-[9px] font-bold uppercase tracking-widest text-white/70">Instructor</p>
-            <p className="text-xs font-black text-white">Frente del salón</p>
+            <p className="text-[9px] font-bold uppercase tracking-widest text-primary-foreground/70">Instructor</p>
+            <p className="text-xs font-black text-primary-foreground">Frente del salón</p>
           </div>
 
           <div className={`grid ${cols} gap-1.5 sm:gap-2`}>
@@ -172,7 +172,7 @@ function SeleccionEspacio() {
                   animate={selected ? { scale: [1, 1.12, 1], transition: { duration: 0.25 } } : {}}
                   className={`relative flex aspect-square items-center justify-center rounded-lg text-[10px] font-bold transition-colors sm:text-xs ${
                     selected
-                      ? 'z-10 bg-blue-600 text-white shadow-md ring-2 ring-blue-300'
+                      ? 'z-10 bg-blue-600 text-primary-foreground shadow-md ring-2 ring-blue-300'
                       : `${status.bg} ${status.ring} ring-1 ${status.text} ${seat.estado === 'DISPONIBLE' ? 'cursor-pointer hover:ring-blue-400' : 'cursor-not-allowed opacity-60'}`
                   }`}
                 >
@@ -206,7 +206,7 @@ function SeleccionEspacio() {
                   >
                     {/* Selected seat badge */}
                     <div className="flex items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-md">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-primary-foreground shadow-md">
                         <MapPin size={22} />
                       </div>
                       <div>
@@ -222,7 +222,7 @@ function SeleccionEspacio() {
                       </div>
                       <button
                         onClick={handleContinue}
-                        className="flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.97]"
+                        className="flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-blue-700 active:scale-[0.97]"
                       >
                         Confirmar reserva <ChevronRight size={16} />
                       </button>

@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { reservationService } from '../../services/reservationService.js';
 import PageLoader from '../../components/common/PageLoader.jsx';
@@ -9,34 +9,34 @@ const MOTIVOS_LABEL = {
   CAMBIO_HORARIO: 'Cambio de horario',
   CAMBIO_INSTRUCTOR: 'Cambio de instructor',
   SALUD: 'Problemas de salud',
-  ECONOMICO: 'Motivo económico',
+  ECONOMICO: 'Motivo econ�mico',
   OTRO: 'Otro motivo',
 };
 
 function getReservationStatusStyle(status) {
   switch (status?.toUpperCase()) {
     case 'ACTIVA':
-      return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30';
     case 'CANCELADA':
-      return 'bg-red-50 text-red-700 border-red-200';
+      return 'bg-red-50 text-red-700 border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/30';
     case 'COMPLETADA':
     case 'FINALIZADA':
       return 'bg-surface text-muted border-border-light';
     default:
-      return 'bg-amber-50 text-amber-700 border-amber-200';
+      return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30';
   }
 }
 
 function getPaymentStatusStyle(status) {
   switch (status?.toUpperCase()) {
     case 'PAGADO':
-      return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30';
     case 'PENDIENTE':
-      return 'bg-amber-50 text-amber-700 border-amber-200';
+      return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30';
     case 'REEMBOLSO_PENDIENTE':
-      return 'bg-orange-50 text-orange-700 border-orange-200';
+      return 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-300 dark:border-orange-500/30';
     case 'REEMBOLSADO':
-      return 'bg-purple-50 text-purple-700 border-purple-200';
+      return 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/10 dark:text-purple-300 dark:border-purple-500/30';
     default:
       return 'bg-surface text-muted border-border-light';
   }
@@ -101,7 +101,7 @@ function DetalleReserva() {
     { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
     { value: 'CAMBIO_INSTRUCTOR', label: 'Cambio de instructor' },
     { value: 'SALUD', label: 'Problemas de salud' },
-    { value: 'ECONOMICO', label: 'Motivo económico' },
+    { value: 'ECONOMICO', label: 'Motivo econ�mico' },
     { value: 'OTRO', label: 'Otro motivo' },
   ];
 
@@ -171,7 +171,7 @@ function DetalleReserva() {
 
   const handleRefundRequest = async () => {
     const confirmRefund = window.confirm(
-      '¿Deseas solicitar el reembolso de esta reserva?'
+      '�Deseas solicitar el reembolso de esta reserva?'
     );
 
     if (!confirmRefund) return;
@@ -190,7 +190,7 @@ function DetalleReserva() {
   };
 
   if (loading) {
-    return <PageLoader text="Cargando información..." />;
+    return <PageLoader text="Cargando informaci�n..." />;
   }
 
   if (error) {
@@ -201,7 +201,7 @@ function DetalleReserva() {
           <p className="text-red-500 font-bold">{error}</p>
           <button
             onClick={() => navigate(-1)}
-            className="mt-4 rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-bold text-white"
+            className="mt-4 rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-bold text-primary-foreground"
           >
             Volver
           </button>
@@ -218,7 +218,7 @@ function DetalleReserva() {
           <p className="text-secondary font-bold">Reserva no encontrada</p>
           <button
             onClick={() => navigate('/cliente/reservas')}
-            className="mt-4 rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-bold text-white"
+            className="mt-4 rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-bold text-primary-foreground"
           >
             Mis reservas
           </button>
@@ -234,16 +234,16 @@ function DetalleReserva() {
           onClick={() => navigate(-1)}
           className="mb-5 flex items-center gap-2 font-bold text-secondary hover:text-foreground transition"
         >
-          ← Volver
+          ? Volver
         </button>
 
         <div className="overflow-hidden rounded-[32px] bg-card shadow-[0_15px_40px_rgba(15,86,130,.12)] border border-blue-100/50">
           <div className={`p-8 text-center ${
             isCanceled ? 'bg-red-600' : isCompleted ? 'bg-slate-600' : 'bg-brand-600'
-          } text-white`}>
+          } text-primary-foreground`}>
             <p className="text-xs uppercase tracking-[4px] opacity-80">Reserva</p>
             <h1 className="mt-3 text-4xl font-black">#{reservation.codigo_reserva}</h1>
-            <p className="mt-2 text-white/70">Comprobante de reserva</p>
+            <p className="mt-2 text-primary-foreground/70">Comprobante de reserva</p>
           </div>
 
           <div className="p-6">
@@ -266,30 +266,30 @@ function DetalleReserva() {
             </div>
 
             {isCanceled && reservation.motivo_cancelacion && (
-              <div className="mt-4 rounded-2xl bg-red-50 border border-red-200 p-4">
-                <p className="text-xs uppercase font-bold tracking-wider text-red-500 mb-1">Motivo de cancelación</p>
-                <p className="font-bold text-red-700">
+              <div className="mt-4 rounded-2xl bg-red-50 border border-red-200 p-4 dark:bg-red-500/10 dark:border-red-500/30">
+                <p className="text-xs uppercase font-bold tracking-wider text-red-500 mb-1">Motivo de cancelaci�n</p>
+                <p className="font-bold text-red-700 dark:text-red-200">
                   {MOTIVOS_LABEL[reservation.motivo_cancelacion] || reservation.motivo_cancelacion}
                 </p>
                 {reservation.detalle_cancelacion && (
-                  <p className="mt-1 text-sm text-red-600">{reservation.detalle_cancelacion}</p>
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-300">{reservation.detalle_cancelacion}</p>
                 )}
               </div>
             )}
 
             {isCompleted && (
-              <div className="mt-4 rounded-2xl bg-emerald-50 border border-emerald-200 p-4">
+              <div className="mt-4 rounded-2xl bg-emerald-50 border border-emerald-200 p-4 dark:bg-emerald-500/10 dark:border-emerald-500/30">
                 <p className="text-xs uppercase font-bold tracking-wider text-emerald-500 mb-1">Asistencia</p>
-                <p className="font-bold text-emerald-700">Asististe a esta clase</p>
+                <p className="font-bold text-emerald-700 dark:text-emerald-200">Asististe a esta clase</p>
               </div>
             )}
 
             {isRefundPending && (
-              <div className="mt-4 rounded-2xl bg-orange-50 border border-orange-200 p-4">
+              <div className="mt-4 rounded-2xl bg-orange-50 border border-orange-200 p-4 dark:bg-orange-500/10 dark:border-orange-500/30">
                 <p className="text-xs uppercase font-bold tracking-wider text-orange-500 mb-1">
-                  Reembolso en revisión
+                  Reembolso en revisi�n
                 </p>
-                <p className="font-bold text-orange-700">
+                <p className="font-bold text-orange-700 dark:text-orange-200">
                   Tu solicitud fue enviada al administrador.
                 </p>
               </div>
@@ -322,7 +322,7 @@ function DetalleReserva() {
 
               {reservation.metodo_pago && (
                 <div className="rounded-2xl bg-surface p-4">
-                  <p className="text-xs text-muted uppercase">Método de pago</p>
+                  <p className="text-xs text-muted uppercase">M�todo de pago</p>
                   <p className="font-black text-foreground">{reservation.metodo_pago}</p>
                 </div>
               )}
@@ -353,7 +353,7 @@ function DetalleReserva() {
             {canShowQR && qrValue ? (
               <div className="rounded-3xl border border-blue-100/50 bg-card p-6">
                 <h3 className="mb-4 text-center font-black text-foreground">
-                  Código QR de Check-in
+                  C�digo QR de Check-in
                 </h3>
 
                 <div className="flex justify-center">
@@ -366,26 +366,26 @@ function DetalleReserva() {
                 </div>
 
                 <p className="mt-4 text-center text-sm text-secondary">
-                  Presenta este código al ingresar al salón.
+                  Presenta este c�digo al ingresar al sal�n.
                 </p>
               </div>
             ) : (
               <div className="rounded-3xl border border-dashed border-border bg-surface p-6 text-center">
                 <p className="mt-2 text-sm text-secondary">
-                  El código QR solo está disponible para reservas activas
+                  El c�digo QR solo est� disponible para reservas activas
                   pendientes o pagadas.
                 </p>
 
                 <p className="mt-2 text-sm text-secondary">
-                  Esta reserva todavía no tiene un código QR generado.
+                  Esta reserva todav�a no tiene un c�digo QR generado.
                 </p>
               </div>
             )}
 
             {reservation.estado_reserva === 'ACTIVA' && reservation.estado_pago === 'PENDIENTE' && reservation.fecha_limite_pago && (
-              <div className="mt-6 rounded-3xl bg-amber-50 border border-amber-200 p-4 text-center">
-                <p className="text-xs uppercase font-bold tracking-wider text-amber-600">Fecha límite de pago</p>
-                <p className="font-black text-amber-800 text-lg">
+              <div className="mt-6 rounded-3xl bg-amber-50 border border-amber-200 p-4 text-center dark:bg-amber-500/10 dark:border-amber-500/30">
+                <p className="text-xs uppercase font-bold tracking-wider text-amber-600 dark:text-amber-300">Fecha l�mite de pago</p>
+                <p className="font-black text-amber-800 text-lg dark:text-amber-200">
                     <Calendar className="inline-block h-5 w-5 mr-1 -mt-0.5" /> {new Date(reservation.fecha_limite_pago).toLocaleDateString('es-PE', {
                       weekday: 'long',
                       day: 'numeric',
@@ -407,7 +407,7 @@ function DetalleReserva() {
                   `/cliente/reservas/${reservation.id}/cambiar-asiento`
                 )
               }
-              className="flex-1 rounded-2xl bg-sky-50 border border-sky-200 py-3.5 font-bold text-sky-700 transition hover:bg-sky-100"
+              className="flex-1 rounded-2xl bg-sky-50 border border-sky-200 py-3.5 font-bold text-sky-700 transition hover:bg-sky-100 dark:bg-card dark:border-sky-500/30 dark:text-sky-300 dark:hover:bg-sky-500/10"
             >
               <Armchair className="inline-block h-5 w-5 mr-1 -mt-0.5" />
               Cambiar asiento
@@ -421,7 +421,7 @@ function DetalleReserva() {
                 setCancelDetalle('');
                 setShowCancelModal(true);
               }}
-              className="flex-1 rounded-2xl bg-red-50 border border-red-200 py-3.5 font-bold text-red-600 transition hover:bg-red-100"
+              className="flex-1 rounded-2xl bg-red-50 border border-red-200 py-3.5 font-bold text-red-600 transition hover:bg-red-100 dark:bg-red-500/10 dark:border-red-500/30 dark:text-red-300 dark:hover:bg-red-500/20"
             >
               <XCircle className="inline-block h-5 w-5 mr-1 -mt-0.5" />
               Cancelar reserva
@@ -431,7 +431,7 @@ function DetalleReserva() {
           {canRefund && (
             <button
               onClick={handleRefundRequest}
-              className="flex-1 rounded-2xl bg-orange-50 border border-orange-200 py-3.5 font-bold text-orange-600 transition hover:bg-orange-100"
+              className="flex-1 rounded-2xl bg-orange-50 border border-orange-200 py-3.5 font-bold text-orange-600 transition hover:bg-orange-100 dark:bg-orange-500/10 dark:border-orange-500/30 dark:text-orange-300 dark:hover:bg-orange-500/20"
             >
               <Undo2 className="inline-block h-5 w-5 mr-1 -mt-0.5" />
               Solicitar reembolso
@@ -455,18 +455,18 @@ function DetalleReserva() {
           >
             <div className="overflow-y-auto px-4 sm:px-6 py-4 sm:p-6">
               <div className="text-center">
-                <div className="mx-auto mb-2 sm:mb-3 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner">
+                <div className="mx-auto mb-2 sm:mb-3 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner dark:from-red-500/10 dark:to-red-500/20">
                   <XCircle className="w-6 h-6 sm:w-7 sm:h-7 text-red-500" aria-hidden="true" />
                 </div>
                 <h3 id="cancelar-reserva-title" className="text-lg sm:text-2xl font-black text-foreground">Cancelar reserva</h3>
                 <p className="mt-1 text-xs sm:text-sm text-secondary leading-relaxed px-1">
-                  Esta acción liberará tu espacio. Selecciona el motivo de cancelación.
+                  Esta acci�n liberar� tu espacio. Selecciona el motivo de cancelaci�n.
                 </p>
               </div>
 
               <div className={`mt-3 sm:mt-5 rounded-2xl border p-3 sm:p-4 ${
                   cancelMotivo === 'CAMBIO_INSTRUCTOR'
-                    ? 'border-amber-200 bg-amber-50/80'
+                    ? 'border-amber-200 bg-amber-50/80 dark:border-amber-500/30 dark:bg-amber-500/10'
                     : 'border-border-light bg-surface/80'
                 }`}>
                 <div className="space-y-2 text-xs sm:text-sm">
@@ -508,14 +508,14 @@ function DetalleReserva() {
               </div>
 
               <div className="mt-3 sm:mt-5">
-                <label className="text-xs sm:text-sm font-bold text-foreground block mb-2 sm:mb-2.5">Motivo de cancelación</label>
+                <label className="text-xs sm:text-sm font-bold text-foreground block mb-2 sm:mb-2.5">Motivo de cancelaci�n</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
                   {motivosCancelacion.map((m) => (
                     <label
                       key={m.value}
                       className={`flex items-center gap-2 sm:gap-2.5 rounded-xl border-2 px-3 py-2 sm:px-3.5 sm:py-3 cursor-pointer transition-all duration-200 ${
                         cancelMotivo === m.value
-                          ? 'border-brand-600 bg-blue-50/70 shadow-sm'
+                          ? 'border-brand-600 bg-primary/10 shadow-sm'
                           : 'border-border-light bg-card hover:border-border hover:bg-surface'
                       }`}
                     >
@@ -548,7 +548,7 @@ function DetalleReserva() {
                     value={cancelDetalle}
                     onChange={(e) => setCancelDetalle(e.target.value)}
                     placeholder="Describe el motivo (opcional)..."
-                    className="w-full rounded-xl border-2 border-border-light bg-card px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm outline-none transition-all duration-200 focus:border-brand-600 focus:ring-2 focus:ring-blue-100 resize-none text-foreground placeholder:text-muted"
+                    className="w-full rounded-xl border-2 border-border-light bg-card px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm outline-none transition-all duration-200 focus:border-brand-600 focus:ring-2 focus:ring-primary/20 resize-none text-foreground placeholder:text-muted"
                     rows={2}
                   />
                 </div>
@@ -565,7 +565,7 @@ function DetalleReserva() {
                 <button
                   onClick={handleCancel}
                   disabled={canceling}
-                  className="flex-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-red-500 to-red-600 py-3 sm:py-3.5 font-bold text-white text-xs sm:text-sm transition-all duration-200 hover:from-red-600 hover:to-red-700 active:scale-[0.98] shadow-lg shadow-red-200 disabled:opacity-60"
+                  className="flex-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-red-500 to-red-600 py-3 sm:py-3.5 font-bold text-primary-foreground text-xs sm:text-sm transition-all duration-200 hover:from-red-600 hover:to-red-700 active:scale-[0.98] shadow-lg shadow-red-200 disabled:opacity-60"
                 >
                   {canceling ? (
                     <span className="inline-flex items-center justify-center gap-2">

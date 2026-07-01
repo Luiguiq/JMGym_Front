@@ -39,11 +39,11 @@ const StatsCard = ({
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <p className="text-slate-600 text-xs sm:text-sm font-medium mb-1 truncate dark:text-slate-300">{title}</p>
-          <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1 sm:mb-2 dark:text-white">{value}</h3>
+          <p className="text-secondary text-xs sm:text-sm font-medium mb-1 truncate dark:text-muted-foreground">{title}</p>
+          <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-1 sm:mb-2 dark:text-foreground">{value}</h3>
           {subtitle && (
             <div className="flex items-center gap-2 flex-wrap">
-              <p className="text-slate-600 text-xs dark:text-slate-400">{subtitle}</p>
+              <p className="text-secondary text-xs dark:text-muted-foreground">{subtitle}</p>
               {trend !== undefined && (
                 <div className={`flex items-center gap-1 text-xs font-semibold ${trendColorClasses[color]}`}>
                   {isTrendingUp ? (
@@ -58,7 +58,7 @@ const StatsCard = ({
           )}
         </div>
         {Icon && (
-          <div className={`${iconColorClasses[color]} p-2 sm:p-3 bg-white rounded-xl flex-shrink-0 dark:bg-slate-800`}>
+          <div className={`${iconColorClasses[color]} p-2 sm:p-3 bg-card rounded-xl flex-shrink-0 dark:bg-card`}>
             <Icon size={20} className="sm:hidden" />
             <Icon size={24} className="hidden sm:block" />
           </div>

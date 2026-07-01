@@ -7,12 +7,12 @@ const gymAddress = 'Av. Conde de Lemos 420, Callao 07006';
 
 function Contacto() {
   return (
-    <main className="min-h-screen bg-white text-slate-950">
+    <main className="min-h-screen bg-card text-foreground">
       <PublicHeader subtitle="Contacto" />
 
       <div className="animate-page-enter">
         <section
-          className="relative grid min-h-52 place-items-center overflow-hidden bg-[#07111f] bg-cover bg-center px-5 py-16 text-center text-white lg:min-h-64"
+          className="relative grid min-h-52 place-items-center overflow-hidden bg-[#07111f] bg-cover bg-center px-5 py-16 text-center text-primary-foreground lg:min-h-64"
           style={{ backgroundImage: `linear-gradient(110deg, rgba(7,17,31,.9), rgba(8,47,73,.62), rgba(7,17,31,.88)), url(${heroBackgroundImage})` }}
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(34,211,238,.22),transparent_32%)]" />
@@ -27,65 +27,65 @@ function Contacto() {
             <h2 className="mt-4 text-4xl font-black tracking-[-0.04em] md:text-5xl">
               Contactanos por WhatsApp
             </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-600">
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-secondary">
               Dejanos tus datos y nuestro equipo te orientara sobre clases, horarios, reservas y servicios disponibles en JMGym Callao.
             </p>
           </div>
 
           <div className="mx-auto mt-12 max-w-4xl">
-            <form className="rounded-[38px] bg-white p-6 shadow-[0_24px_80px_rgba(7,17,31,.1)] ring-1 ring-slate-200 lg:p-8">
+            <form className="rounded-[38px] bg-card p-6 shadow-[0_24px_80px_rgba(7,17,31,.1)] ring-1 ring-border lg:p-8">
               <div className="grid gap-5">
                 <label className="group relative block">
-                  <User className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition group-focus-within:text-cyan-500" aria-hidden="true" />
+                  <User className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground transition group-focus-within:text-cyan-500" aria-hidden="true" />
                   <input
                     type="text"
                     placeholder="Nombres"
-                    className="w-full rounded-[24px] border border-slate-200 bg-white py-5 pl-14 pr-5 text-lg outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
+                    className="w-full rounded-[24px] border border-border bg-card py-5 pl-14 pr-5 text-lg outline-none transition placeholder:text-muted-foreground focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
                   />
                 </label>
 
                 <label className="group relative block">
-                  <User className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition group-focus-within:text-cyan-500" aria-hidden="true" />
+                  <User className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground transition group-focus-within:text-cyan-500" aria-hidden="true" />
                   <input
                     type="text"
                     placeholder="Apellidos"
-                    className="w-full rounded-[24px] border border-slate-200 bg-white py-5 pl-14 pr-5 text-lg outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
+                    className="w-full rounded-[24px] border border-border bg-card py-5 pl-14 pr-5 text-lg outline-none transition placeholder:text-muted-foreground focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
                   />
                 </label>
 
                 <label className="group relative block">
-                  <IdCard className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition group-focus-within:text-cyan-500" aria-hidden="true" />
+                  <IdCard className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground transition group-focus-within:text-cyan-500" aria-hidden="true" />
                   <input
                     type="text"
                     placeholder="DNI"
-                    className="w-full rounded-[24px] border border-slate-200 bg-white py-5 pl-14 pr-5 text-lg outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
+                    className="w-full rounded-[24px] border border-border bg-card py-5 pl-14 pr-5 text-lg outline-none transition placeholder:text-muted-foreground focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
                   />
                 </label>
 
                 <label className="group relative block">
-                  <Phone className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition group-focus-within:text-cyan-500" aria-hidden="true" />
+                  <Phone className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground transition group-focus-within:text-cyan-500" aria-hidden="true" />
                   <input
                     type="tel"
                     placeholder="Celular"
-                    className="w-full rounded-[24px] border border-slate-200 bg-white py-5 pl-14 pr-5 text-lg outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
+                    className="w-full rounded-[24px] border border-border bg-card py-5 pl-14 pr-5 text-lg outline-none transition placeholder:text-muted-foreground focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
                   />
                 </label>
 
-                <div className="rounded-[24px] border border-slate-200 bg-[#f7fbff] p-5 text-left">
+                <div className="rounded-[24px] border border-border bg-surface p-5 text-left">
                   <p className="text-sm font-black uppercase tracking-[0.18em] text-brand-700">Sede</p>
-                  <p className="mt-2 text-lg font-bold text-slate-950">JMGym Callao</p>
-                  <p className="mt-1 text-sm text-slate-500">{gymAddress}</p>
+                  <p className="mt-2 text-lg font-bold text-foreground">JMGym Callao</p>
+                  <p className="mt-1 text-sm text-muted">{gymAddress}</p>
                 </div>
 
                 <textarea
                   rows="4"
                   placeholder="Mensaje opcional"
-                  className="w-full resize-none rounded-[24px] border border-slate-200 bg-white p-5 text-lg outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
+                  className="w-full resize-none rounded-[24px] border border-border bg-card p-5 text-lg outline-none transition placeholder:text-muted-foreground focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
                 />
 
                 <button
                   type="button"
-                  className="group inline-flex items-center justify-center gap-3 rounded-[24px] bg-[#07111f] px-7 py-5 text-lg font-black text-white transition hover:-translate-y-1 hover:bg-brand-700"
+                  className="group inline-flex items-center justify-center gap-3 rounded-[24px] bg-[#07111f] px-7 py-5 text-lg font-black text-primary-foreground transition hover:-translate-y-1 hover:bg-brand-700"
                 >
                   <MessageCircle className="h-6 w-6 text-cyan-200 transition group-hover:scale-110" aria-hidden="true" />
                   Consultar

@@ -7,7 +7,7 @@ const ESTADO_STYLES = {
   CONFIRMADO: { bg: 'bg-emerald-50', text: 'text-emerald-700', icon: CheckCircle, label: 'Confirmado' },
   PENDIENTE: { bg: 'bg-amber-50', text: 'text-amber-700', icon: Clock, label: 'Pendiente' },
   RECHAZADO: { bg: 'bg-red-50', text: 'text-red-700', icon: XCircle, label: 'Rechazado' },
-  REEMBOLSADO: { bg: 'bg-blue-50', text: 'text-blue-700', icon: RotateCcw, label: 'Reembolsado' },
+  REEMBOLSADO: { bg: 'bg-primary/10', text: 'text-blue-700', icon: RotateCcw, label: 'Reembolsado' },
 };
 
 const METODO_ICONS = {
@@ -95,7 +95,7 @@ function Pagos() {
         </div>
 
         {totalGastado > 0 && (
-          <div className="mb-6 flex items-center gap-3 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-5 py-4 text-white shadow-lg">
+          <div className="mb-6 flex items-center gap-3 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-5 py-4 text-primary-foreground shadow-lg">
             <CreditCard size={24} />
             <div>
               <p className="text-sm font-semibold opacity-80">Total gastado</p>
