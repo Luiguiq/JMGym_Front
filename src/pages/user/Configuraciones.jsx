@@ -142,7 +142,7 @@ function Configuraciones() {
             <select
               value={language}
               onChange={handleLanguageChange}
-              className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-semibold text-secondary outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-semibold text-secondary outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-primary/20"
             >
               {LANGUAGES.map((l) => (
                 <option key={l.value} value={l.value}>{l.label}</option>
@@ -250,7 +250,7 @@ function Configuraciones() {
               />
             </Field>
             <button
-              className="min-h-12 w-full rounded-xl bg-blue-600 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-12 w-full rounded-xl bg-blue-600 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               type="submit"
               disabled={loading}
             >
@@ -284,14 +284,14 @@ function TextSizeCard() {
           <p className="text-xs text-muted">Aumenta el tamaño de los textos</p>
           <div className="mt-2 flex gap-1">
             {Array.from({ length: maxTextSizeLevel }, (_, i) => (
-              <span key={i} className={`h-1.5 w-8 rounded-full ${i < textSizeLevel ? 'bg-blue-500' : 'bg-border'}`} />
+              <span key={i} className={`h-1.5 w-8 rounded-full ${i < textSizeLevel ? 'bg-primary/100' : 'bg-border'}`} />
             ))}
           </div>
         </div>
         <button
           type="button"
           onClick={cycleTextSizeLevel}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-sm font-black text-blue-600 transition hover:bg-blue-100"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-sm font-black text-blue-600 transition hover:bg-blue-100"
           aria-label={`Nivel ${textSizeLevel} de ${maxTextSizeLevel}`}
         >
           Tt

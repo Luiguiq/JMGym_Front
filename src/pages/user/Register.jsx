@@ -39,30 +39,30 @@ function Register() {
   return (
     <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5">
       <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-7xl overflow-hidden rounded-[32px] bg-card shadow-[0_24px_70px_rgba(15,23,42,.08)] lg:grid-cols-[0.92fr_1.08fr]">
-        <aside className="flex flex-col justify-between gap-6 bg-gradient-to-br from-brand-600 via-[#0a58ca] to-[#1576ff] p-6 text-white sm:p-8 lg:p-10">
-          <Link className="grid h-12 w-12 place-items-center rounded-2xl bg-white/15 text-2xl font-black text-white transition hover:bg-white/20" to="/cliente/login" aria-label="Volver al inicio">
+        <aside className="flex flex-col justify-between gap-6 bg-gradient-to-br from-brand-600 via-[#0a58ca] to-[#1576ff] p-6 text-primary-foreground sm:p-8 lg:p-10">
+          <Link className="grid h-12 w-12 place-items-center rounded-2xl bg-primary-foreground/15 text-2xl font-black text-primary-foreground transition hover:bg-primary-foreground/20" to="/cliente/login" aria-label="Volver al inicio">
             <ArrowLeft size={24} />
           </Link>
           <div className="grid gap-6">
             <div className="flex items-center gap-4">
-              <img className="h-20 w-20 rounded-3xl bg-white object-contain shadow-[0_12px_28px_rgba(0,0,0,.12)] sm:h-24 sm:w-24" src={logoJmGym} alt="Logo de JMGym" />
+              <img className="h-20 w-20 rounded-3xl bg-card object-contain shadow-[0_12px_28px_rgba(0,0,0,.12)] sm:h-24 sm:w-24" src={logoJmGym} alt="Logo de JMGym" />
               <div>
                 <h1 className="font-display text-4xl font-bold leading-none sm:text-5xl lg:text-6xl">JMGym</h1>
-                <p className="mt-2 text-sm text-white/85 sm:text-base">Tu espacio de reservas de baile, simple y claro.</p>
+                <p className="mt-2 text-sm text-primary-foreground/85 sm:text-base">Tu espacio de reservas de baile, simple y claro.</p>
               </div>
             </div>
             <div className="max-w-xl">
-              <p className="text-xs font-black uppercase tracking-[0.28em] text-white/75">Bienvenido</p>
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-primary-foreground/75">Bienvenido</p>
               <h2 className="mt-4 max-w-[12ch] font-display text-4xl font-bold leading-[0.95] sm:text-5xl lg:text-6xl">Crea tu cuenta y reserva</h2>
-              <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/85 sm:text-base lg:text-lg">Regístrate para acceder a todas las clases, seleccionar espacios y gestionar tus reservas.</p>
+              <p className="mt-4 max-w-lg text-sm leading-relaxed text-primary-foreground/85 sm:text-base lg:text-lg">Regístrate para acceder a todas las clases, seleccionar espacios y gestionar tus reservas.</p>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
             {highlights.map((item) => (
-              <article key={item.title} className="rounded-[24px] bg-white/10 p-4 ring-1 ring-white/10 backdrop-blur-sm sm:p-5">
+              <article key={item.title} className="rounded-[24px] bg-primary-foreground/10 p-4 ring-1 ring-white/10 backdrop-blur-sm sm:p-5">
                 <div className="mb-3 text-2xl">{item.icon}</div>
-                <h3 className="font-bold text-white">{item.title}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-white/80">{item.text}</p>
+                <h3 className="font-bold text-primary-foreground">{item.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-primary-foreground/80">{item.text}</p>
               </article>
             ))}
           </div>
@@ -110,7 +110,7 @@ function Register() {
             </div>
           </label>
 
-          <button className="min-h-14 rounded-2xl bg-brand-600 font-bold text-white shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-16" type="submit" disabled={loading}>
+          <button className="min-h-14 rounded-2xl bg-brand-600 font-bold text-primary-foreground shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-16" type="submit" disabled={loading}>
             {loading ? 'Creando cuenta...' : 'Crear cuenta'}
           </button>
 

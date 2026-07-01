@@ -34,18 +34,18 @@ const typeLabels = {
 };
 
 const TYPE_COLORS = {
-  RECORDATORIO: 'bg-amber-50 text-amber-600',
-  PAGO: 'bg-blue-50 text-blue-600',
-  PAGO_CONFIRMADO: 'bg-emerald-50 text-emerald-600',
-  CAMBIO_HORARIO: 'bg-purple-50 text-purple-600',
-  CAMBIO_INSTRUCTOR: 'bg-cyan-50 text-cyan-600',
-  NUEVA_CLASE: 'bg-rose-50 text-rose-600',
-  CANCELACION: 'bg-red-50 text-red-600',
-  REEMBOLSO: 'bg-teal-50 text-teal-600',
-  BLOQUEO_CUENTA: 'bg-orange-50 text-orange-600',
-  RESERVA_CONFIRMADA: 'bg-emerald-50 text-emerald-600',
-  RESERVA_CANCELADA: 'bg-red-50 text-red-600',
-  CAMBIO_ESPACIO: 'bg-indigo-50 text-indigo-600',
+  RECORDATORIO: 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300',
+  PAGO: 'bg-primary/10 text-blue-600 dark:text-blue-300',
+  PAGO_CONFIRMADO: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300',
+  CAMBIO_HORARIO: 'bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-300',
+  CAMBIO_INSTRUCTOR: 'bg-cyan-50 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-300',
+  NUEVA_CLASE: 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-300',
+  CANCELACION: 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-300',
+  REEMBOLSO: 'bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-300',
+  BLOQUEO_CUENTA: 'bg-orange-50 text-orange-600 dark:bg-orange-500/10 dark:text-orange-300',
+  RESERVA_CONFIRMADA: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300',
+  RESERVA_CANCELADA: 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-300',
+  CAMBIO_ESPACIO: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300',
   NOTIFICACION_GENERAL: 'bg-surface text-secondary',
 };
 
@@ -138,7 +138,7 @@ function Notificaciones() {
             </button>
             <h1 className="text-lg font-bold text-foreground">Notificaciones</h1>
             {unreadCount > 0 && (
-              <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-bold text-blue-700">
+              <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-bold text-blue-700 dark:bg-blue-500/10 dark:text-blue-300">
                 {unreadCount}
               </span>
             )}
@@ -146,7 +146,7 @@ function Notificaciones() {
           {unreadCount > 0 && (
             <button
               onClick={handleMarkAllRead}
-              className="flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-blue-600 shadow-sm transition hover:bg-blue-50"
+              className="flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-blue-600 shadow-sm transition hover:bg-primary/10"
             >
               <Eye size={14} /> Leer todo
             </button>
@@ -169,7 +169,7 @@ function Notificaciones() {
               onClick={() => setFilter(key)}
               className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-bold transition ${
                 filter === key
-                  ? 'bg-blue-600 text-white shadow-sm'
+                  ? 'bg-blue-600 text-primary-foreground shadow-sm'
                   : 'bg-card text-muted shadow-sm hover:bg-surface'
               }`}
             >
@@ -222,7 +222,7 @@ function Notificaciones() {
                           {!n.read && (
                             <button
                               onClick={() => handleMarkRead(n.id)}
-                              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-blue-50 hover:text-blue-600"
+                              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-primary/10 hover:text-blue-600"
                               title="Marcar como leída"
                             >
                               <Check size={14} />
@@ -241,13 +241,13 @@ function Notificaciones() {
                             <div className="flex gap-2">
                               <button
                                 onClick={() => setConfirmOverlay({ id: n.id, respuesta: 'ACEPTADO', title: n.title, message: n.message })}
-                                className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700 transition hover:bg-emerald-100"
+                                className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700 transition hover:bg-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20"
                               >
                                 Aceptar
                               </button>
                               <button
                                 onClick={() => setConfirmOverlay({ id: n.id, respuesta: 'CANCELADO', title: n.title, message: n.message })}
-                                className="rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold text-red-700 transition hover:bg-red-100"
+                                className="rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold text-red-700 transition hover:bg-red-100 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
                               >
                                 Cancelar
                               </button>
@@ -256,7 +256,7 @@ function Notificaciones() {
 
                           {n.userResponse && (
                             <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                              n.userResponse === 'ACEPTADO' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                              n.userResponse === 'ACEPTADO' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' : 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-300'
                             }`}>
                               {n.userResponse === 'ACEPTADO' ? <Check size={12} /> : <X size={12} />}
                               {n.userResponse === 'ACEPTADO' ? 'Aceptado' : 'Cancelado'}
@@ -302,7 +302,7 @@ function Notificaciones() {
             >
               <div className="text-center">
                 <div className={`mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full ${
-                  confirmOverlay.respuesta === 'ACEPTADO' ? 'bg-emerald-100' : 'bg-amber-100'
+                  confirmOverlay.respuesta === 'ACEPTADO' ? 'bg-emerald-100 dark:bg-emerald-500/10' : 'bg-amber-100 dark:bg-amber-500/10'
                 }`}>
                   {confirmOverlay.respuesta === 'ACEPTADO'
                     ? <CheckCircle size={28} className="text-emerald-600" />
@@ -337,7 +337,7 @@ function Notificaciones() {
                     setConfirmOverlay(null);
                   }}
                   disabled={responding}
-                  className={`flex-1 rounded-xl py-2.5 text-sm font-bold text-white transition disabled:opacity-50 ${
+                  className={`flex-1 rounded-xl py-2.5 text-sm font-bold text-primary-foreground transition disabled:opacity-50 ${
                     confirmOverlay.respuesta === 'ACEPTADO' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-red-600 hover:bg-red-700'
                   }`}
                 >

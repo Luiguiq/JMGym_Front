@@ -17,11 +17,11 @@ const genreIcons = {
 const genreColors = {
   cardio: { bg: 'bg-orange-50', text: 'text-orange-700', dot: 'bg-orange-400' },
   baile: { bg: 'bg-purple-50', text: 'text-purple-700', dot: 'bg-purple-400' },
-  fuerza: { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-400' },
+  fuerza: { bg: 'bg-primary/10', text: 'text-blue-700', dot: 'bg-blue-400' },
 };
 
 const SPECIALTY_COLORS = [
-  { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500' },
+  { bg: 'bg-primary/10', text: 'text-blue-700', dot: 'bg-primary/100' },
   { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
   { bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-500' },
   { bg: 'bg-rose-50', text: 'text-rose-700', dot: 'bg-rose-500' },
@@ -162,7 +162,7 @@ export default function InstructorDetalle() {
           <User className="mx-auto h-10 w-10 text-muted" />
           <h2 className="mt-4 text-lg font-bold text-foreground">Instructor no encontrado</h2>
           <p className="mt-1 text-sm text-muted">{error || 'No encontramos este perfil.'}</p>
-          <button onClick={() => navigate('/cliente/clases')} className="mt-6 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">
+          <button onClick={() => navigate('/cliente/clases')} className="mt-6 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-primary-foreground transition hover:bg-blue-700">
             Ver clases
           </button>
         </div>
@@ -190,7 +190,7 @@ export default function InstructorDetalle() {
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-600 to-cyan-500">
-            <User size={80} className="text-white/30" />
+            <User size={80} className="text-primary-foreground/30" />
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -199,7 +199,7 @@ export default function InstructorDetalle() {
           initial={{ opacity: 0, x: -8 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => navigate(-1)}
-          className="absolute left-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-card/80 text-secondary shadow-sm backdrop-blur-md transition hover:bg-card"
+          className="absolute left-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/80 text-secondary shadow-sm backdrop-blur-md transition hover:bg-card"
           aria-label="Volver"
         >
           <ArrowLeft size={20} />
@@ -207,7 +207,7 @@ export default function InstructorDetalle() {
 
         <div className="absolute bottom-0 left-0 right-0 z-10 p-6 pb-5">
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.1 }}>
-            <h1 className="text-3xl font-black text-white drop-shadow-lg sm:text-4xl">
+            <h1 className="text-3xl font-black text-primary-foreground drop-shadow-lg sm:text-4xl">
               {instructor.nombre_completo}
             </h1>
             <div className="mt-1 flex flex-wrap items-center gap-3">
@@ -215,7 +215,7 @@ export default function InstructorDetalle() {
                 <Stars count={5} size={12} />
                 5.0
               </span>
-              <span className="text-[13px] text-white/70">Instructor certificado</span>
+              <span className="text-[13px] text-primary-foreground/70">Instructor certificado</span>
             </div>
           </motion.div>
         </div>
@@ -380,7 +380,7 @@ export default function InstructorDetalle() {
             </button>
             <button
               onClick={() => navigate('/cliente/clases')}
-              className="flex-1 rounded-xl bg-blue-600 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
+              className="flex-1 rounded-xl bg-blue-600 py-3 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-blue-700"
             >
               Ver clases →
             </button>

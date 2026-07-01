@@ -157,7 +157,7 @@ function DetalleClase() {
           <AlertTriangle className="mx-auto h-10 w-10 text-red-400" />
           <h2 className="mt-4 text-lg font-bold text-foreground">No pudimos cargar la clase</h2>
           <p className="mt-1 text-sm text-muted">{error}</p>
-          <button onClick={() => navigate(-1)} className="mt-6 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">
+          <button onClick={() => navigate(-1)} className="mt-6 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-primary-foreground transition hover:bg-blue-700">
             Volver
           </button>
         </div>
@@ -171,7 +171,7 @@ function DetalleClase() {
         <div className="max-w-sm text-center">
           <h2 className="text-lg font-bold text-foreground">Clase no encontrada</h2>
           <p className="mt-1 text-sm text-muted">Esta clase no existe o fue eliminada.</p>
-          <button onClick={() => navigate('/cliente/clases')} className="mt-6 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">
+          <button onClick={() => navigate('/cliente/clases')} className="mt-6 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-primary-foreground transition hover:bg-blue-700">
             Ver catálogo
           </button>
         </div>
@@ -187,7 +187,7 @@ function DetalleClase() {
           <img src={classImage} alt="" className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-cyan-400">
-            <Dumbbell size={64} className="text-white/40" />
+            <Dumbbell size={64} className="text-primary-foreground/40" />
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
@@ -196,7 +196,7 @@ function DetalleClase() {
           initial={{ opacity: 0, x: -8 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => navigate(-1)}
-          className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-card/80 text-secondary shadow-sm backdrop-blur-md transition hover:bg-card"
+          className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/80 text-secondary shadow-sm backdrop-blur-md transition hover:bg-card"
           aria-label="Volver"
         >
           <ArrowLeft size={20} />
@@ -289,7 +289,7 @@ function DetalleClase() {
               onClick={() => navigate(`/cliente/instructores/${classItem.trainerId}`)}
               className="flex w-full items-center gap-4 rounded-2xl border border-border-light bg-card p-4 text-left shadow-sm transition hover:shadow-md"
             >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-sm">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-primary-foreground shadow-sm">
                 {instructorData?.foto ? (
                   <img
                     src={instructorData.foto.startsWith('http') ? instructorData.foto : `${BACKEND_URL}${instructorData.foto}`}
@@ -340,7 +340,7 @@ function DetalleClase() {
             className={`min-h-[48px] rounded-xl px-8 text-sm font-bold shadow-sm transition ${
               isDisabled
                 ? 'cursor-not-allowed bg-border text-muted-foreground'
-                : 'bg-blue-600 text-white shadow-blue-200 hover:bg-blue-700'
+                : 'bg-blue-600 text-primary-foreground shadow-[0_16px_36px_rgba(37,99,235,0.22)] hover:bg-blue-700'
             }`}
           >
             {checkingReservation

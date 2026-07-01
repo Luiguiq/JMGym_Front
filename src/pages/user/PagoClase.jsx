@@ -15,18 +15,18 @@ const PAYMENT_METHODS = [
     name: 'Yape',
     desc: 'Pago inmediato desde tu celular',
     icon: <img src={yapeLogo} alt="Yape" className="h-8 w-8 object-contain" />,
-    bg: 'bg-purple-50',
-    ring: 'ring-purple-200',
-    text: 'text-purple-700',
+    bg: 'bg-purple-50 dark:bg-purple-500/10',
+    ring: 'ring-purple-200 dark:ring-purple-500/30',
+    text: 'text-purple-700 dark:text-purple-300',
   },
   {
     id: 'EFECTIVO',
     name: 'Efectivo',
     desc: 'Paga en recepción antes de la clase',
-    icon: <Wallet size={24} className="text-emerald-600" />,
-    bg: 'bg-emerald-50',
-    ring: 'ring-emerald-200',
-    text: 'text-emerald-700',
+    icon: <Wallet size={24} className="text-emerald-600 dark:text-emerald-300" />,
+    bg: 'bg-emerald-50 dark:bg-emerald-500/10',
+    ring: 'ring-emerald-200 dark:ring-emerald-500/30',
+    text: 'text-emerald-700 dark:text-emerald-300',
   },
 ];
 
@@ -110,7 +110,7 @@ function PagoClase() {
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600"
+              className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600 dark:bg-red-500/10 dark:text-red-300"
             >
               {error}
             </motion.div>
@@ -124,7 +124,7 @@ function PagoClase() {
           className="rounded-2xl bg-card p-4 shadow-sm"
         >
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-sm">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-primary-foreground shadow-sm">
               <Dumbbell size={18} />
             </div>
             <div className="min-w-0 flex-1">
@@ -143,18 +143,18 @@ function PagoClase() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
-          className="mt-3 rounded-2xl bg-blue-50 p-4 shadow-sm"
+          className="mt-3 rounded-2xl bg-primary/10 p-4 shadow-sm dark:border dark:border-primary/20 dark:bg-card"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-600">Total a pagar</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-300">Total a pagar</p>
               <p className="text-3xl font-black text-foreground">S/ {Number(classInfo.price || 0).toFixed(2)}</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card shadow-sm">
-              <Wallet size={22} className="text-blue-600" />
+              <Wallet size={22} className="text-blue-600 dark:text-blue-300" />
             </div>
           </div>
-          <p className="mt-1 text-[12px] text-blue-500">Incluye registro, reserva y acceso a la clase</p>
+          <p className="mt-1 text-[12px] text-blue-500 dark:text-blue-300">Incluye registro, reserva y acceso a la clase</p>
         </motion.div>
 
         {/* Payment methods */}
@@ -182,7 +182,7 @@ function PagoClase() {
                   disabled={disabled}
                   className={`relative flex w-full items-center gap-4 rounded-2xl border-2 p-4 text-left transition-all ${
                     selected
-                      ? 'border-blue-500 bg-blue-50/60 shadow-md'
+                      ? 'border-blue-500 bg-primary/10 shadow-md dark:border-blue-400 dark:bg-primary/10'
                       : disabled
                         ? 'border-border-light bg-card opacity-50'
                         : 'border-border-light bg-card shadow-sm hover:border-border'
@@ -193,12 +193,12 @@ function PagoClase() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <p className={`font-bold ${selected ? 'text-blue-700' : 'text-foreground'}`}>{pm.name}</p>
+                      <p className={`font-bold ${selected ? 'text-blue-700 dark:text-blue-300' : 'text-foreground'}`}>{pm.name}</p>
                       {pm.badge && (
                         <span className="rounded-full bg-border px-2 py-[1px] text-[10px] font-bold text-muted">{pm.badge}</span>
                       )}
                     </div>
-                    <p className={`text-[13px] ${selected ? 'text-blue-600' : 'text-muted'}`}>{pm.desc}</p>
+                    <p className={`text-[13px] ${selected ? 'text-blue-600 dark:text-blue-300' : 'text-muted'}`}>{pm.desc}</p>
                   </div>
                   <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
                     selected ? 'scale-110 border-blue-600 bg-blue-600' : 'border-border'
@@ -210,7 +210,7 @@ function PagoClase() {
                           animate={{ scale: 1 }}
                           exit={{ scale: 0 }}
                         >
-                          <Check size={14} className="text-white" strokeWidth={3} />
+                          <Check size={14} className="text-primary-foreground" strokeWidth={3} />
                         </motion.span>
                       )}
                     </AnimatePresence>
@@ -249,7 +249,7 @@ function PagoClase() {
             className={`flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-bold shadow-sm transition ${
               isDisabled
                 ? 'cursor-not-allowed bg-border text-muted-foreground'
-                : 'bg-blue-600 text-white shadow-blue-200 hover:bg-blue-700'
+                : 'bg-blue-600 text-primary-foreground shadow-[0_16px_36px_rgba(37,99,235,0.22)] hover:bg-blue-700'
             }`}
           >
             {processing

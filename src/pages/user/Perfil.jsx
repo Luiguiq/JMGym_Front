@@ -133,10 +133,10 @@ function Perfil() {
           transition={{ duration: 0.35 }}
           className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-blue-700 via-blue-600 to-cyan-500 p-5 shadow-md"
         >
-          <div className="absolute right-0 top-0 h-40 w-40 translate-x-8 -translate-y-8 rounded-full bg-white/5 blur-2xl" />
+          <div className="absolute right-0 top-0 h-40 w-40 translate-x-8 -translate-y-8 rounded-full bg-primary-foreground/5 blur-2xl" />
           <div className="relative z-10 flex items-center gap-4">
             <div className="relative shrink-0">
-              <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-[3px] border-white/70 bg-white/20 shadow-lg backdrop-blur-sm sm:h-18 sm:w-18">
+              <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-[3px] border-primary-foreground/70 bg-primary-foreground/20 shadow-lg backdrop-blur-sm sm:h-18 sm:w-18">
                 {displayFoto ? (
                   <img
                     src={`${(import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api').replace('/api', '')}${displayFoto}`}
@@ -144,21 +144,21 @@ function Perfil() {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <UserRound size={30} className="text-white" />
+                  <UserRound size={30} className="text-primary-foreground" />
                 )}
               </div>
               <button
                 onClick={() => navigate('/cliente/perfil/editar')}
-                className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-blue-600 text-white shadow-sm"
+                className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-primary-foreground bg-blue-600 text-primary-foreground shadow-sm"
                 aria-label="Cambiar foto"
               >
                 <Camera size={10} />
               </button>
             </div>
             <div className="min-w-0">
-              <h1 className="truncate text-lg font-bold text-white">{displayName}</h1>
+              <h1 className="truncate text-lg font-bold text-primary-foreground">{displayName}</h1>
               <div className="mt-0.5 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-[2px] text-[11px] font-semibold text-white backdrop-blur-sm">
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary-foreground/20 px-2.5 py-[2px] text-[11px] font-semibold text-primary-foreground backdrop-blur-sm">
                   <Sparkles size={11} />
                   {membresia}
                 </span>
@@ -186,7 +186,7 @@ function Perfil() {
           <p className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Actividad</p>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: 'Reservas', value: stats.total, color: 'text-blue-600', icon: Calendar, bg: 'bg-blue-50' },
+              { label: 'Reservas', value: stats.total, color: 'text-blue-600', icon: Calendar, bg: 'bg-primary/10' },
               { label: 'Completadas', value: stats.completed, color: 'text-emerald-600', icon: Trophy, bg: 'bg-emerald-50' },
               { label: 'Canceladas', value: stats.cancelled, color: 'text-red-500', icon: XCircle, bg: 'bg-red-50' },
               { label: 'Gastado', value: `S/${stats.totalSpent.toFixed(0)}`, color: 'text-amber-600', icon: DollarSign, bg: 'bg-amber-50' },
@@ -244,7 +244,7 @@ function Perfil() {
               className="group w-full rounded-2xl bg-card p-4 text-left shadow-sm transition hover:shadow-md"
             >
               <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-sm">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-primary-foreground shadow-sm">
                   <Dumbbell size={22} />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -269,22 +269,22 @@ function Perfil() {
           <p className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Acceso rápido</p>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: 'Reservar clase', icon: Calendar, to: '/cliente/clases', color: 'text-blue-600', bg: 'bg-blue-50' },
-              { label: 'Ver reservas', icon: Dumbbell, to: '/cliente/reservas', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-              { label: 'Mi historial', icon: Trophy, to: '/cliente/reservas?tab=historial', color: 'text-amber-600', bg: 'bg-amber-50' },
-              { label: 'Código QR', icon: CreditCard, to: '/cliente/qr', color: 'text-purple-600', bg: 'bg-purple-50' },
-            ].map(({ label, icon: Icon, to, color, bg }) => (
+              { label: 'Reservar clase', icon: Calendar, to: '/cliente/clases', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-primary/10 dark:bg-card', border: 'border-primary/10 dark:border-primary/30', text: 'text-foreground', arrow: 'text-muted-foreground', iconBg: 'bg-card dark:bg-primary/10' },
+              { label: 'Ver reservas', icon: Dumbbell, to: '/cliente/reservas', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-card', border: 'border-emerald-100 dark:border-emerald-500/30', text: 'text-emerald-950 dark:text-foreground', arrow: 'text-emerald-700 dark:text-muted-foreground', iconBg: 'bg-card dark:bg-emerald-500/10' },
+              { label: 'Mi historial', icon: Trophy, to: '/cliente/reservas?tab=historial', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-card', border: 'border-amber-100 dark:border-amber-500/30', text: 'text-amber-950 dark:text-foreground', arrow: 'text-amber-700 dark:text-muted-foreground', iconBg: 'bg-card dark:bg-amber-500/10' },
+              { label: 'Código QR', icon: CreditCard, to: '/cliente/qr', color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-card', border: 'border-purple-100 dark:border-purple-500/30', text: 'text-purple-950 dark:text-foreground', arrow: 'text-purple-700 dark:text-muted-foreground', iconBg: 'bg-card dark:bg-purple-500/10' },
+            ].map(({ label, icon: Icon, to, color, bg, border, text, arrow, iconBg }) => (
               <button
                 key={label}
                 onClick={() => navigate(to)}
-                className={`flex items-center gap-3 rounded-2xl ${bg} p-4 text-left shadow-sm transition hover:shadow-md`}
+                className={`flex items-center gap-3 rounded-2xl border ${border} ${bg} p-4 text-left shadow-sm transition hover:shadow-md`}
               >
-                <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-card shadow-sm`}>
+                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconBg} shadow-sm`}>
                   <Icon size={20} className={color} />
                 </div>
                 <div>
-                  <p className="text-[13px] font-bold text-foreground">{label}</p>
-                  <ArrowRight size={12} className="mt-0.5 text-muted-foreground" />
+                  <p className={`text-[13px] font-bold ${text}`}>{label}</p>
+                  <ArrowRight size={12} className={`mt-0.5 ${arrow}`} />
                 </div>
               </button>
             ))}
