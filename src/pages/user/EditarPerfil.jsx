@@ -173,9 +173,9 @@ function EditarPerfil() {
   const fotoSrc = fotoPreview || (fotoPerfil ? `${BACKEND_URL}${fotoPerfil}` : null);
 
   return (
-    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5">
-      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-3xl overflow-hidden rounded-[32px] bg-card shadow-[0_24px_70px_rgba(15,23,42,.08)]">
-        <form className="flex flex-col justify-center gap-5 p-6 sm:p-8 lg:p-10" onSubmit={handleSubmit}>
+    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 pb-32 sm:p-4 sm:pb-32 lg:p-5 lg:pb-5 landscape:p-2 landscape:pb-28 sm:landscape:p-3 lg:landscape:p-5">
+      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-3xl overflow-hidden rounded-[32px] bg-card shadow-[0_24px_70px_rgba(15,23,42,.08)] landscape:min-h-0">
+        <form className="flex flex-col justify-center gap-5 p-6 landscape:gap-4 landscape:p-4 sm:p-8 lg:p-10" onSubmit={handleSubmit}>
           <div className="flex items-center gap-4">
             <button
               type="button"

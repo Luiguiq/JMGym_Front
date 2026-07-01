@@ -37,9 +37,9 @@ function Register() {
   }
 
   return (
-    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5">
-      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-7xl overflow-hidden rounded-[32px] bg-card shadow-[0_24px_70px_rgba(15,23,42,.08)] lg:grid-cols-[0.92fr_1.08fr]">
-        <aside className="flex flex-col justify-between gap-6 bg-gradient-to-br from-brand-600 via-[#0a58ca] to-[#1576ff] p-6 text-primary-foreground sm:p-8 lg:p-10">
+    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5 landscape:p-2 sm:landscape:p-3">
+      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-7xl overflow-hidden rounded-[32px] bg-card shadow-[0_24px_70px_rgba(15,23,42,.08)] landscape:min-h-0 lg:grid-cols-[0.92fr_1.08fr]">
+        <aside className="flex flex-col justify-between gap-6 bg-gradient-to-br from-brand-600 via-[#0a58ca] to-[#1576ff] p-6 text-primary-foreground landscape:gap-4 landscape:p-4 sm:p-8 lg:p-10">
           <Link className="grid h-12 w-12 place-items-center rounded-2xl bg-primary-foreground/15 text-2xl font-black text-primary-foreground transition hover:bg-primary-foreground/20" to="/cliente/login" aria-label="Volver al inicio">
             <ArrowLeft size={24} />
           </Link>
@@ -68,7 +68,7 @@ function Register() {
           </div>
         </aside>
 
-        <form className="flex flex-col justify-center gap-5 p-6 sm:p-8 lg:p-10" onSubmit={handleSubmit}>
+        <form className="flex flex-col justify-center gap-5 p-6 landscape:gap-4 landscape:p-4 sm:p-8 lg:p-10" onSubmit={handleSubmit}>
           <div>
             <h2 className="font-display text-4xl font-bold text-foreground sm:text-5xl">Registro</h2>
             <p className="mt-2 text-secondary">Crea una cuenta nueva.</p>

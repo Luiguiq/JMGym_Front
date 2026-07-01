@@ -89,8 +89,8 @@ function SeleccionEspacio() {
   }
 
   return (
-    <main className="min-h-screen bg-surface pb-32">
-      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5">
+    <main className="min-h-dvh bg-surface pb-36 max-md:landscape:pb-8">
+      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5 max-md:landscape:pt-3">
 
         {/* Back + title */}
         <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}>
@@ -191,8 +191,8 @@ function SeleccionEspacio() {
       <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" />
-          <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-3xl bg-card shadow-xl outline-none">
-            <div className="px-5 pb-6 pt-3 sm:px-6">
+          <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-3xl bg-card shadow-xl outline-none max-h-[82dvh] overflow-y-auto">
+            <div className="px-5 pb-[max(env(safe-area-inset-bottom),1.5rem)] pt-3 sm:px-6">
               <Drawer.Handle className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-border-light" />
 
               <AnimatePresence mode="wait">

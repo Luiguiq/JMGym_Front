@@ -228,7 +228,7 @@ function DetalleReserva() {
   }
 
   return (
-    <main className="min-h-screen bg-surface px-5 py-6 pb-24">
+    <main className="min-h-dvh bg-surface px-5 py-6 pb-36 max-md:landscape:py-4">
       <div className="max-w-3xl mx-auto lg:max-w-4xl">
         <button
           onClick={() => navigate(-1)}

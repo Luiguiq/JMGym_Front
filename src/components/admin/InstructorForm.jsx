@@ -3,6 +3,25 @@ import { useState, useEffect } from 'react';
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
 const UPLOAD_URL = API_BASE.replace('/api', '');
 
+const SPECIALTY_OPTIONS = [
+  'Zumba',
+  'Baile latino',
+  'Cardio',
+  'Funcional',
+  'Yoga',
+  'Pilates',
+  'Tren superior',
+  'Tren inferior',
+  'Cuerpo completo',
+  'Stretching',
+];
+
+function normalizeSpecialty(value = '') {
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+  return SPECIALTY_OPTIONS.find((option) => option.toLowerCase() === trimmed.toLowerCase()) || trimmed;
+}
+
 export default function InstructorForm({ initial, onSave, onCancel }) {
   const [form, setForm] = useState({
     nombre_completo: '',
@@ -22,7 +41,7 @@ export default function InstructorForm({ initial, onSave, onCancel }) {
       setForm({
         nombre_completo: initial.nombre_completo || '',
         telefono: initial.telefono || '',
-        especialidad: initial.especialidad || '',
+        especialidad: normalizeSpecialty(initial.especialidad || ''),
         biografia: initial.biografia || '',
         foto: initial.foto || '',
         video_presentacion: initial.video_presentacion || '',
@@ -72,9 +91,14 @@ export default function InstructorForm({ initial, onSave, onCancel }) {
     }
   };
 
+  const specialtyOptions =
+    form.especialidad && !SPECIALTY_OPTIONS.includes(form.especialidad)
+      ? [form.especialidad, ...SPECIALTY_OPTIONS]
+      : SPECIALTY_OPTIONS;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-lg bg-card rounded-xl shadow-xl p-4 sm:p-6 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-3 sm:items-center sm:p-4 landscape:p-2">
+      <div className="my-auto w-full max-w-lg bg-card rounded-xl shadow-xl p-4 sm:p-6 max-h-[92dvh] overflow-y-auto">
         <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4">
           {initial ? 'Editar Instructor' : 'Nuevo Instructor'}
         </h2>
@@ -102,13 +126,18 @@ export default function InstructorForm({ initial, onSave, onCancel }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-secondary mb-1">Especialidad</label>
-            <input
-              type="text"
+            <select
               name="especialidad"
               value={form.especialidad}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-400"
-            />
+              required
+              className="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-brand-400"
+            >
+              <option value="">Selecciona una especialidad</option>
+              {specialtyOptions.map((option) => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-secondary mb-1">Biografía</label>

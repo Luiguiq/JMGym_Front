@@ -15,7 +15,7 @@ function AdminLayout() {
       <MobileMenu isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col min-w-0">
         <NavbarAdmin onMenuClick={() => setSidebarOpen(true)} sidebarOpen={sidebarOpen} />
-        <main className="flex-1 px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6 pb-8 max-w-full overflow-x-hidden">
+        <main className="flex-1 px-4 py-4 pb-28 sm:px-6 sm:py-5 lg:px-8 lg:py-6 lg:pb-8 max-w-full overflow-x-hidden">
           <Outlet />
         </main>
       </div>
