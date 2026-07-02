@@ -36,7 +36,6 @@ import Pagos from '../pages/user/Pagos.jsx';
 import Register from '../pages/user/Register.jsx';;
 import SeleccionEspacio from '../pages/user/SeleccionEspacio';
 import PagoClase from '../pages/user/PagoClase';
-import PagoRetorno from '../pages/user/PagoRetorno';
 import Notificaciones from '../pages/user/Notificaciones.jsx';
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -87,7 +86,6 @@ function AppRoutes() {
           <Route path="/cliente/clases/:id" element={<DetalleClase />} />
           <Route path="/cliente/seleccion-espacio/:id" element={<SeleccionEspacio />} />
         <Route path="/cliente/pago/:id" element={<PagoClase />} />
-        <Route path="pago/retorno" element={<PagoRetorno />} />
       </Route>
 
       <Route path="/admin/login" element={<AdminLogin />} />
