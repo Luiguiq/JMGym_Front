@@ -87,16 +87,16 @@ function Home() {
 
         <motion.div
           variants={itemAnim}
-          className="overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-blue-500 to-sky-400 p-6 text-white shadow-lg shadow-blue-200/40"
+          className="overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-blue-500 to-sky-400 p-6 text-primary-foreground shadow-[0_16px_36px_rgba(37,99,235,0.22)]"
         >
           <div className="mb-5 flex items-center justify-between">
-            <span className="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold tracking-wide">
+            <span className="flex items-center gap-1.5 rounded-full bg-primary-foreground/15 px-3 py-1 text-[11px] font-semibold tracking-wide">
               <Sparkles size={13} />
               Hoy
             </span>
             <Link
               to="/cliente/clases"
-              className="rounded-full bg-white/15 px-3.5 py-1.5 text-[12px] font-bold transition hover:bg-white/25"
+              className="rounded-full bg-primary-foreground/15 px-3.5 py-1.5 text-[12px] font-bold transition hover:bg-primary-foreground/25"
             >
               Ver todas
             </Link>
@@ -104,17 +104,17 @@ function Home() {
 
           <div className="mb-5 flex items-center gap-6">
             <div className="text-center">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/60">Disponibles</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/60">Disponibles</p>
               <p className="mt-0.5 text-2xl font-black">{todayClasses.length}</p>
             </div>
-            <div className="h-8 w-px bg-white/15" />
+            <div className="h-8 w-px bg-primary-foreground/15" />
             <div className="text-center">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/60">Cupos</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/60">Cupos</p>
               <p className="mt-0.5 text-2xl font-black">{totalAvailableSpots}</p>
             </div>
-            <div className="h-8 w-px bg-white/15" />
+            <div className="h-8 w-px bg-primary-foreground/15" />
             <div className="text-center">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/60">Próxima</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/60">Próxima</p>
               <p className="mt-0.5 text-2xl font-black">{nextClass?.time ?? '--:--'}</p>
             </div>
           </div>
@@ -122,16 +122,16 @@ function Home() {
           {nextClass && (
             <Link
               to={`/cliente/clases/${nextClass.id}`}
-              className="flex items-center justify-between rounded-2xl bg-white/10 p-4 transition hover:bg-white/15"
+              className="flex items-center justify-between rounded-2xl bg-primary-foreground/10 p-4 transition hover:bg-primary-foreground/15"
             >
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-white/60">Próxima clase</p>
-                <p className="mt-0.5 text-lg font-bold text-white">{nextClass.name}</p>
-                <p className="mt-0.5 text-[13px] text-white/70">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/60">Próxima clase</p>
+                <p className="mt-0.5 text-lg font-bold text-primary-foreground">{nextClass.name}</p>
+                <p className="mt-0.5 text-[13px] text-primary-foreground/70">
                   {nextClass.time} &middot; {nextClass.availableSpots} cupos
                 </p>
               </div>
-              <ChevronRight size={22} className="text-white/60" />
+              <ChevronRight size={22} className="text-primary-foreground/60" />
             </Link>
           )}
         </motion.div>
@@ -139,7 +139,7 @@ function Home() {
         {!loading && activeClasses.length > 0 && (
           <motion.div variants={itemAnim} className="mt-6">
             <div className="mb-3 flex items-center gap-2">
-              <span className="inline-block h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse" />
+              <span className="inline-block h-2.5 w-2.5 rounded-full bg-primary/100 animate-pulse" />
               <h2 className="text-[15px] font-bold text-foreground">Clases activas ahora</h2>
             </div>
             <div className="space-y-3">
@@ -154,7 +154,7 @@ function Home() {
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-[15px] font-bold text-foreground">Clases disponibles</h2>
             {todayClasses.length > 0 && (
-              <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-[12px] font-semibold text-blue-600">
+              <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[12px] font-semibold text-blue-600">
                 {todayClasses.length}
               </span>
             )}
@@ -168,7 +168,7 @@ function Home() {
                 <SkeletonCard />
               </>
             ) : error ? (
-              <div className="rounded-2xl bg-red-50 p-4 text-center text-sm font-medium text-red-600">{error}</div>
+              <div className="rounded-2xl bg-red-50 p-4 text-center text-sm font-medium text-red-600 dark:bg-red-500/10 dark:text-red-300">{error}</div>
             ) : todayClasses.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-12 text-center">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-border-light">

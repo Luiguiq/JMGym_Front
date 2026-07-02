@@ -9,13 +9,13 @@ function PublicHeader({ subtitle = 'Fitness club' }) {
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#07111f]/85 text-white backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-primary-foreground/10 bg-[#07111f]/85 text-primary-foreground backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
           <Link to="/" className="flex items-center gap-3">
             <img
               src={logoJmGym}
               alt="Logo JMGym"
-              className="h-12 w-12 rounded-2xl bg-white object-contain p-1 shadow-[0_10px_24px_rgba(34,211,238,.16)]"
+              className="h-12 w-12 rounded-2xl bg-card object-contain p-1 shadow-[0_10px_24px_rgba(34,211,238,.16)]"
             />
             <div>
               <strong className="block text-xl font-black leading-none">JMGym</strong>
@@ -26,7 +26,7 @@ function PublicHeader({ subtitle = 'Fitness club' }) {
           <button
             type="button"
             onClick={() => setIsMenuOpen(true)}
-            className="group grid h-12 w-12 place-items-center rounded-full border border-cyan-200/20 text-cyan-200 transition hover:border-cyan-200 hover:bg-white/8"
+            className="group grid h-12 w-12 place-items-center rounded-full border border-cyan-200/20 text-cyan-200 transition hover:border-cyan-200 hover:bg-primary-foreground/8"
             aria-label="Abrir menu"
           >
             <span className="flex w-7 flex-col gap-1.5">
@@ -39,7 +39,7 @@ function PublicHeader({ subtitle = 'Fitness club' }) {
       </header>
 
       <div
-        className={`fixed inset-0 z-50 bg-[#111418]/98 text-white transition-all duration-300 ease-out ${
+        className={`fixed inset-0 z-50 bg-[#111418]/98 text-primary-foreground transition-all duration-300 ease-out ${
           isMenuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
         aria-hidden={!isMenuOpen}
@@ -47,7 +47,7 @@ function PublicHeader({ subtitle = 'Fitness club' }) {
         <button
           type="button"
           onClick={closeMenu}
-          className={`absolute right-6 top-6 z-20 grid h-14 w-14 place-items-center text-cyan-200 transition-all duration-300 hover:scale-105 hover:text-white ${
+          className={`absolute right-6 top-6 z-20 grid h-14 w-14 place-items-center text-cyan-200 transition-all duration-300 hover:scale-105 hover:text-primary-foreground ${
             isMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-3 opacity-0'
           }`}
           aria-label="Cerrar menu"

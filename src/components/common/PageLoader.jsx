@@ -3,7 +3,7 @@ function PageLoader({ text = 'Cargando información...' }) {
   return (
     <main className="
       min-h-screen
-      bg-[linear-gradient(180deg,#f7fcff_0%,#edf8ff_100%)]
+      bg-surface
       flex
       items-center
       justify-center
@@ -16,7 +16,7 @@ function PageLoader({ text = 'Cargando información...' }) {
             w-12
             h-12
             border-4
-            border-[#004aab]
+            border-primary
             border-t-transparent
             rounded-full
             animate-spin

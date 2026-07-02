@@ -44,20 +44,20 @@ function NotificationResponseOverlay() {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md rounded-[28px] bg-white shadow-2xl overflow-hidden animate-in dark:bg-slate-800">
+      <div className="w-full max-w-md rounded-[28px] bg-card shadow-2xl overflow-hidden animate-in dark:bg-card">
         <div className="p-6 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-3xl dark:bg-amber-900/50">
             <AlertTriangle size={32} className="text-amber-600 dark:text-amber-400" />
           </div>
 
-          <h2 className="text-xl font-black text-slate-900 dark:text-white">{pending.title}</h2>
-          <p className="mt-2 text-sm text-slate-500 leading-relaxed dark:text-slate-400">{pending.message}</p>
+          <h2 className="text-xl font-black text-foreground dark:text-foreground">{pending.title}</h2>
+          <p className="mt-2 text-sm text-muted leading-relaxed dark:text-muted-foreground">{pending.message}</p>
 
           <div className="mt-6 space-y-3">
             <button
               onClick={() => handleRespond('ACEPTADO')}
               disabled={loading}
-              className="w-full rounded-2xl bg-[#004aab] py-3.5 font-bold text-sm text-white transition hover:opacity-90 disabled:opacity-50"
+              className="w-full rounded-2xl bg-primary py-3.5 font-bold text-sm text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
             >
               {loading ? 'Procesando...' : <><Check size={16} className="inline" /> Aceptar cambios</>}
             </button>
@@ -65,7 +65,7 @@ function NotificationResponseOverlay() {
             <button
               onClick={() => handleRespond('CANCELADO', '/cliente/clases')}
               disabled={loading}
-              className="w-full rounded-2xl border border-slate-200 py-3.5 font-bold text-sm text-slate-700 transition hover:bg-slate-50 disabled:opacity-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
+              className="w-full rounded-2xl border border-border py-3.5 font-bold text-sm text-secondary transition hover:bg-surface disabled:opacity-50 dark:border-border dark:text-muted-foreground dark:hover:bg-border"
             >
               Elegir otra clase disponible
             </button>

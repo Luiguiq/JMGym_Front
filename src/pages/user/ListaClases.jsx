@@ -78,7 +78,7 @@ function FilterDrawer({ open, onClose, filters, setFilters, onClear }) {
                       onClick={() => setFilters((p) => ({ ...p, cat: val }))}
                       className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition ${
                         filters.cat === val
-                          ? 'bg-blue-600 text-white shadow-md'
+                          ? 'bg-blue-600 text-primary-foreground shadow-md'
                           : 'bg-border-light text-secondary hover:bg-border'
                       }`}
                     >
@@ -103,7 +103,7 @@ function FilterDrawer({ open, onClose, filters, setFilters, onClear }) {
                       onClick={() => setFilters((p) => ({ ...p, time: val }))}
                       className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition ${
                         filters.time === val
-                          ? 'bg-blue-600 text-white shadow-md'
+                          ? 'bg-blue-600 text-primary-foreground shadow-md'
                           : 'bg-border-light text-secondary hover:bg-border'
                       }`}
                     >
@@ -128,7 +128,7 @@ function FilterDrawer({ open, onClose, filters, setFilters, onClear }) {
                       onClick={() => setFilters((p) => ({ ...p, hour: p.hour === val ? '' : val }))}
                       className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition ${
                         filters.hour === val
-                          ? 'bg-blue-600 text-white shadow-md'
+                          ? 'bg-blue-600 text-primary-foreground shadow-md'
                           : 'bg-border-light text-secondary hover:bg-border'
                       }`}
                     >
@@ -150,7 +150,7 @@ function FilterDrawer({ open, onClose, filters, setFilters, onClear }) {
                 </button>
                 <button
                   onClick={onClose}
-                  className="flex-1 rounded-xl bg-blue-600 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+                  className="flex-1 rounded-xl bg-blue-600 py-3 text-sm font-bold text-primary-foreground transition hover:bg-blue-700"
                 >
                   Ver resultados
                 </button>
@@ -252,7 +252,7 @@ function ListaClases() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar clase o instructor..."
-            className="w-full rounded-2xl border-0 bg-card py-3.5 pl-11 pr-10 text-sm shadow-[0_2px_8px_rgba(0,0,0,0.04)] outline-none transition focus:shadow-[0_4px_16px_rgba(59,130,246,0.15)] focus:ring-2 focus:ring-blue-200"
+            className="w-full rounded-2xl border-0 bg-card py-3.5 pl-11 pr-10 text-sm shadow-[0_2px_8px_rgba(0,0,0,0.04)] outline-none transition focus:shadow-[0_4px_16px_rgba(59,130,246,0.15)] focus:ring-2 focus:ring-primary/20"
           />
           {search && (
             <button onClick={() => setSearch('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-secondary">
@@ -268,7 +268,7 @@ function ListaClases() {
               onClick={() => setFilters((p) => ({ ...p, cat: val }))}
               className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12px] font-semibold transition ${
                 filters.cat === val
-                  ? 'bg-blue-600 text-white shadow-sm'
+                  ? 'bg-blue-600 text-primary-foreground shadow-sm'
                   : 'bg-card text-muted shadow-sm hover:bg-border-light'
               }`}
             >
@@ -280,14 +280,14 @@ function ListaClases() {
             onClick={() => setShowFilters(true)}
             className={`ml-auto flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12px] font-semibold transition ${
               hasActiveFilters && filters.cat === 'todos'
-                ? 'bg-blue-600 text-white shadow-sm'
+                ? 'bg-blue-600 text-primary-foreground shadow-sm'
                 : 'bg-card text-muted shadow-sm hover:bg-border-light'
             }`}
           >
             <SlidersHorizontal size={14} />
             Filtros
             {(filters.time || filters.hour) && (
-              <span className="ml-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[9px] font-bold text-white">
+              <span className="ml-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[9px] font-bold text-primary-foreground">
                 {(filters.time ? 1 : 0) + (filters.hour ? 1 : 0)}
               </span>
             )}
@@ -325,9 +325,9 @@ function ListaClases() {
               <SkeletonCard />
             </>
           ) : error ? (
-            <div className="rounded-2xl border border-red-200 bg-red-50 py-10 text-center">
-              <p className="text-sm font-bold text-red-600">{error}</p>
-              <button onClick={() => window.location.reload()} className="mt-4 rounded-full bg-red-600 px-5 py-2 text-xs font-bold text-white transition hover:bg-red-700">
+            <div className="rounded-2xl border border-red-200 bg-red-50 py-10 text-center dark:border-red-500/30 dark:bg-red-500/10">
+              <p className="text-sm font-bold text-red-600 dark:text-red-300">{error}</p>
+              <button onClick={() => window.location.reload()} className="mt-4 rounded-full bg-red-600 px-5 py-2 text-xs font-bold text-primary-foreground transition hover:bg-red-700">
                 Reintentar
               </button>
             </div>
@@ -338,7 +338,7 @@ function ListaClases() {
                 {hasActiveFilters ? 'No hay clases con los filtros seleccionados' : 'No hay clases disponibles'}
               </p>
               {hasActiveFilters && (
-                <button onClick={clearFilters} className="mt-4 rounded-full bg-blue-600 px-5 py-2 text-xs font-bold text-white transition hover:bg-blue-700">
+                <button onClick={clearFilters} className="mt-4 rounded-full bg-blue-600 px-5 py-2 text-xs font-bold text-primary-foreground transition hover:bg-blue-700">
                   Mostrar todas
                 </button>
               )}

@@ -45,7 +45,7 @@ const AdminLogin = () => {
     <div className="min-h-screen bg-gradient-to-br from-brand-50 to-brand-100 flex items-center justify-center p-4">
       <button
         onClick={() => navigate('/')}
-        className="fixed left-4 top-4 z-10 flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm hover:bg-white transition-colors md:left-6 md:top-6"
+        className="fixed left-4 top-4 z-10 flex items-center gap-2 px-3 py-2 text-sm font-medium text-secondary bg-primary-foreground/80 backdrop-blur-sm rounded-xl shadow-sm hover:bg-card transition-colors md:left-6 md:top-6"
         aria-label="Volver al inicio"
       >
         <ArrowLeft size={18} />
@@ -53,16 +53,16 @@ const AdminLogin = () => {
       </button>
 
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 mb-6">
+        <div className="bg-card rounded-2xl shadow-lg p-6 sm:p-8 mb-6">
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-3xl">JM</span>
+              <span className="text-primary-foreground font-bold text-3xl">JM</span>
             </div>
           </div>
 
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">JM Gym</h1>
-            <p className="text-slate-600">Panel de Administración</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">JM Gym</h1>
+            <p className="text-secondary">Panel de Administración</p>
           </div>
 
           {error && (
@@ -74,16 +74,16 @@ const AdminLogin = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">
+              <label className="block text-sm font-semibold text-foreground mb-2">
                 Correo Institucional
               </label>
               <div className="relative">
-                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <input
                   type="email"
                   value={correo}
                   onChange={(e) => setCorreo(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                  className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                   placeholder="admin@jmgym.com"
                   disabled={loading}
                 />
@@ -91,16 +91,16 @@ const AdminLogin = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">
+              <label className="block text-sm font-semibold text-foreground mb-2">
                 Contraseña
               </label>
               <div className="relative">
-                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                  className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                   placeholder="••••••••"
                   disabled={loading}
                 />
@@ -110,7 +110,7 @@ const AdminLogin = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-brand-500 to-brand-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50 mt-6"
+              className="w-full bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground py-3 rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50 mt-6"
             >
               {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </button>
@@ -119,24 +119,24 @@ const AdminLogin = () => {
           <button
             onClick={handleDemoLogin}
             disabled={loading}
-            className="w-full mt-3 bg-slate-100 text-slate-700 py-3 rounded-xl font-semibold hover:bg-slate-200 transition-colors disabled:opacity-50"
+            className="w-full mt-3 bg-border-light text-secondary py-3 rounded-xl font-semibold hover:bg-border transition-colors disabled:opacity-50"
           >
             Acceso Demo (Rápido)
           </button>
 
-          <div className="mt-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <p className="text-xs text-slate-600 font-semibold mb-2"><MapPin size={14} className="inline" /> Credenciales Demo:</p>
-            <p className="text-xs text-slate-600">
+          <div className="mt-6 p-4 bg-surface rounded-xl border border-border">
+            <p className="text-xs text-secondary font-semibold mb-2"><MapPin size={14} className="inline" /> Credenciales Demo:</p>
+            <p className="text-xs text-secondary">
               <strong>Email:</strong> admin@jmgym.com
             </p>
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-secondary">
               <strong>Password:</strong> admin123
             </p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 text-center">
-          <p className="text-sm text-slate-600">
+        <div className="bg-card rounded-2xl shadow-lg p-6 text-center">
+          <p className="text-sm text-secondary">
             <Info size={16} className="inline" /> <strong>Frontend conectado</strong> - Datos desde la API
           </p>
         </div>

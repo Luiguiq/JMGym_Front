@@ -66,8 +66,8 @@ const Dashboard = () => {
   return (
     <div className="space-y-6 md:space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl md:text-4xl dark:text-white">¡Bienvenido a JM Gym!</h1>
-        <p className="text-slate-600 mt-1 text-sm sm:text-base dark:text-slate-400">
+        <h1 className="text-2xl font-bold text-foreground sm:text-3xl md:text-4xl dark:text-foreground">¡Bienvenido a JM Gym!</h1>
+        <p className="text-secondary mt-1 text-sm sm:text-base dark:text-muted-foreground">
           {dateFormatted.charAt(0).toUpperCase() + dateFormatted.slice(1)}
         </p>
       </div>
@@ -113,8 +113,8 @@ const Dashboard = () => {
         >
           <div className="flex items-start justify-between mb-2 gap-3">
             <div>
-              <h3 className="font-bold text-slate-900 text-base sm:text-lg dark:text-white">Crear Nueva Clase</h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Agrega una nueva clase al catálogo</p>
+              <h3 className="font-bold text-foreground text-base sm:text-lg dark:text-foreground">Crear Nueva Clase</h3>
+              <p className="text-xs sm:text-sm text-secondary dark:text-muted-foreground">Agrega una nueva clase al catálogo</p>
             </div>
             <Plus className="text-brand-600 flex-shrink-0" size={20} />
           </div>
@@ -126,17 +126,17 @@ const Dashboard = () => {
         >
           <div className="flex items-start justify-between mb-2 gap-3">
             <div>
-              <h3 className="font-bold text-slate-900 text-base sm:text-lg dark:text-white">Ver Reservas</h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Gestiona todas las reservas</p>
+              <h3 className="font-bold text-foreground text-base sm:text-lg dark:text-foreground">Ver Reservas</h3>
+              <p className="text-xs sm:text-sm text-secondary dark:text-muted-foreground">Gestiona todas las reservas</p>
             </div>
             <Calendar className="text-green-600 flex-shrink-0" size={20} />
           </div>
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-md dark:bg-slate-800 dark:border-slate-700">
+      <div className="bg-card rounded-2xl border border-border p-4 sm:p-6 shadow-md dark:bg-card dark:border-border">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h2 className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">Reservas Recientes</h2>
+          <h2 className="text-lg sm:text-2xl font-bold text-foreground dark:text-foreground">Reservas Recientes</h2>
           <button
             onClick={() => navigate('/admin/reservas')}
             className="text-brand-600 hover:text-brand-700 font-medium text-xs sm:text-sm whitespace-nowrap"
@@ -147,19 +147,19 @@ const Dashboard = () => {
 
         <div className="space-y-3">
           {recentReservations.length === 0 ? (
-            <p className="text-slate-500 text-center py-4 dark:text-slate-400">No hay reservas recientes</p>
+            <p className="text-muted text-center py-4 dark:text-muted-foreground">No hay reservas recientes</p>
           ) : (
             recentReservations.map((reservation) => (
               <div
                 key={reservation.id}
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 sm:p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors dark:bg-slate-700/50 dark:hover:bg-slate-700"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 sm:p-4 bg-surface rounded-xl hover:bg-border-light transition-colors dark:bg-surface/50 dark:hover:bg-border"
               >
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-slate-900 truncate dark:text-slate-100">{reservation.userName}</p>
-                  <p className="text-sm text-slate-600 truncate dark:text-slate-400">{reservation.className}</p>
+                  <p className="font-medium text-foreground truncate dark:text-foreground">{reservation.userName}</p>
+                  <p className="text-sm text-secondary truncate dark:text-muted-foreground">{reservation.className}</p>
                 </div>
                 <div className="flex items-center justify-between sm:justify-end gap-3 sm:text-right">
-                  <p className="text-sm text-slate-600 whitespace-nowrap dark:text-slate-400">{reservation.date}</p>
+                  <p className="text-sm text-secondary whitespace-nowrap dark:text-muted-foreground">{reservation.date}</p>
                   <span className={`inline-block px-2 sm:px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
                     reservation.status === 'ACTIVA' || reservation.status === 'confirmada'
                       ? 'bg-green-100 text-green-800'

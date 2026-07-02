@@ -86,10 +86,10 @@ export default function UsuariosAdmin() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <h1 className="text-2xl font-bold text-slate-800 sm:text-3xl">Usuarios</h1>
+        <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Usuarios</h1>
         <button
           onClick={() => { setEditUser(null); setShowForm(true); }}
-          className="px-4 py-2 text-sm font-medium text-white bg-brand-400 rounded-lg hover:bg-brand-500 w-full sm:w-auto"
+          className="px-4 py-2 text-sm font-medium text-primary-foreground bg-brand-400 rounded-lg hover:bg-brand-500 w-full sm:w-auto"
         >
           + Nuevo Usuario
         </button>
@@ -116,24 +116,24 @@ export default function UsuariosAdmin() {
           onClick={(e) => { if (e.target === e.currentTarget) setShowHistory(null); }}
         >
           <div
-            className="w-full max-w-2xl bg-white rounded-xl shadow-xl p-4 sm:p-6 max-h-[80vh] overflow-y-auto"
+            className="w-full max-w-2xl bg-card rounded-xl shadow-xl p-4 sm:p-6 max-h-[80vh] overflow-y-auto"
             role="dialog"
             aria-modal="true"
             aria-labelledby="history-modal-title"
           >
             <div className="flex items-center justify-between mb-4 gap-3">
-              <h2 id="history-modal-title" className="text-base sm:text-lg font-bold text-slate-800 truncate">
+              <h2 id="history-modal-title" className="text-base sm:text-lg font-bold text-foreground truncate">
                 Historial de {showHistory.nombre_completo}
               </h2>
-              <button onClick={() => setShowHistory(null)} className="text-slate-400 hover:text-slate-600 text-xl flex-shrink-0 p-1" aria-label="Cerrar historial">×</button>
+              <button onClick={() => setShowHistory(null)} className="text-muted-foreground hover:text-secondary text-xl flex-shrink-0 p-1" aria-label="Cerrar historial">×</button>
             </div>
             {history.length === 0 ? (
-              <p className="text-slate-400 text-center py-8">Sin reservas registradas</p>
+              <p className="text-muted-foreground text-center py-8">Sin reservas registradas</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm min-w-[480px]">
                   <thead>
-                    <tr className="bg-slate-50 text-slate-600 uppercase text-xs tracking-wider">
+                    <tr className="bg-surface text-secondary uppercase text-xs tracking-wider">
                       <th scope="col" className="text-left px-3 py-2">#</th>
                       <th scope="col" className="text-left px-3 py-2">Fecha Reserva</th>
                       <th scope="col" className="text-left px-3 py-2">Fecha Clase</th>
@@ -141,18 +141,18 @@ export default function UsuariosAdmin() {
                       <th scope="col" className="text-right px-3 py-2">Monto</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-border-light">
                     {history.map((r) => (
-                      <tr key={r.id_reserva} className="hover:bg-slate-50">
-                        <td className="px-3 py-2 text-slate-600">{r.id_reserva}</td>
-                        <td className="px-3 py-2 text-slate-600">{formatDateTime(r.fecha_reserva)}</td>
+                      <tr key={r.id_reserva} className="hover:bg-surface">
+                        <td className="px-3 py-2 text-secondary">{r.id_reserva}</td>
+                        <td className="px-3 py-2 text-secondary">{formatDateTime(r.fecha_reserva)}</td>
                         <td className="px-3 py-2">{r.fecha_clase ? formatDate(r.fecha_clase) : '—'}</td>
                         <td className="px-3 py-2 text-center">
                           <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${r.estado_reserva === 'CONFIRMADA' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
                             {r.estado_reserva}
                           </span>
                         </td>
-                        <td className="px-3 py-2 text-right text-slate-600">S/ {r.monto?.toFixed(2)}</td>
+                        <td className="px-3 py-2 text-right text-secondary">S/ {r.monto?.toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -163,21 +163,21 @@ export default function UsuariosAdmin() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <div className="p-3 sm:p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-3">
+      <div className="bg-card rounded-xl shadow-sm overflow-hidden">
+        <div className="p-3 sm:p-4 border-b border-border-light flex flex-col sm:flex-row gap-3">
           <input
             type="text"
             aria-label="Buscar usuarios por nombre, correo o DNI"
             placeholder="Buscar por nombre, correo o DNI..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 min-w-[200px] px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+            className="flex-1 min-w-[200px] px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
           <select
             aria-label="Filtrar por estado de usuario"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+            className="px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           >
             <option value="todos">Todos</option>
             <option value="activos">Activos</option>
@@ -188,7 +188,7 @@ export default function UsuariosAdmin() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[720px]">
             <thead>
-              <tr className="bg-slate-50 text-slate-600 uppercase text-xs tracking-wider">
+              <tr className="bg-surface text-secondary uppercase text-xs tracking-wider">
                 <th scope="col" className="text-left px-4 py-3">Nombre</th>
                 <th scope="col" className="text-left px-4 py-3">DNI</th>
                 <th scope="col" className="text-left px-4 py-3">Correo</th>
@@ -197,13 +197,13 @@ export default function UsuariosAdmin() {
                 <th scope="col" className="text-center px-4 py-3">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-border-light">
               {filtered.map((u) => (
-                <tr key={u.id_usuario} className="hover:bg-slate-50">
-                  <td className="px-4 py-3 font-medium text-slate-800 whitespace-nowrap">{u.nombre_completo}</td>
-                  <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{u.dni}</td>
-                  <td className="px-4 py-3 text-slate-600">{u.correo}</td>
-                  <td className="px-4 py-3 text-slate-600">{u.telefono || '—'}</td>
+                <tr key={u.id_usuario} className="hover:bg-surface">
+                  <td className="px-4 py-3 font-medium text-foreground whitespace-nowrap">{u.nombre_completo}</td>
+                  <td className="px-4 py-3 text-secondary whitespace-nowrap">{u.dni}</td>
+                  <td className="px-4 py-3 text-secondary">{u.correo}</td>
+                  <td className="px-4 py-3 text-secondary">{u.telefono || '—'}</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${u.estado === 'ACTIVO' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                       {u.estado}
@@ -226,7 +226,7 @@ export default function UsuariosAdmin() {
                     </button>
                     <button
                       onClick={() => handleShowHistory(u)}
-                      className="text-slate-500 hover:text-slate-700 font-medium"
+                      className="text-muted hover:text-secondary font-medium"
                       aria-label={`Ver historial de ${u.nombre_completo}`}
                     >
                       Historial
@@ -236,7 +236,7 @@ export default function UsuariosAdmin() {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-slate-400">
+                  <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
                     No se encontraron usuarios
                   </td>
                 </tr>

@@ -89,7 +89,7 @@ function ReservationCard({ reservation, onRefresh }) {
           {image ? (
             <img src={image} alt="" className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600 text-white">
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600 text-primary-foreground">
               <Dumbbell size={28} />
             </div>
           )}
@@ -99,7 +99,7 @@ function ReservationCard({ reservation, onRefresh }) {
             <div>
               <h3 className="text-lg font-bold text-foreground">{reservation.className || reservation.nombre_clase || 'Clase'}</h3>
               {isActive ? (
-                <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[12px] font-semibold text-emerald-700">
+                <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[12px] font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
                   Activa
                 </span>
@@ -139,7 +139,7 @@ function ReservationCard({ reservation, onRefresh }) {
           <div className="mt-3 flex items-center gap-2">
             <button
               onClick={() => navigate(`/cliente/reservas/${reservation.id}`)}
-              className="flex items-center gap-1 rounded-xl bg-blue-600 px-4 py-2 text-[12px] font-bold text-white transition hover:bg-blue-700"
+              className="flex items-center gap-1 rounded-xl bg-blue-600 px-4 py-2 text-[12px] font-bold text-primary-foreground transition hover:bg-blue-700"
             >
               Ver detalle
               <ChevronRight size={14} />
@@ -176,7 +176,7 @@ function ReservationCard({ reservation, onRefresh }) {
               <button onClick={() => setShowCancel(false)} className="absolute right-4 top-4 text-muted-foreground">
                 <X size={20} />
               </button>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/10">
                 <Dumbbell size={22} className="text-red-500" />
               </div>
               <h3 className="mt-4 text-lg font-bold text-foreground">Cancelar reserva</h3>
@@ -191,7 +191,7 @@ function ReservationCard({ reservation, onRefresh }) {
                 <button
                   onClick={handleCancel}
                   disabled={canceling}
-                  className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-bold text-white transition hover:bg-red-700 disabled:opacity-50"
+                  className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-bold text-primary-foreground transition hover:bg-red-700 disabled:opacity-50"
                 >
                   {canceling ? 'Cancelando...' : 'Sí, cancelar'}
                 </button>
@@ -220,7 +220,7 @@ function EmptyState({ onViewClasses }) {
       </div>
       <button
         onClick={onViewClasses}
-        className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
+        className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-blue-700"
       >
         Ver clases
       </button>
@@ -291,7 +291,7 @@ function MisReservas() {
               onClick={() => setActiveTab(key)}
               className={`rounded-xl px-5 py-2.5 text-[13px] font-bold transition-all ${
                 activeTab === key
-                  ? 'bg-blue-600 text-white shadow-sm'
+                  ? 'bg-blue-600 text-primary-foreground shadow-sm'
                   : 'text-muted hover:text-secondary'
               }`}
             >
@@ -327,7 +327,7 @@ function MisReservas() {
               {activeTab === 'historial' && <SkeletonCard />}
             </>
           ) : error ? (
-            <div className="rounded-2xl bg-red-50 p-4 text-center text-sm font-medium text-red-600">{error}</div>
+            <div className="rounded-2xl bg-red-50 p-4 text-center text-sm font-medium text-red-600 dark:bg-red-500/10 dark:text-red-300">{error}</div>
           ) : activeTab === 'activas' ? (
             activeReservations.length === 0 ? (
               <EmptyState onViewClasses={() => navigate('/cliente/clases')} />

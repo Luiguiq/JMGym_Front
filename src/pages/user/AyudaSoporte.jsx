@@ -69,12 +69,12 @@ function AyudaSoporte() {
           </div>
         </div>
 
-        <div className="mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 to-brand-700 px-5 py-6 text-white shadow-lg">
+        <div className="mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 to-brand-700 px-5 py-6 text-primary-foreground shadow-lg">
           <div className="flex items-center gap-3">
             <HelpCircle size={28} />
             <div>
               <h3 className="text-lg font-black">¿Necesitas ayuda?</h3>
-              <p className="mt-0.5 text-sm text-white/80">Encuentra respuestas rápidas aquí abajo</p>
+              <p className="mt-0.5 text-sm text-primary-foreground/80">Encuentra respuestas rápidas aquí abajo</p>
             </div>
           </div>
         </div>

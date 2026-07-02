@@ -175,10 +175,10 @@ function ReservasAdmin() {
     return (
       <div
         key={r.id}
-        className="rounded-2xl bg-white p-4 shadow-[0_4px_16px_rgba(33,45,58,0.06)] border border-slate-100 transition hover:shadow-[0_8px_24px_rgba(33,45,58,0.1)] sm:p-5"
+        className="rounded-2xl bg-card p-4 shadow-[0_4px_16px_rgba(33,45,58,0.06)] border border-border-light transition hover:shadow-[0_8px_24px_rgba(33,45,58,0.1)] sm:p-5"
       >
         <div className="flex items-start gap-3">
-          <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-sky-100">
+          <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-sky-100 dark:bg-sky-500/10">
             {fotoUrl ? (
               <img src={fotoUrl} alt="" className="h-full w-full object-cover" />
             ) : (
@@ -188,18 +188,18 @@ function ReservasAdmin() {
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="font-bold text-slate-900 truncate">{r.userName || 'Usuario'}</p>
-            <p className="mt-0.5 text-xs text-slate-400">#{r.codigo_reserva}</p>
+            <p className="font-bold text-foreground truncate">{r.userName || 'Usuario'}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">#{r.codigo_reserva}</p>
           </div>
           <span
             className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold ${
               isRefundPending
-                ? 'bg-amber-100 text-amber-700'
+                ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300'
                 : isPending
-                ? 'bg-orange-50 text-orange-700'
+                ? 'bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:text-orange-300'
                 : r.estado_pago === 'REEMBOLSADO'
-                ? 'bg-purple-100 text-purple-700'
-                : 'bg-emerald-50 text-emerald-700'
+                ? 'bg-purple-100 text-purple-700 dark:bg-purple-500/10 dark:text-purple-300'
+                : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300'
             }`}
           >
             {isRefundPending
@@ -212,15 +212,15 @@ function ReservasAdmin() {
           </span>
         </div>
 
-        <div className="mt-3 rounded-xl bg-slate-50 p-3">
-          <p className="font-black text-slate-900">{r.className}</p>
+        <div className="mt-3 rounded-xl bg-surface p-3">
+          <p className="font-black text-foreground">{r.className}</p>
           {r.instructor_nombre && (
-            <p className="mt-0.5 text-xs text-slate-500">
+            <p className="mt-0.5 text-xs text-muted">
               <Dumbbell size={12} className="inline -mt-0.5 mr-0.5" />
               {r.instructor_nombre}
             </p>
           )}
-          <div className="mt-2 flex flex-wrap gap-3 text-xs text-slate-500">
+          <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted">
             <span className="flex items-center gap-1">
               <Calendar size={13} />
               {r.fecha_clase
@@ -242,7 +242,7 @@ function ReservasAdmin() {
           </div>
         </div>
 
-        <div className="mt-1.5 flex items-center justify-between text-xs text-slate-500">
+        <div className="mt-1.5 flex items-center justify-between text-xs text-muted">
           <span>
             <CreditCard size={12} className="inline -mt-0.5 mr-0.5" />
             S/ {Number(r.monto || 0).toFixed(2)}
@@ -264,7 +264,7 @@ function ReservasAdmin() {
               type="button"
               onClick={() => { setPayTarget(r); setPayError(''); }}
               aria-label={`Confirmar pago en efectivo de ${r.userName || 'usuario'} por S/ ${Number(r.monto || 0).toFixed(2)}`}
-              className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 py-2.5 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 py-2.5 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500/40 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20"
             >
               <CheckCircle size={16} aria-hidden="true" />
               Confirmar pago en efectivo
@@ -273,7 +273,7 @@ function ReservasAdmin() {
               type="button"
               onClick={() => { setCancelTarget(r); setCancelError(''); setCancelMotivo('CLASE_CANCELADA'); setCancelDetalle(''); }}
               aria-label={`Cancelar reserva de ${r.userName || 'usuario'}`}
-              className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-bold text-red-700 transition hover:bg-red-100 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-red-500/40"
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-bold text-red-700 transition hover:bg-red-100 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-red-500/40 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
             >
               <XCircle size={16} aria-hidden="true" />
               Cancelar reserva
@@ -288,7 +288,7 @@ function ReservasAdmin() {
                 setRefundTarget(r);
                 setRefundError('');
               }}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 py-2.5 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 py-2.5 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20"
             >
               <CheckCircle size={16} />
               Aprobar reembolso
@@ -310,7 +310,7 @@ function ReservasAdmin() {
     {
       label: 'Total activas',
       value: reservations.filter((r) => r.estado_reserva === 'ACTIVA').length,
-      color: 'text-slate-900',
+      color: 'text-foreground',
     },
     {
       label: 'Pagadas',
@@ -327,19 +327,19 @@ function ReservasAdmin() {
   return (
     <div className="max-w-4xl mx-auto space-y-6 px-4 sm:px-0">
       <div>
-        <h1 className="text-xl font-bold text-slate-900 sm:text-3xl">Reservas activas</h1>
-        <p className="mt-1 text-xs text-slate-500 sm:text-sm">Gestiona todas las reservas de los clientes</p>
+        <h1 className="text-xl font-bold text-foreground sm:text-3xl">Reservas activas</h1>
+        <p className="mt-1 text-xs text-muted sm:text-sm">Gestiona todas las reservas de los clientes</p>
       </div>
 
       <div className="relative">
-        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
+        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" aria-hidden="true" />
         <input
           type="text"
           aria-label="Buscar reservas por cliente, clase o código"
           placeholder="Buscar por cliente, clase o código..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+          className="w-full rounded-xl border border-border bg-card py-3 pl-11 pr-4 text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
         />
       </div>
 
@@ -363,14 +363,14 @@ function ReservasAdmin() {
               className={`shrink-0 rounded-full px-5 py-2 text-sm font-bold transition ${
                 filterTab === t.key
                   ? t.key === 'reembolsos'
-                    ? 'bg-orange-500 text-white shadow-md'
-                    : 'bg-brand-600 text-white shadow-md'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                    ? 'bg-orange-500 text-primary-foreground shadow-md'
+                    : 'bg-brand-600 text-primary-foreground shadow-md'
+                  : 'bg-card text-secondary border border-border hover:bg-surface'
               }`}
             >
               {t.label}
               {t.key === 'reembolsos' && reembolsos.length > 0 && (
-                <span className="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-xs">
+                <span className="ml-2 rounded-full bg-primary-foreground/20 px-2 py-0.5 text-xs">
                   {reembolsos.length}
                 </span>
               )}
@@ -381,9 +381,9 @@ function ReservasAdmin() {
 
       <div className="grid grid-cols-3 gap-3">
         {stats.map((s) => (
-          <div key={s.label} className="rounded-2xl bg-white border border-slate-100 p-4 text-center shadow-sm">
+          <div key={s.label} className="rounded-2xl bg-card border border-border-light p-4 text-center shadow-sm">
             <p className={`text-2xl font-black sm:text-3xl ${s.color}`}>{s.value}</p>
-            <p className="mt-0.5 text-xs font-semibold text-slate-500">{s.label}</p>
+            <p className="mt-0.5 text-xs font-semibold text-muted">{s.label}</p>
           </div>
         ))}
       </div>
@@ -394,11 +394,11 @@ function ReservasAdmin() {
         </div>
       ) : pageItems.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <Calendar size={48} className="text-slate-300" aria-hidden="true" />
-          <p className="text-lg font-bold text-slate-500">
+          <Calendar size={48} className="text-muted-foreground" aria-hidden="true" />
+          <p className="text-lg font-bold text-muted">
             {search ? 'Sin resultados' : 'No hay reservas activas'}
           </p>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             {search
               ? 'Intenta con otro término de búsqueda'
               : 'Las reservas aparecerán aquí cuando los clientes reserven clases'}
@@ -464,12 +464,12 @@ function ReservasAdmin() {
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={safePage <= 1}
                 aria-label="Ir a la página anterior"
-                className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex items-center gap-1 rounded-xl border border-border bg-card px-4 py-2 text-sm font-bold text-secondary transition hover:bg-surface disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronLeft size={18} aria-hidden="true" />
                 Anterior
               </button>
-              <span className="text-sm font-semibold text-slate-500">
+              <span className="text-sm font-semibold text-muted">
                 {safePage} / {totalPages}
               </span>
               <button
@@ -477,7 +477,7 @@ function ReservasAdmin() {
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={safePage >= totalPages}
                 aria-label="Ir a la página siguiente"
-                className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex items-center gap-1 rounded-xl border border-border bg-card px-4 py-2 text-sm font-bold text-secondary transition hover:bg-surface disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Siguiente
                 <ChevronRight size={18} />
@@ -492,43 +492,43 @@ function ReservasAdmin() {
           onClick={(e) => { if (e.target === e.currentTarget) setPayTarget(null); }}
         >
           <div
-            className="w-full sm:max-w-sm rounded-[28px] bg-white shadow-2xl animate-[fadeIn_0.2s_ease-out]"
+            className="w-full sm:max-w-sm rounded-[28px] bg-card shadow-2xl animate-[fadeIn_0.2s_ease-out]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="px-5 py-5 sm:p-6">
               <div className="text-center">
-                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 shadow-inner">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 shadow-inner dark:from-emerald-500/10 dark:to-emerald-500/20">
                   <CheckCircle className="w-7 h-7 text-emerald-500" />
                 </div>
-                <h3 className="text-lg sm:text-2xl font-black text-slate-900">Colocar como pagado</h3>
-                <p className="mt-1.5 text-xs sm:text-sm text-slate-500 leading-relaxed">
+                <h3 className="text-lg sm:text-2xl font-black text-foreground">Colocar como pagado</h3>
+                <p className="mt-1.5 text-xs sm:text-sm text-muted leading-relaxed">
                   ¿Confirmas cambiar esta reserva de pendiente a pagado?
                 </p>
               </div>
 
-              <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-3 sm:p-4">
+              <div className="mt-4 rounded-2xl border border-border-light bg-surface/80 p-3 sm:p-4">
                 <div className="space-y-2 text-xs sm:text-sm">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-500 shrink-0">Cliente</span>
-                    <span className="font-bold text-slate-900 text-right truncate max-w-[180px]">{payTarget.userName}</span>
+                    <span className="text-muted shrink-0">Cliente</span>
+                    <span className="font-bold text-foreground text-right truncate max-w-[180px]">{payTarget.userName}</span>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-500 shrink-0">Clase</span>
-                    <span className="font-bold text-slate-900 text-right truncate max-w-[180px]">{payTarget.className}</span>
+                    <span className="text-muted shrink-0">Clase</span>
+                    <span className="font-bold text-foreground text-right truncate max-w-[180px]">{payTarget.className}</span>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-500 shrink-0">Código</span>
-                    <span className="font-mono font-semibold text-slate-700 text-right">#{payTarget.codigo_reserva}</span>
+                    <span className="text-muted shrink-0">Código</span>
+                    <span className="font-mono font-semibold text-secondary text-right">#{payTarget.codigo_reserva}</span>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-500 shrink-0">Monto</span>
-                    <span className="font-bold text-slate-900 text-right">S/ {Number(payTarget.monto || 0).toFixed(2)}</span>
+                    <span className="text-muted shrink-0">Monto</span>
+                    <span className="font-bold text-foreground text-right">S/ {Number(payTarget.monto || 0).toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
               {payError && (
-                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
+                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
                   {payError}
                 </div>
               )}
@@ -537,14 +537,14 @@ function ReservasAdmin() {
                 <button
                   onClick={() => { setPayTarget(null); setPayError(''); }}
                   disabled={paying}
-                  className="flex-1 rounded-xl sm:rounded-2xl border-2 border-slate-100 py-3 sm:py-3.5 font-bold text-slate-600 text-xs sm:text-sm transition-all duration-200 hover:bg-slate-50 hover:border-slate-200 active:scale-[0.98] disabled:opacity-60"
+                  className="flex-1 rounded-xl sm:rounded-2xl border-2 border-border-light py-3 sm:py-3.5 font-bold text-secondary text-xs sm:text-sm transition-all duration-200 hover:bg-surface hover:border-border active:scale-[0.98] disabled:opacity-60"
                 >
                   Volver
                 </button>
                 <button
                   onClick={handleMarkAsPaid}
                   disabled={paying}
-                  className="flex-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 sm:py-3.5 font-bold text-white text-xs sm:text-sm transition-all duration-200 hover:from-emerald-600 hover:to-emerald-700 active:scale-[0.98] shadow-lg shadow-emerald-200 disabled:opacity-60"
+                  className="flex-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 sm:py-3.5 font-bold text-primary-foreground text-xs sm:text-sm transition-all duration-200 hover:from-emerald-600 hover:to-emerald-700 active:scale-[0.98] shadow-lg shadow-emerald-200 disabled:opacity-60"
                 >
                   {paying ? (
                     <span className="inline-flex items-center justify-center gap-2">
@@ -569,13 +569,13 @@ function ReservasAdmin() {
       {refundTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
 
-          <div className="w-full max-w-md rounded-3xl bg-white p-6">
+          <div className="w-full max-w-md rounded-3xl bg-card p-6">
 
             <h3 className="text-xl font-black">
               Aprobar reembolso
             </h3>
 
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-secondary">
               ¿Deseas aprobar el reembolso de la reserva
               <strong>
                 {' '}
@@ -584,7 +584,7 @@ function ReservasAdmin() {
               ?
             </p>
 
-            <div className="mt-4 rounded-xl bg-slate-50 p-4">
+            <div className="mt-4 rounded-xl bg-surface p-4">
 
               <p>
                 Cliente:
@@ -613,7 +613,7 @@ function ReservasAdmin() {
             </div>
 
             {refundError && (
-              <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
                 {refundError}
               </div>
             )}
@@ -623,7 +623,7 @@ function ReservasAdmin() {
               <button
                 onClick={() => setRefundTarget(null)}
                 disabled={approvingRefund}
-                className="flex-1 rounded-xl border border-slate-200 py-3 font-bold"
+                className="flex-1 rounded-xl border border-border py-3 font-bold"
               >
                 Cancelar
               </button>
@@ -631,7 +631,7 @@ function ReservasAdmin() {
               <button
                 onClick={handleApproveRefund}
                 disabled={approvingRefund}
-                className="flex-1 rounded-xl bg-emerald-600 py-3 font-bold text-white"
+                className="flex-1 rounded-xl bg-emerald-600 py-3 font-bold text-primary-foreground"
               >
                 {approvingRefund
                   ? 'Procesando...'
@@ -651,7 +651,7 @@ function ReservasAdmin() {
           onClick={(e) => { if (e.target === e.currentTarget) setCancelTarget(null); }}
         >
           <div
-            className="w-full sm:max-w-md rounded-[28px] bg-white shadow-2xl flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]"
+            className="w-full sm:max-w-md rounded-[28px] bg-card shadow-2xl flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]"
             role="dialog"
             aria-modal="true"
             aria-labelledby="admin-cancel-title"
@@ -659,30 +659,30 @@ function ReservasAdmin() {
           >
             <div className="overflow-y-auto px-4 sm:px-6 py-4 sm:p-6">
               <div className="text-center">
-                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner dark:from-red-500/10 dark:to-red-500/20">
                   <AlertTriangle className="w-7 h-7 text-red-500" aria-hidden="true" />
                 </div>
-                <h3 id="admin-cancel-title" className="text-lg sm:text-2xl font-black text-slate-900">Cancelar reserva</h3>
-                <p className="mt-1.5 text-xs sm:text-sm text-slate-500 leading-relaxed">
+                <h3 id="admin-cancel-title" className="text-lg sm:text-2xl font-black text-foreground">Cancelar reserva</h3>
+                <p className="mt-1.5 text-xs sm:text-sm text-muted leading-relaxed">
                   Estás a punto de cancelar la reserva de{' '}
-                  <span className="font-bold text-slate-700">{cancelTarget.userName}</span>.
+                  <span className="font-bold text-secondary">{cancelTarget.userName}</span>.
                   Esta acción no se puede deshacer.
                 </p>
               </div>
 
-              <div className="mt-4 sm:mt-5 rounded-2xl border border-slate-100 bg-slate-50/80 p-3 sm:p-4">
+              <div className="mt-4 sm:mt-5 rounded-2xl border border-border-light bg-surface/80 p-3 sm:p-4">
                 <div className="space-y-2 text-xs sm:text-sm">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-500 shrink-0">Clase</span>
-                    <span className="font-bold text-slate-900 text-right truncate max-w-[180px]">{cancelTarget.className}</span>
+                    <span className="text-muted shrink-0">Clase</span>
+                    <span className="font-bold text-foreground text-right truncate max-w-[180px]">{cancelTarget.className}</span>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-500 shrink-0">Código</span>
-                    <span className="font-mono font-semibold text-slate-700 text-right">#{cancelTarget.codigo_reserva}</span>
+                    <span className="text-muted shrink-0">Código</span>
+                    <span className="font-mono font-semibold text-secondary text-right">#{cancelTarget.codigo_reserva}</span>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-500 shrink-0">Fecha</span>
-                    <span className="font-semibold text-slate-800 text-right">
+                    <span className="text-muted shrink-0">Fecha</span>
+                    <span className="font-semibold text-foreground text-right">
                       {cancelTarget.fecha_clase
                         ? new Date(cancelTarget.fecha_clase + 'T00:00:00').toLocaleDateString('es-PE', {
                             day: 'numeric',
@@ -692,35 +692,35 @@ function ReservasAdmin() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-500 shrink-0">Espacio</span>
+                    <span className="text-muted shrink-0">Espacio</span>
                     <span className="font-bold text-purple-600 text-right">{cancelTarget.codigo_espacio}</span>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-500 shrink-0">Monto</span>
-                    <span className="font-bold text-slate-900 text-right">S/ {Number(cancelTarget.monto || 0).toFixed(2)}</span>
+                    <span className="text-muted shrink-0">Monto</span>
+                    <span className="font-bold text-foreground text-right">S/ {Number(cancelTarget.monto || 0).toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
               <div className="mt-4 sm:mt-5">
-                <label className="text-xs sm:text-sm font-bold text-slate-700 block mb-2 sm:mb-2.5">Motivo de cancelación</label>
+                <label className="text-xs sm:text-sm font-bold text-secondary block mb-2 sm:mb-2.5">Motivo de cancelación</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
                   {adminMotivos.map((m) => (
                     <label
                       key={m.value}
                       className={`flex items-center gap-2 sm:gap-2.5 rounded-xl border-2 px-3 py-2 sm:px-3.5 sm:py-3 cursor-pointer transition-all duration-200 ${
                         cancelMotivo === m.value
-                          ? 'border-[#004aab] bg-blue-50/70 shadow-sm'
-                          : 'border-slate-100 bg-white hover:border-slate-200 hover:bg-slate-50'
+                          ? 'border-primary bg-primary/10 shadow-sm'
+                          : 'border-border-light bg-card hover:border-border hover:bg-surface'
                       }`}
                     >
                       <div className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors duration-200 ${
                         cancelMotivo === m.value
-                          ? 'border-[#004aab]'
-                          : 'border-slate-300'
+                          ? 'border-primary'
+                          : 'border-border'
                       }`}>
                         {cancelMotivo === m.value && (
-                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#004aab]" />
+                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary" />
                         )}
                       </div>
                       <input
@@ -731,7 +731,7 @@ function ReservasAdmin() {
                         onChange={(e) => setCancelMotivo(e.target.value)}
                         className="sr-only"
                       />
-                      <span className="text-xs sm:text-sm font-medium text-slate-700 leading-tight">{m.label}</span>
+                      <span className="text-xs sm:text-sm font-medium text-secondary leading-tight">{m.label}</span>
                     </label>
                   ))}
                 </div>
@@ -743,14 +743,14 @@ function ReservasAdmin() {
                     value={cancelDetalle}
                     onChange={(e) => setCancelDetalle(e.target.value)}
                     placeholder="Describe el motivo (opcional)..."
-                    className="w-full rounded-xl border-2 border-slate-100 bg-white px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm outline-none transition-all duration-200 focus:border-[#004aab] focus:ring-2 focus:ring-blue-100 resize-none"
+                    className="w-full rounded-xl border-2 border-border-light bg-card px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm outline-none transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none"
                     rows={2}
                   />
                 </div>
               )}
 
               {cancelError && (
-                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700" role="alert">
+              <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert">
                   {cancelError}
                 </div>
               )}
@@ -759,14 +759,14 @@ function ReservasAdmin() {
                 <button
                   onClick={() => { setCancelTarget(null); setCancelError(''); }}
                   disabled={canceling}
-                  className="flex-1 rounded-xl sm:rounded-2xl border-2 border-slate-100 py-3 sm:py-3.5 font-bold text-slate-600 text-xs sm:text-sm transition-all duration-200 hover:bg-slate-50 hover:border-slate-200 active:scale-[0.98] disabled:opacity-60"
+                  className="flex-1 rounded-xl sm:rounded-2xl border-2 border-border-light py-3 sm:py-3.5 font-bold text-secondary text-xs sm:text-sm transition-all duration-200 hover:bg-surface hover:border-border active:scale-[0.98] disabled:opacity-60"
                 >
                   Volver
                 </button>
                 <button
                   onClick={handleCancel}
                   disabled={canceling}
-                  className="flex-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-red-500 to-red-600 py-3 sm:py-3.5 font-bold text-white text-xs sm:text-sm transition-all duration-200 hover:from-red-600 hover:to-red-700 active:scale-[0.98] shadow-lg shadow-red-200 disabled:opacity-60"
+                  className="flex-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-red-500 to-red-600 py-3 sm:py-3.5 font-bold text-primary-foreground text-xs sm:text-sm transition-all duration-200 hover:from-red-600 hover:to-red-700 active:scale-[0.98] shadow-lg shadow-red-200 disabled:opacity-60"
                 >
                   {canceling ? (
                     <span className="inline-flex items-center justify-center gap-2">
@@ -796,43 +796,43 @@ function ReservasAdmin() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="confirmar-pago-title"
-            className="w-full sm:max-w-sm rounded-[28px] bg-white shadow-2xl animate-[fadeIn_0.2s_ease-out]"
+            className="w-full sm:max-w-sm rounded-[28px] bg-card shadow-2xl animate-[fadeIn_0.2s_ease-out]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="px-5 py-5 sm:p-6">
               <div className="text-center">
-                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 shadow-inner">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 shadow-inner dark:from-emerald-500/10 dark:to-emerald-500/20">
                   <CheckCircle className="w-7 h-7 text-emerald-600" aria-hidden="true" />
                 </div>
-                <h3 id="confirmar-pago-title" className="text-lg sm:text-2xl font-black text-slate-900">Confirmar pago en efectivo</h3>
-                <p className="mt-1.5 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <h3 id="confirmar-pago-title" className="text-lg sm:text-2xl font-black text-foreground">Confirmar pago en efectivo</h3>
+                <p className="mt-1.5 text-xs sm:text-sm text-secondary leading-relaxed">
                   Confirma que el cliente pagó en recepción. El estado cambiará de pago pendiente a pago confirmado.
                 </p>
               </div>
 
-              <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-3 sm:p-4">
+              <div className="mt-4 rounded-2xl border border-border-light bg-surface/80 p-3 sm:p-4">
                 <div className="space-y-2 text-xs sm:text-sm">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-600 shrink-0">Cliente</span>
-                    <span className="font-bold text-slate-900 text-right truncate max-w-[180px]">{payTarget.userName}</span>
+                    <span className="text-secondary shrink-0">Cliente</span>
+                    <span className="font-bold text-foreground text-right truncate max-w-[180px]">{payTarget.userName}</span>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-600 shrink-0">Clase</span>
-                    <span className="font-bold text-slate-900 text-right truncate max-w-[180px]">{payTarget.className}</span>
+                    <span className="text-secondary shrink-0">Clase</span>
+                    <span className="font-bold text-foreground text-right truncate max-w-[180px]">{payTarget.className}</span>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-600 shrink-0">Código</span>
-                    <span className="font-mono font-semibold text-slate-700 text-right">#{payTarget.codigo_reserva}</span>
+                    <span className="text-secondary shrink-0">Código</span>
+                    <span className="font-mono font-semibold text-secondary text-right">#{payTarget.codigo_reserva}</span>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-slate-600 shrink-0">Monto recibido</span>
-                    <span className="font-bold text-slate-900 text-right">S/ {Number(payTarget.monto || 0).toFixed(2)}</span>
+                    <span className="text-secondary shrink-0">Monto recibido</span>
+                    <span className="font-bold text-foreground text-right">S/ {Number(payTarget.monto || 0).toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
               {payError && (
-                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700" role="alert">
+                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert">
                   {payError}
                 </div>
               )}
@@ -842,7 +842,7 @@ function ReservasAdmin() {
                   type="button"
                   onClick={() => { setPayTarget(null); setPayError(''); }}
                   disabled={paying}
-                  className="flex-1 rounded-xl sm:rounded-2xl border-2 border-slate-100 py-3 sm:py-3.5 font-bold text-slate-700 text-xs sm:text-sm transition-all duration-200 hover:bg-slate-50 hover:border-slate-200 active:scale-[0.98] disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-slate-400/40"
+                  className="flex-1 rounded-xl sm:rounded-2xl border-2 border-border-light py-3 sm:py-3.5 font-bold text-secondary text-xs sm:text-sm transition-all duration-200 hover:bg-surface hover:border-border active:scale-[0.98] disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-muted-foreground/40"
                 >
                   Volver
                 </button>
@@ -850,7 +850,7 @@ function ReservasAdmin() {
                   type="button"
                   onClick={handleMarkAsPaid}
                   disabled={paying}
-                  className="flex-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 sm:py-3.5 font-bold text-white text-xs sm:text-sm transition-all duration-200 hover:from-emerald-600 hover:to-emerald-700 active:scale-[0.98] shadow-lg shadow-emerald-200 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                  className="flex-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 sm:py-3.5 font-bold text-primary-foreground text-xs sm:text-sm transition-all duration-200 hover:from-emerald-600 hover:to-emerald-700 active:scale-[0.98] shadow-lg shadow-emerald-200 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                 >
                   {paying ? 'Guardando...' : 'Sí, confirmar'}
                 </button>
