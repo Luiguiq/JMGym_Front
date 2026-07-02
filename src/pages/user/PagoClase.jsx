@@ -56,12 +56,17 @@ function PagoClase() {
     setProcessing(true);
     setError('');
     try {
-      await reservationService.createReservation({
+      const result = await reservationService.createReservation({
         classId: Number(id),
         seatId: Number(seatId),
         paymentMethod: method,
       });
-      navigate('/cliente/reservas', { replace: true });
+
+      if (result?.flow_checkout_url) {
+        window.location.href = result.flow_checkout_url;
+      } else {
+        navigate('/cliente/reservas', { replace: true });
+      }
     } catch (err) {
       setProcessing(false);
       const msg = err?.message || '';
