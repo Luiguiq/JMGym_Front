@@ -4,10 +4,10 @@ import { ArrowLeft, CreditCard, CheckCircle, Clock, XCircle, RotateCcw, Search }
 import { paymentService } from '../../services/paymentService.js';
 
 const ESTADO_STYLES = {
-  CONFIRMADO: { bg: 'bg-emerald-50', text: 'text-emerald-700', icon: CheckCircle, label: 'Confirmado' },
-  PENDIENTE: { bg: 'bg-amber-50', text: 'text-amber-700', icon: Clock, label: 'Pendiente' },
-  RECHAZADO: { bg: 'bg-red-50', text: 'text-red-700', icon: XCircle, label: 'Rechazado' },
-  REEMBOLSADO: { bg: 'bg-primary/10', text: 'text-blue-700', icon: RotateCcw, label: 'Reembolsado' },
+  CONFIRMADO: { bg: 'bg-emerald-50 dark:bg-emerald-500/10', text: 'text-emerald-700 dark:text-emerald-300', icon: CheckCircle, label: 'Confirmado' },
+  PENDIENTE: { bg: 'bg-amber-50 dark:bg-amber-500/10', text: 'text-amber-700 dark:text-amber-300', icon: Clock, label: 'Pendiente' },
+  RECHAZADO: { bg: 'bg-red-50 dark:bg-red-500/10', text: 'text-red-700 dark:text-red-300', icon: XCircle, label: 'Rechazado' },
+  REEMBOLSADO: { bg: 'bg-primary/10', text: 'text-blue-700 dark:text-blue-300', icon: RotateCcw, label: 'Reembolsado' },
 };
 
 const METODO_ICONS = {

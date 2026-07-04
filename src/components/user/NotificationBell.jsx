@@ -12,13 +12,13 @@ const typeIcons = {
 };
 
 const typeColors = {
-  RECORDATORIO: 'bg-amber-100 text-amber-700', PAGO: 'bg-emerald-100 text-emerald-700',
-  PAGO_CONFIRMADO: 'bg-emerald-100 text-emerald-700',
-  CAMBIO_HORARIO: 'bg-blue-100 text-blue-700', CAMBIO_INSTRUCTOR: 'bg-purple-100 text-purple-700',
-  NUEVA_CLASE: 'bg-rose-100 text-rose-700', CANCELACION: 'bg-red-100 text-red-700',
-  REEMBOLSO: 'bg-teal-100 text-teal-700', BLOQUEO_CUENTA: 'bg-orange-100 text-orange-700',
-  RESERVA_CONFIRMADA: 'bg-sky-100 text-sky-700', RESERVA_CANCELADA: 'bg-border-light text-secondary',
-  CAMBIO_ESPACIO: 'bg-indigo-100 text-indigo-700', NOTIFICACION_GENERAL: 'bg-gray-100 text-gray-700',
+  RECORDATORIO: 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300', PAGO: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300',
+  PAGO_CONFIRMADO: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300',
+  CAMBIO_HORARIO: 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300', CAMBIO_INSTRUCTOR: 'bg-purple-100 text-purple-700 dark:bg-purple-500/10 dark:text-purple-300',
+  NUEVA_CLASE: 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300', CANCELACION: 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-300',
+  REEMBOLSO: 'bg-teal-100 text-teal-700 dark:bg-teal-500/10 dark:text-teal-300', BLOQUEO_CUENTA: 'bg-orange-100 text-orange-700 dark:bg-orange-500/10 dark:text-orange-300',
+  RESERVA_CONFIRMADA: 'bg-sky-100 text-sky-700 dark:bg-sky-500/10 dark:text-sky-300', RESERVA_CANCELADA: 'bg-border-light text-secondary dark:bg-surface dark:text-muted',
+  CAMBIO_ESPACIO: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300', NOTIFICACION_GENERAL: 'bg-gray-100 text-gray-700 dark:bg-surface dark:text-secondary',
 };
 
 function formatTime(dateStr) {

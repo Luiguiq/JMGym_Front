@@ -11,7 +11,7 @@ const items = [
 function AdminBottomNav() {
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 grid grid-cols-4 bg-card border-t border-border px-2 pt-2 pb-3 shadow-[0_-8px_24px_rgba(15,23,42,0.06)] z-40 lg:hidden"
+      className="fixed bottom-0 left-0 right-0 grid grid-cols-4 bg-card/95 border-t border-border px-2 pt-2 pb-3 shadow-[0_-8px_24px_rgba(15,23,42,0.06)] backdrop-blur-xl z-40 lg:hidden"
       aria-label="Navegacion admin"
     >
       {items.map((item) => {
@@ -23,7 +23,7 @@ function AdminBottomNav() {
             end={item.to === '/admin'}
             className={({ isActive }) =>
               `flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl text-xs transition-colors ${
-                isActive ? 'text-brand-600 font-extrabold' : 'text-muted-foreground font-medium'
+                isActive ? 'text-brand-600 font-extrabold dark:text-blue-300' : 'text-muted-foreground font-medium dark:text-muted'
               }`
             }
           >

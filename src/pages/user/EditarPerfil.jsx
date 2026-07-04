@@ -191,13 +191,13 @@ function EditarPerfil() {
           </div>
 
           {serverError && (
-            <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">
+            <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
               {serverError}
             </div>
           )}
 
           {success && (
-            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-600">
+            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-600 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
               {success}
             </div>
           )}
@@ -205,8 +205,8 @@ function EditarPerfil() {
           {success && (
             <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
               <div className="flex flex-col items-center gap-5 rounded-[32px] bg-card px-10 py-12 shadow-2xl text-center max-w-sm w-full">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
-                  <CheckCircle size={40} className="text-emerald-600" />
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-500/10">
+                  <CheckCircle size={40} className="text-emerald-600 dark:text-emerald-300" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-black text-foreground">¡Cambios guardados!</h3>

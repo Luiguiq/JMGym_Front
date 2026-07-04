@@ -115,7 +115,7 @@ function CategoriasAdmin() {
         <div
           role="alert"
           className={`flex items-center justify-between gap-3 p-4 rounded-xl text-sm font-medium ${
-            alert.type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+            alert.type === 'error' ? 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-300' : 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-300'
           }`}
         >
           <span>{alert.message}</span>
@@ -133,7 +133,7 @@ function CategoriasAdmin() {
           placeholder="Buscar categoría..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full pl-10 pr-4 py-2 border border-border bg-card text-foreground placeholder:text-muted-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
 
@@ -170,7 +170,7 @@ function CategoriasAdmin() {
                     <td className="px-6 py-4 text-secondary hidden sm:table-cell">{g.descripcion || '—'}</td>
                     <td className="px-6 py-4 text-center">
                       <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                        g.estado === 'ACTIVO' ? 'bg-green-100 text-green-700' : 'bg-border-light text-secondary'
+                        g.estado === 'ACTIVO' ? 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-300' : 'bg-border-light text-secondary dark:bg-surface dark:text-muted'
                       }`}>
                         {g.estado === 'ACTIVO' ? 'Activo' : 'Inactivo'}
                       </span>
@@ -179,14 +179,14 @@ function CategoriasAdmin() {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => handleOpenEdit(g)}
-                          className="p-2 hover:bg-brand-50 text-brand-600 rounded-lg transition-colors"
+                          className="p-2 hover:bg-brand-50 text-brand-600 rounded-lg transition-colors dark:text-blue-300 dark:hover:bg-primary/10"
                           aria-label={`Editar categoría ${g.nombre_genero}`}
                         >
                           <Edit2 size={16} aria-hidden="true" />
                         </button>
                         <button
                           onClick={() => setDeleteTarget(g)}
-                          className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
+                          className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors dark:text-red-300 dark:hover:bg-red-500/10"
                           aria-label={`Eliminar categoría ${g.nombre_genero}`}
                         >
                           <Trash2 size={16} aria-hidden="true" />
@@ -240,7 +240,7 @@ function CategoriasAdmin() {
                   required
                   aria-required="true"
                   placeholder="ej: Yoga, Pilates, CrossFit"
-                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2 border border-border bg-card text-foreground placeholder:text-muted-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                 />
               </div>
 
@@ -254,7 +254,7 @@ function CategoriasAdmin() {
                   rows={3}
                   defaultValue={editGenre?.descripcion || ''}
                   placeholder="Describe brevemente esta categoría..."
-                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+                  className="w-full px-4 py-2 border border-border bg-card text-foreground placeholder:text-muted-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
                 />
               </div>
 
@@ -265,7 +265,7 @@ function CategoriasAdmin() {
                     id="categoria-estado"
                     name="estado"
                     defaultValue={editGenre.estado || 'ACTIVO'}
-                    className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-4 py-2 border border-border bg-card text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                   >
                     <option value="ACTIVO">Activo</option>
                     <option value="INACTIVO">Inactivo</option>
@@ -308,7 +308,7 @@ function CategoriasAdmin() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6 text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner dark:from-red-500/10 dark:to-red-500/20">
                 <AlertTriangle className="w-7 h-7 text-red-500" aria-hidden="true" />
               </div>
               <h2 id="delete-categoria-title" className="text-xl font-black text-foreground">Eliminar categoría</h2>
@@ -327,7 +327,7 @@ function CategoriasAdmin() {
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="flex-1 rounded-xl bg-gradient-to-r from-red-500 to-red-600 py-3 font-bold text-primary-foreground text-sm hover:from-red-600 hover:to-red-700 transition-all disabled:opacity-60 shadow-lg shadow-red-200"
+                className="flex-1 rounded-xl bg-gradient-to-r from-red-500 to-red-600 py-3 font-bold text-primary-foreground text-sm hover:from-red-600 hover:to-red-700 transition-all disabled:opacity-60 shadow-lg shadow-red-200 dark:shadow-none"
               >
                 {deleting ? 'Eliminando...' : 'Eliminar'}
               </button>

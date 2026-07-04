@@ -70,7 +70,7 @@ function CancelacionesAdmin() {
             placeholder="Buscar por usuario, clase o código..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="w-full pl-10 pr-4 py-2 border border-border bg-card text-foreground placeholder:text-muted-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         </div>
         <div className="relative">
@@ -148,7 +148,7 @@ function CancelacionesAdmin() {
                     </td>
                     <td className="px-4 py-3 text-secondary">{c.nombreClase}</td>
                     <td className="px-4 py-3">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 text-xs font-bold text-red-700">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 text-xs font-bold text-red-700 dark:bg-red-500/10 dark:text-red-300">
                         <FileText size={12} aria-hidden="true" />
                         {MOTIVOS_LABEL[c.motivo] || c.motivo}
                       </span>
@@ -156,10 +156,10 @@ function CancelacionesAdmin() {
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${
                         c.canceladoPor === 'USUARIO'
-                          ? 'bg-amber-50 text-amber-700'
+                          ? 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300'
                           : c.canceladoPor === 'ADMIN'
-                            ? 'bg-primary/10 text-blue-700'
-                            : 'bg-border-light text-secondary'
+                            ? 'bg-primary/10 text-blue-700 dark:text-blue-300'
+                            : 'bg-border-light text-secondary dark:bg-surface dark:text-muted'
                       }`}>
                         {CANCELADO_POR_LABEL[c.canceladoPor] || c.canceladoPor}
                       </span>
