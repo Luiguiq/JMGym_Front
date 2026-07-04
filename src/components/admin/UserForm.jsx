@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { DNI_ERROR_MESSAGE, isValidDni, sanitizeDni } from '../../utils/dni.js';
 
 export default function UserForm({ initial, onSave, onCancel }) {
   const [form, setForm] = useState({
@@ -8,6 +9,7 @@ export default function UserForm({ initial, onSave, onCancel }) {
     telefono: '',
     password: '',
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (initial) {
@@ -23,11 +25,18 @@ export default function UserForm({ initial, onSave, onCancel }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: name === 'dni' ? sanitizeDni(value) : value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!isValidDni(form.dni)) {
+      setErrors((prev) => ({ ...prev, dni: DNI_ERROR_MESSAGE }));
+      return;
+    }
     const payload = { ...form };
     if (initial && !payload.password) {
       delete payload.password;
@@ -60,9 +69,15 @@ export default function UserForm({ initial, onSave, onCancel }) {
               name="dni"
               value={form.dni}
               onChange={handleChange}
+              inputMode="numeric"
+              pattern="[0-9]{8}"
+              maxLength={8}
+              aria-invalid={!!errors.dni}
+              aria-describedby={errors.dni ? 'admin-user-dni-error' : undefined}
               required
-              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-400"
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-400 ${errors.dni ? 'border-red-500' : 'border-border'}`}
             />
+            {errors.dni && <p id="admin-user-dni-error" className="mt-1 text-xs font-semibold text-red-500" role="alert">{errors.dni}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-secondary mb-1">Correo *</label>

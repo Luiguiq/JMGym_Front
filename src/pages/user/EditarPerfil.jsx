@@ -4,12 +4,12 @@ import { ArrowLeft, User, Mail, IdCard, Phone, Lock, Camera, CheckCircle } from 
 import { useAuth } from '../../context/AuthContext.jsx';
 import { userService } from '../../services/userService.js';
 import Field from '../../components/user/Field.jsx';
+import { DNI_ERROR_MESSAGE, DNI_REGEX, sanitizeDni } from '../../utils/dni.js';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
 const BACKEND_URL = API_BASE.replace('/api', '');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const DNI_REGEX = /^\d{8}$/;
 const PHONE_REGEX = /^\d{7,15}$/;
 
 function EditarPerfil() {
@@ -90,7 +90,7 @@ function EditarPerfil() {
     if (!dni.trim()) {
       errors.dni = 'El DNI es obligatorio.';
     } else if (!DNI_REGEX.test(dni.trim())) {
-      errors.dni = 'El DNI debe tener exactamente 8 dígitos.';
+      errors.dni = DNI_ERROR_MESSAGE;
     }
 
     if (telefono.trim() && !PHONE_REGEX.test(telefono.trim())) {
@@ -274,7 +274,11 @@ function EditarPerfil() {
               type="text"
               placeholder="12345678"
               value={dni}
-              onChange={(e) => { setDni(e.target.value); clearError('dni'); }}
+              inputMode="numeric"
+              pattern="[0-9]{8}"
+              maxLength={8}
+              aria-invalid={!!fieldErrors.dni}
+              onChange={(e) => { setDni(sanitizeDni(e.target.value)); clearError('dni'); }}
               required
             />
           </Field>

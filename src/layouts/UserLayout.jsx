@@ -3,7 +3,7 @@ import Navbar from '../components/user/Navbar.jsx';
 import BottomNav from '../components/user/BottomNav.jsx';
 
 const noNavExact = ['/cliente/login', '/cliente/registro'];
-const noNavPrefixes = ['/cliente/clases/', '/cliente/seleccion-espacio/', '/cliente/pago/'];
+const noNavPrefixes = ['/cliente/clases/', '/cliente/seleccion-espacio/', '/cliente/pago/', '/cliente/reservas/'];
 
 function UserLayout() {
   const location = useLocation();

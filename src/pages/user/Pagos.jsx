@@ -65,7 +65,7 @@ function Pagos() {
     .reduce((sum, p) => sum + p.monto, 0);
 
   return (
-    <main className="min-h-screen bg-surface pb-20">
+    <main className="min-h-screen bg-surface pb-32">
       <section className="mx-auto max-w-2xl px-4 pt-8 sm:px-6 sm:pt-12">
         <div className="mb-6 flex items-center gap-4">
           <button
@@ -98,7 +98,7 @@ function Pagos() {
           <div className="mb-6 flex items-center gap-3 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-5 py-4 text-primary-foreground shadow-lg">
             <CreditCard size={24} />
             <div>
-              <p className="text-sm font-semibold opacity-80">Total gastado</p>
+              <p className="text-sm font-semibold opacity-80">Total consumido</p>
               <p className="text-2xl font-black">S/ {totalGastado.toFixed(2)}</p>
             </div>
           </div>

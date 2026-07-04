@@ -84,8 +84,8 @@ function ReservationCard({ reservation, onRefresh }) {
       transition={{ duration: 0.3 }}
       className="overflow-hidden rounded-3xl bg-card shadow-[0_4px_16px_rgba(0,0,0,0.04)]"
     >
-      <div className="flex gap-4 p-4 sm:p-5">
-        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl sm:h-24 sm:w-24">
+      <div className="flex flex-col gap-4 p-4 sm:flex-row sm:p-5">
+        <div className="relative h-36 w-full shrink-0 overflow-hidden rounded-2xl sm:h-24 sm:w-24">
           {image ? (
             <img src={image} alt="" className="h-full w-full object-cover" />
           ) : (
@@ -95,9 +95,9 @@ function ReservationCard({ reservation, onRefresh }) {
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <h3 className="text-lg font-bold text-foreground">{reservation.className || reservation.nombre_clase || 'Clase'}</h3>
+          <div className="flex flex-col gap-2 min-[380px]:flex-row min-[380px]:items-start min-[380px]:justify-between">
+            <div className="min-w-0">
+              <h3 className="text-lg font-bold leading-snug text-foreground">{reservation.className || reservation.nombre_clase || 'Clase'}</h3>
               {isActive ? (
                 <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[12px] font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -109,12 +109,12 @@ function ReservationCard({ reservation, onRefresh }) {
                 </span>
               )}
             </div>
-            <p className="shrink-0 text-xl font-black text-blue-600">
+            <p className="shrink-0 text-xl font-black text-blue-600 dark:text-blue-300">
               S/ {Number(reservation.monto || 0).toFixed(2)}
             </p>
           </div>
 
-          <div className="mt-2 space-y-1 text-[13px] text-muted">
+          <div className="mt-2 space-y-1.5 text-[13px] text-secondary">
             <p className="flex items-center gap-1.5">
               <Calendar size={14} className="shrink-0 text-muted-foreground" />
               {formatDate(reservation.fecha_clase)}
@@ -124,22 +124,22 @@ function ReservationCard({ reservation, onRefresh }) {
               {reservation.hora_inicio?.slice(0, 5) || reservation.hora_clase?.slice(0, 5)} &middot; {reservation.codigo_espacio || reservation.espacio_codigo || 'Sala'}
             </p>
             {isPending && (
-              <p className="flex items-center gap-1.5 text-amber-600">
+              <p className="flex items-center gap-1.5 font-semibold text-amber-600 dark:text-amber-300">
                 <CreditCard size={14} className="shrink-0" />
                 Pago pendiente
               </p>
             )}
             {isActive && daysUntil !== null && (
-              <p className="flex items-center gap-1.5 font-semibold text-blue-600">
+              <p className="flex items-center gap-1.5 font-semibold text-blue-600 dark:text-blue-300">
                 {daysUntil === 0 ? 'Hoy' : daysUntil === 1 ? 'Mañana' : `Empieza en ${daysUntil} días`}
               </p>
             )}
           </div>
 
-          <div className="mt-3 flex items-center gap-2">
+          <div className="mt-4 grid grid-cols-1 gap-2 min-[380px]:grid-cols-2">
             <button
               onClick={() => navigate(`/cliente/reservas/${reservation.id}`)}
-              className="flex items-center gap-1 rounded-xl bg-blue-600 px-4 py-2 text-[12px] font-bold text-primary-foreground transition hover:bg-blue-700"
+              className="flex min-h-11 items-center justify-center gap-1 rounded-xl bg-blue-600 px-4 py-2.5 text-[12px] font-bold text-primary-foreground transition hover:bg-blue-700"
             >
               Ver detalle
               <ChevronRight size={14} />
@@ -147,7 +147,7 @@ function ReservationCard({ reservation, onRefresh }) {
             {isActive && (
               <button
                 onClick={() => setShowCancel(true)}
-                className="rounded-xl border border-border px-4 py-2 text-[12px] font-bold text-muted transition hover:bg-surface"
+                className="min-h-11 rounded-xl border border-border px-4 py-2.5 text-[12px] font-bold text-secondary transition hover:bg-surface"
               >
                 Cancelar
               </button>
@@ -304,13 +304,13 @@ function MisReservas() {
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-5 grid grid-cols-4 gap-2"
+            className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4"
           >
             {[
               { label: 'Total', value: stats.total, color: 'text-foreground' },
               { label: 'Asistidas', value: stats.completed, color: 'text-emerald-600' },
               { label: 'Canceladas', value: stats.cancelled, color: 'text-red-500' },
-              { label: 'Gastado', value: `S/${stats.totalSpent.toFixed(0)}`, color: 'text-blue-600' },
+              { label: 'Consumido', value: `S/${stats.totalSpent.toFixed(0)}`, color: 'text-blue-600' },
             ].map(({ label, value, color }) => (
               <div key={label} className="rounded-2xl bg-card p-3 text-center shadow-sm">
                 <p className={`text-lg font-black ${color}`}>{value}</p>

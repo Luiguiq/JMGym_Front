@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { Zap, Music, Smartphone, ArrowLeft, User, IdCard, Mail, Lock } from 'lucide-react';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
+import { DNI_ERROR_MESSAGE, isValidDni, sanitizeDni } from '../../utils/dni.js';
 
 const highlights = [
   { icon: <Zap size={24} />, title: 'Registro rápido', text: 'Crea tu cuenta en segundos y empieza a reservar.' },
@@ -19,11 +20,18 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [dniError, setDniError] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event) {
     event.preventDefault();
     setError('');
+
+    if (!isValidDni(dni)) {
+      setDniError(DNI_ERROR_MESSAGE);
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -88,10 +96,26 @@ function Register() {
 
           <label className="grid gap-2 font-semibold text-foreground">
             DNI
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+            <div className={`flex min-h-14 items-center gap-3 rounded-2xl border-2 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16 ${dniError ? 'border-red-300 dark:border-red-500' : 'border-brand-100'}`}>
               <span aria-hidden="true"><IdCard size={20} /></span>
-              <input className="w-full bg-transparent outline-none text-foreground placeholder:text-muted" type="text" placeholder="12345678" value={dni} onChange={(e) => setDni(e.target.value)} required />
+              <input
+                className="w-full bg-transparent outline-none text-foreground placeholder:text-muted"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]{8}"
+                maxLength={8}
+                placeholder="12345678"
+                value={dni}
+                onChange={(e) => {
+                  setDni(sanitizeDni(e.target.value));
+                  setDniError('');
+                }}
+                aria-invalid={!!dniError}
+                aria-describedby={dniError ? 'register-dni-error' : undefined}
+                required
+              />
             </div>
+            {dniError && <p id="register-dni-error" className="text-xs font-bold text-red-500">{dniError}</p>}
           </label>
 
           <label className="grid gap-2 font-semibold text-foreground">

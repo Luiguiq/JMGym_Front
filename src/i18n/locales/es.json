@@ -296,7 +296,7 @@
     "finished": "Finalizadas",
     "completed": "Completadas",
     "attended": "Asistidas",
-    "spent": "Gastado"
+    "spent": "Consumido"
   },
   "detalleReserva": {
     "title": "Detalle de reserva",
@@ -330,7 +330,7 @@
     "reservations": "Reservas",
     "completed": "Completadas",
     "cancelled": "Canceladas",
-    "spent": "Gastado",
+    "spent": "Consumido",
     "paymentHistory": "Historial de pagos",
     "myAccount": "Mi cuenta",
     "settingsSection": "Configuración",

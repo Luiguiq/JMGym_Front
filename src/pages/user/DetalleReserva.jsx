@@ -96,6 +96,8 @@ function DetalleReserva() {
 
   const [showRefundModal, setShowRefundModal] = useState(false);
   const [refunding, setRefunding] = useState(false);
+  const [refundError, setRefundError] = useState('');
+  const [refundSuccess, setRefundSuccess] = useState('');
 
   const motivosCancelacion = [
     { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
@@ -169,21 +171,20 @@ function DetalleReserva() {
     }
   };
 
-  const handleRefundRequest = async () => {
-    const confirmRefund = window.confirm(
-      '�Deseas solicitar el reembolso de esta reserva?'
-    );
 
-    if (!confirmRefund) return;
+  const handleConfirmRefundRequest = async () => {
+    if (refunding) return;
 
+    setRefundError('');
+    setRefundSuccess('');
     setRefunding(true);
     try {
       const updated = await reservationService.requestRefund(id);
       setReservation(updated);
+      setRefundSuccess('Solicitud de reembolso enviada. Sera revisada por un administrador.');
       setShowRefundModal(false);
     } catch (err) {
-      setShowRefundModal(false);
-      alert(err?.message || 'Error al solicitar el reembolso');
+      setRefundError(err?.message || 'Error al solicitar el reembolso');
     } finally {
       setRefunding(false);
     }
@@ -292,6 +293,12 @@ function DetalleReserva() {
                 <p className="font-bold text-orange-700 dark:text-orange-200">
                   Tu solicitud fue enviada al administrador.
                 </p>
+              </div>
+            )}
+
+            {refundSuccess && (
+              <div className="mt-4 rounded-2xl bg-emerald-50 border border-emerald-200 p-4 dark:bg-emerald-500/10 dark:border-emerald-500/30" role="status">
+                <p className="font-bold text-emerald-700 dark:text-emerald-200">{refundSuccess}</p>
               </div>
             )}
 
@@ -430,7 +437,11 @@ function DetalleReserva() {
 
           {canRefund && (
             <button
-              onClick={handleRefundRequest}
+              onClick={() => {
+                setRefundError('');
+                setRefundSuccess('');
+                setShowRefundModal(true);
+              }}
               className="flex-1 rounded-2xl bg-orange-50 border border-orange-200 py-3.5 font-bold text-orange-600 transition hover:bg-orange-100 dark:bg-orange-500/10 dark:border-orange-500/30 dark:text-orange-300 dark:hover:bg-orange-500/20"
             >
               <Undo2 className="inline-block h-5 w-5 mr-1 -mt-0.5" />
@@ -580,6 +591,73 @@ function DetalleReserva() {
                       <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Cancelar
                     </span>
                   )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showRefundModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md sm:p-6"
+          onClick={(e) => { if (e.target === e.currentTarget && !refunding) setShowRefundModal(false); }}
+        >
+          <div
+            className="w-full max-w-md rounded-[28px] bg-card shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="refund-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-5 sm:p-6">
+              <div className="text-center">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-orange-50 text-orange-500 dark:bg-orange-500/10 dark:text-orange-300">
+                  <Undo2 className="h-7 w-7" aria-hidden="true" />
+                </div>
+                <h3 id="refund-title" className="text-xl font-black text-foreground">Solicitar reembolso</h3>
+                <p className="mt-2 text-sm leading-relaxed text-secondary">
+                  Deseas solicitar el reembolso de esta reserva? La solicitud sera revisada por un administrador.
+                </p>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-border-light bg-surface p-4 text-sm">
+                <div className="flex justify-between gap-3">
+                  <span className="shrink-0 text-muted">Reserva</span>
+                  <span className="font-bold text-foreground">#{reservation.codigo_reserva}</span>
+                </div>
+                <div className="mt-2 flex justify-between gap-3">
+                  <span className="shrink-0 text-muted">Clase</span>
+                  <span className="max-w-[210px] text-right font-bold text-foreground">{reservation.className}</span>
+                </div>
+                <div className="mt-2 flex justify-between gap-3">
+                  <span className="shrink-0 text-muted">Monto</span>
+                  <span className="font-bold text-foreground">S/ {Number(reservation.monto).toFixed(2)}</span>
+                </div>
+              </div>
+
+              {refundError && (
+                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert">
+                  {refundError}
+                </div>
+              )}
+
+              <div className="mt-5 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowRefundModal(false)}
+                  disabled={refunding}
+                  className="flex-1 rounded-2xl border border-border py-3 text-sm font-bold text-secondary transition hover:bg-surface disabled:opacity-60"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmRefundRequest}
+                  disabled={refunding}
+                  className="flex-1 rounded-2xl bg-orange-600 py-3 text-sm font-bold text-primary-foreground transition hover:bg-orange-700 disabled:opacity-60"
+                >
+                  {refunding ? 'Enviando...' : 'Confirmar solicitud'}
                 </button>
               </div>
             </div>
