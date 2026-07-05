@@ -3,7 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { reservationService } from '../../services/reservationService.js';
 import PageLoader from '../../components/common/PageLoader.jsx';
 import { CheckCircle, XCircle, Flag, CreditCard, Clock, AlertTriangle, Undo2, Search, Calendar, Armchair, User } from 'lucide-react';
-import QRCode from 'react-qr-code';
+import {
+  puedeCancelarReserva,
+  puedeCancelarSolicitudReembolso,
+  puedeSolicitarReembolso,
+} from '../../utils/reservationActions.js';
+import { getPaymentStatusLabel, getReservationStatusLabel } from '../../utils/reservationPresentation.js';
+import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 
 const MOTIVOS_LABEL = {
   CAMBIO_HORARIO: 'Cambio de horario',
@@ -61,6 +67,56 @@ const PAGO_ICON = {
   REEMBOLSADO: Undo2,
 };
 
+const HISTORIAL_ICON = {
+  RESERVA_CREADA: Calendar,
+  PAGO_PENDIENTE: Clock,
+  PAGO_CONFIRMADO: CreditCard,
+  PAGO_VENCIDO: AlertTriangle,
+  PAGO_RECHAZADO: AlertTriangle,
+  PAGO_REEMBOLSADO: Undo2,
+  RESERVA_CANCELADA: XCircle,
+  REEMBOLSO_SOLICITADO: Clock,
+  REEMBOLSO_APROBADO: CheckCircle,
+  REEMBOLSO_RECHAZADO: XCircle,
+  RESERVA_COMPLETADA: CheckCircle,
+  RESERVA_FINALIZADA: Flag,
+  ASIENTO_CAMBIADO: Armchair,
+};
+
+function getHistoryEventStyle(tipoEvento) {
+  switch (tipoEvento) {
+    case 'PAGO_CONFIRMADO':
+    case 'REEMBOLSO_APROBADO':
+    case 'RESERVA_COMPLETADA':
+      return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30';
+    case 'RESERVA_CANCELADA':
+    case 'PAGO_RECHAZADO':
+    case 'REEMBOLSO_RECHAZADO':
+      return 'bg-red-50 text-red-700 border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/30';
+    case 'PAGO_PENDIENTE':
+    case 'PAGO_VENCIDO':
+    case 'REEMBOLSO_SOLICITADO':
+      return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30';
+    case 'PAGO_REEMBOLSADO':
+      return 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/10 dark:text-purple-300 dark:border-purple-500/30';
+    default:
+      return 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/30';
+  }
+}
+
+function formatHistoryDate(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleString('es-PE', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 function buildClassStartDate(dateStr, timeStr) {
   if (!dateStr || !timeStr) return null;
 
@@ -77,14 +133,6 @@ function DetalleReserva() {
   const navigate = useNavigate();
 
   const [reservation, setReservation] = useState(null);
-  const qrValue = reservation?.qr_checkin || reservation?.qr_url || null;
-
-  const canShowQR =
-    reservation?.estado_reserva === 'ACTIVA' &&
-    (
-      reservation?.estado_pago === 'PAGADO' ||
-      reservation?.estado_pago === 'PENDIENTE'
-    );
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -96,6 +144,11 @@ function DetalleReserva() {
 
   const [showRefundModal, setShowRefundModal] = useState(false);
   const [refunding, setRefunding] = useState(false);
+  const [refundError, setRefundError] = useState('');
+  const [refundSuccess, setRefundSuccess] = useState('');
+  const [showCancelRefundModal, setShowCancelRefundModal] = useState(false);
+  const [cancelingRefundRequest, setCancelingRefundRequest] = useState(false);
+  const [cancelRefundError, setCancelRefundError] = useState('');
 
   const motivosCancelacion = [
     { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
@@ -105,46 +158,28 @@ function DetalleReserva() {
     { value: 'OTRO', label: 'Otro motivo' },
   ];
 
-  const classStartAt = buildClassStartDate(
-    reservation?.fecha_clase,
-    reservation?.hora_inicio
-  );
-
-  const hasClassStarted = classStartAt
-    ? classStartAt <= new Date()
-    : false;
-
   const isRefundPending =
     reservation?.estado_pago === 'REEMBOLSO_PENDIENTE';
 
   const canChangeSeat =
   reservation?.estado_reserva === 'ACTIVA';
 
-  const canCancel =
-    reservation?.estado_reserva === 'ACTIVA' &&
-    reservation?.estado_pago === 'PENDIENTE';
+  const canCancel = puedeCancelarReserva(reservation);
 
-  const canRefund =
-    reservation?.estado_reserva === 'ACTIVA' &&
-    reservation?.estado_pago === 'PAGADO' &&
-    reservation?.metodo_pago?.toUpperCase() === 'YAPE';
-
-  const canRequestRefund =
-    reservation?.estado_reserva === 'ACTIVA' &&
-    reservation?.estado_pago === 'PAGADO' &&
-    !hasClassStarted &&
-    !isRefundPending;
+  const canRequestRefund = puedeSolicitarReembolso(reservation);
+  const canCancelRefundRequest = puedeCancelarSolicitudReembolso(reservation);
 
   const isCanceled = reservation?.estado_reserva === 'CANCELADA';
   const isCompleted =
     reservation?.estado_reserva === 'FINALIZADA' ||
     reservation?.estado_reserva === 'COMPLETADA';
+  const historialEstados = reservation?.historial_estados ?? [];
 
   useEffect(() => {
     reservationService
       .getMyReservationDetail(id)
       .then(setReservation)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(getFriendlyErrorMessage(err, 'No pudimos cargar el detalle de la reserva. Intenta nuevamente.')))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -169,23 +204,40 @@ function DetalleReserva() {
     }
   };
 
-  const handleRefundRequest = async () => {
-    const confirmRefund = window.confirm(
-      '�Deseas solicitar el reembolso de esta reserva?'
-    );
 
-    if (!confirmRefund) return;
+  const handleConfirmRefundRequest = async () => {
+    if (refunding) return;
 
+    setRefundError('');
+    setRefundSuccess('');
     setRefunding(true);
     try {
       const updated = await reservationService.requestRefund(id);
       setReservation(updated);
+      setRefundSuccess('Solicitud de reembolso enviada. Sera revisada por un administrador.');
       setShowRefundModal(false);
     } catch (err) {
-      setShowRefundModal(false);
-      alert(err?.message || 'Error al solicitar el reembolso');
+      setRefundError(err?.message || 'Error al solicitar el reembolso');
     } finally {
       setRefunding(false);
+    }
+  };
+
+  const handleConfirmCancelRefundRequest = async () => {
+    if (cancelingRefundRequest) return;
+
+    setCancelRefundError('');
+    setRefundSuccess('');
+    setCancelingRefundRequest(true);
+    try {
+      const updated = await reservationService.cancelRefundRequest(id);
+      setReservation(updated);
+      setRefundSuccess('Solicitud cancelada. Tu reserva continúa activa.');
+      setShowCancelRefundModal(false);
+    } catch (err) {
+      setCancelRefundError(err?.message || 'No pudimos cancelar la solicitud de reembolso. Inténtalo nuevamente.');
+    } finally {
+      setCancelingRefundRequest(false);
     }
   };
 
@@ -228,7 +280,7 @@ function DetalleReserva() {
   }
 
   return (
-    <main className="min-h-screen bg-surface px-5 py-6 pb-24">
+    <main className="min-h-dvh bg-surface px-5 py-6 pb-36 max-md:landscape:py-4">
       <div className="max-w-3xl mx-auto lg:max-w-4xl">
         <button
           onClick={() => navigate(-1)}
@@ -255,12 +307,12 @@ function DetalleReserva() {
 
             <div className="flex flex-wrap gap-3 mt-5">
               <span className={`px-4 py-2 rounded-full border text-sm font-bold ${getReservationStatusStyle(reservation.estado_reserva)}`}>
-                <StatusIcon icon={STATUS_ICON[reservation.estado_reserva]} className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {reservation.estado_reserva}
+                <StatusIcon icon={STATUS_ICON[reservation.estado_reserva]} className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {getReservationStatusLabel(reservation.estado_reserva)}
               </span>
 
               {reservation.estado_pago && (
                 <span className={`px-4 py-2 rounded-full border text-sm font-bold ${getPaymentStatusStyle(reservation.estado_pago)}`}>
-                  <StatusIcon icon={PAGO_ICON[reservation.estado_pago]} className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {reservation.estado_pago}
+                  <StatusIcon icon={PAGO_ICON[reservation.estado_pago]} className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {getPaymentStatusLabel(reservation.estado_pago)}
                 </span>
               )}
             </div>
@@ -292,6 +344,12 @@ function DetalleReserva() {
                 <p className="font-bold text-orange-700 dark:text-orange-200">
                   Tu solicitud fue enviada al administrador.
                 </p>
+              </div>
+            )}
+
+            {refundSuccess && (
+              <div className="mt-4 rounded-2xl bg-emerald-50 border border-emerald-200 p-4 dark:bg-emerald-500/10 dark:border-emerald-500/30" role="status">
+                <p className="font-bold text-emerald-700 dark:text-emerald-200">{refundSuccess}</p>
               </div>
             )}
 
@@ -350,38 +408,6 @@ function DetalleReserva() {
               )}
             </div>
 
-            {canShowQR && qrValue ? (
-              <div className="rounded-3xl border border-blue-100/50 bg-card p-6">
-                <h3 className="mb-4 text-center font-black text-foreground">
-                  C�digo QR de Check-in
-                </h3>
-
-                <div className="flex justify-center">
-                  <div className="rounded-2xl bg-card p-3 shadow-sm">
-                    <QRCode
-                      value={qrValue}
-                      size={220}
-                    />
-                  </div>
-                </div>
-
-                <p className="mt-4 text-center text-sm text-secondary">
-                  Presenta este c�digo al ingresar al sal�n.
-                </p>
-              </div>
-            ) : (
-              <div className="rounded-3xl border border-dashed border-border bg-surface p-6 text-center">
-                <p className="mt-2 text-sm text-secondary">
-                  El c�digo QR solo est� disponible para reservas activas
-                  pendientes o pagadas.
-                </p>
-
-                <p className="mt-2 text-sm text-secondary">
-                  Esta reserva todav�a no tiene un c�digo QR generado.
-                </p>
-              </div>
-            )}
-
             {reservation.estado_reserva === 'ACTIVA' && reservation.estado_pago === 'PENDIENTE' && reservation.fecha_limite_pago && (
               <div className="mt-6 rounded-3xl bg-amber-50 border border-amber-200 p-4 text-center dark:bg-amber-500/10 dark:border-amber-500/30">
                 <p className="text-xs uppercase font-bold tracking-wider text-amber-600 dark:text-amber-300">Fecha l�mite de pago</p>
@@ -395,6 +421,50 @@ function DetalleReserva() {
                 </p>
               </div>
             )}
+            <section className="mt-6 rounded-3xl border border-border-light bg-surface p-5">
+              <h3 className="text-xl font-black text-foreground">Historial de la reserva</h3>
+
+              {historialEstados.length === 0 ? (
+                <div className="mt-4 rounded-2xl border border-dashed border-border bg-card p-4 text-sm text-secondary">
+                  No hay cambios anteriores registrados para esta reserva.
+                </div>
+              ) : (
+                <ol className="mt-5 space-y-4">
+                  {historialEstados.map((evento, index) => {
+                    const EventIcon = HISTORIAL_ICON[evento.tipo_evento] || CheckCircle;
+                    const isLast = index === historialEstados.length - 1;
+
+                    return (
+                      <li key={evento.id ?? `${evento.tipo_evento}-${index}`} className="relative flex gap-3 sm:gap-4">
+                        {!isLast && (
+                          <span className="absolute left-5 top-11 h-[calc(100%+0.25rem)] w-px bg-border" aria-hidden="true" />
+                        )}
+                        <span className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border ${getHistoryEventStyle(evento.tipo_evento)}`}>
+                          <EventIcon className="h-5 w-5" aria-hidden="true" />
+                        </span>
+                        <div className="min-w-0 flex-1 rounded-2xl border border-border-light bg-card p-4">
+                          <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                            <p className="font-black text-foreground">
+                              {evento.titulo || 'Cambio registrado'}
+                            </p>
+                            {evento.fecha_hora && (
+                              <time className="text-xs font-semibold text-muted sm:text-right" dateTime={evento.fecha_hora}>
+                                {formatHistoryDate(evento.fecha_hora)}
+                              </time>
+                            )}
+                          </div>
+                          {evento.descripcion && (
+                            <p className="mt-1 text-sm leading-relaxed text-secondary">
+                              {evento.descripcion}
+                            </p>
+                          )}
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ol>
+              )}
+            </section>
           </div>
         </div>
 
@@ -410,7 +480,7 @@ function DetalleReserva() {
               className="flex-1 rounded-2xl bg-sky-50 border border-sky-200 py-3.5 font-bold text-sky-700 transition hover:bg-sky-100 dark:bg-card dark:border-sky-500/30 dark:text-sky-300 dark:hover:bg-sky-500/10"
             >
               <Armchair className="inline-block h-5 w-5 mr-1 -mt-0.5" />
-              Cambiar asiento
+              Cambiar espacio
             </button>
           )}
 
@@ -428,13 +498,31 @@ function DetalleReserva() {
             </button>
           )}
 
-          {canRefund && (
+          {canRequestRefund && (
             <button
-              onClick={handleRefundRequest}
+              onClick={() => {
+                setRefundError('');
+                setRefundSuccess('');
+                setShowRefundModal(true);
+              }}
               className="flex-1 rounded-2xl bg-orange-50 border border-orange-200 py-3.5 font-bold text-orange-600 transition hover:bg-orange-100 dark:bg-orange-500/10 dark:border-orange-500/30 dark:text-orange-300 dark:hover:bg-orange-500/20"
             >
               <Undo2 className="inline-block h-5 w-5 mr-1 -mt-0.5" />
               Solicitar reembolso
+            </button>
+          )}
+
+          {canCancelRefundRequest && (
+            <button
+              onClick={() => {
+                setCancelRefundError('');
+                setRefundSuccess('');
+                setShowCancelRefundModal(true);
+              }}
+              className="flex-1 rounded-2xl bg-amber-50 border border-amber-200 py-3.5 font-bold text-amber-700 transition hover:bg-amber-100 dark:bg-amber-500/10 dark:border-amber-500/30 dark:text-amber-300 dark:hover:bg-amber-500/20"
+            >
+              <Clock className="inline-block h-5 w-5 mr-1 -mt-0.5" />
+              Cancelar solicitud de reembolso
             </button>
           )}
 
@@ -580,6 +668,142 @@ function DetalleReserva() {
                       <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Cancelar
                     </span>
                   )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showRefundModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md sm:p-6"
+          onClick={(e) => { if (e.target === e.currentTarget && !refunding) setShowRefundModal(false); }}
+        >
+          <div
+            className="w-full max-w-md rounded-[28px] bg-card shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="refund-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-5 sm:p-6">
+              <div className="text-center">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-orange-50 text-orange-500 dark:bg-orange-500/10 dark:text-orange-300">
+                  <Undo2 className="h-7 w-7" aria-hidden="true" />
+                </div>
+                <h3 id="refund-title" className="text-xl font-black text-foreground">Solicitar reembolso</h3>
+                <p className="mt-2 text-sm leading-relaxed text-secondary">
+                  Deseas solicitar el reembolso de esta reserva? La solicitud sera revisada por un administrador.
+                </p>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-border-light bg-surface p-4 text-sm">
+                <div className="flex justify-between gap-3">
+                  <span className="shrink-0 text-muted">Reserva</span>
+                  <span className="font-bold text-foreground">#{reservation.codigo_reserva}</span>
+                </div>
+                <div className="mt-2 flex justify-between gap-3">
+                  <span className="shrink-0 text-muted">Clase</span>
+                  <span className="max-w-[210px] text-right font-bold text-foreground">{reservation.className}</span>
+                </div>
+                <div className="mt-2 flex justify-between gap-3">
+                  <span className="shrink-0 text-muted">Monto</span>
+                  <span className="font-bold text-foreground">S/ {Number(reservation.monto).toFixed(2)}</span>
+                </div>
+              </div>
+
+              {refundError && (
+                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert">
+                  {refundError}
+                </div>
+              )}
+
+              <div className="mt-5 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowRefundModal(false)}
+                  disabled={refunding}
+                  className="flex-1 rounded-2xl border border-border py-3 text-sm font-bold text-secondary transition hover:bg-surface disabled:opacity-60"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmRefundRequest}
+                  disabled={refunding}
+                  className="flex-1 rounded-2xl bg-orange-600 py-3 text-sm font-bold text-primary-foreground transition hover:bg-orange-700 disabled:opacity-60"
+                >
+                  {refunding ? 'Enviando...' : 'Confirmar solicitud'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCancelRefundModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md sm:p-6"
+          onClick={(e) => { if (e.target === e.currentTarget && !cancelingRefundRequest) setShowCancelRefundModal(false); }}
+        >
+          <div
+            className="w-full max-w-md rounded-[28px] bg-card shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cancel-refund-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-5 sm:p-6">
+              <div className="text-center">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300">
+                  <Clock className="h-7 w-7" aria-hidden="true" />
+                </div>
+                <h3 id="cancel-refund-title" className="text-xl font-black text-foreground">
+                  Cancelar solicitud de reembolso
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-secondary">
+                  ¿Deseas cancelar la solicitud de reembolso? Tu reserva continuará activa y conservarás tu espacio.
+                </p>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-border-light bg-surface p-4 text-sm">
+                <div className="flex justify-between gap-3">
+                  <span className="shrink-0 text-muted">Reserva</span>
+                  <span className="font-bold text-foreground">#{reservation.codigo_reserva}</span>
+                </div>
+                <div className="mt-2 flex justify-between gap-3">
+                  <span className="shrink-0 text-muted">Clase</span>
+                  <span className="max-w-[210px] text-right font-bold text-foreground">{reservation.className}</span>
+                </div>
+                <div className="mt-2 flex justify-between gap-3">
+                  <span className="shrink-0 text-muted">Espacio</span>
+                  <span className="font-bold text-brand-600">{reservation.codigo_espacio}</span>
+                </div>
+              </div>
+
+              {cancelRefundError && (
+                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert">
+                  {cancelRefundError}
+                </div>
+              )}
+
+              <div className="mt-5 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowCancelRefundModal(false)}
+                  disabled={cancelingRefundRequest}
+                  className="flex-1 rounded-2xl border border-border py-3 text-sm font-bold text-secondary transition hover:bg-surface disabled:opacity-60"
+                >
+                  Mantener solicitud
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmCancelRefundRequest}
+                  disabled={cancelingRefundRequest}
+                  className="flex-1 rounded-2xl bg-amber-600 py-3 text-sm font-bold text-primary-foreground transition hover:bg-amber-700 disabled:opacity-60"
+                >
+                  {cancelingRefundRequest ? 'Cancelando...' : 'Cancelar solicitud'}
                 </button>
               </div>
             </div>

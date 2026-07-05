@@ -37,7 +37,7 @@ const services = [
   },
   {
     title: 'Reserva de espacios',
-    text: 'Gestiona tu asistencia desde el sistema digital y asegura tu lugar antes de llegar al gimnasio.',
+    text: 'Gestiona tu asistencia desde el sistema digital y asegura tu espacio antes de llegar al gimnasio.',
   },
   {
     title: 'Seguimiento fitness',

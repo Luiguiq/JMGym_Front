@@ -4,16 +4,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Drawer } from 'vaul';
 import {
   ArrowLeft, Check, CheckCircle, Dumbbell, MapPin,
-  Clock, User, ArrowRight, ChevronRight
+  Clock, Lock, User, XCircle, ArrowRight, ChevronRight
 } from 'lucide-react';
 import { classService } from '../../services/classService.js';
 import { reservationService } from '../../services/reservationService.js';
 
 const LEGEND_ITEMS = [
-  { label: 'Tu asiento', dot: 'bg-emerald-500 ring-2 ring-emerald-300' },
-  { label: 'Libre', dot: 'bg-card ring-2 ring-border' },
+  { label: 'Tu espacio', dot: 'bg-emerald-500 ring-2 ring-emerald-300' },
+  { label: 'Disponible', dot: 'bg-card ring-2 ring-border' },
   { label: 'Reservado', dot: 'bg-amber-50 ring-2 ring-amber-300' },
-  { label: 'Ocupado', dot: 'bg-emerald-50 ring-2 ring-emerald-300' },
+  { label: 'Ocupado', dot: 'bg-red-50 ring-2 ring-red-300' },
   { label: 'Seleccionado', dot: 'bg-blue-600 ring-2 ring-blue-400' },
 ];
 
@@ -69,7 +69,7 @@ function CambiarAsiento() {
       setSuccess(true);
       setTimeout(() => navigate(`/cliente/reservas/${id}`), 1800);
     } catch (err) {
-      setError(err?.message || 'Error al cambiar el asiento');
+      setError(err?.message || 'Error al cambiar el espacio');
       setDrawerOpen(false);
     } finally {
       setSaving(false);
@@ -86,7 +86,7 @@ function CambiarAsiento() {
       <main className="flex min-h-screen items-center justify-center bg-surface">
         <div className="space-y-3 text-center">
           <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-          <p className="text-sm font-medium text-muted-foreground">Cargando asientos...</p>
+          <p className="text-sm font-medium text-muted-foreground">Cargando espacios...</p>
         </div>
       </main>
     );
@@ -103,8 +103,8 @@ function CambiarAsiento() {
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
             <CheckCircle size={40} className="text-emerald-600" />
           </div>
-          <h2 className="text-2xl font-black text-foreground">Asiento cambiado</h2>
-          <p className="text-sm text-muted">Tu nuevo asiento se ha asignado correctamente.</p>
+          <h2 className="text-2xl font-black text-foreground">Espacio cambiado</h2>
+          <p className="text-sm text-muted">Tu nuevo espacio se ha asignado correctamente.</p>
         </motion.div>
       </main>
     );
@@ -119,8 +119,8 @@ function CambiarAsiento() {
   }
 
   return (
-    <main className="min-h-screen bg-surface pb-32">
-      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5">
+    <main className="min-h-dvh bg-surface pb-36 max-md:landscape:pb-8">
+      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5 max-md:landscape:pt-3">
 
         {/* Back + title */}
         <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}>
@@ -137,7 +137,7 @@ function CambiarAsiento() {
           animate={{ opacity: 1, y: 0 }}
           className="text-xl font-black text-foreground"
         >
-          Cambiar asiento
+          Cambiar espacio
         </motion.h1>
 
         {/* Class info mini card */}
@@ -221,7 +221,7 @@ function CambiarAsiento() {
                 bg = 'bg-amber-50'; ring = 'ring-1 ring-amber-200'; text = 'text-amber-600';
                 cursor = 'cursor-not-allowed'; disabled = true;
               } else {
-                bg = 'bg-emerald-50'; ring = 'ring-1 ring-emerald-200'; text = 'text-emerald-600';
+                bg = 'bg-red-50'; ring = 'ring-1 ring-red-200'; text = 'text-red-600';
                 cursor = 'cursor-not-allowed'; disabled = true;
               }
 
@@ -235,12 +235,13 @@ function CambiarAsiento() {
                   layout
                   onClick={() => handleSeatClick(seat)}
                   disabled={disabled}
+                  aria-label={`Espacio ${seat.codigo_espacio}, ${selected ? 'seleccionado' : current ? 'espacio actual' : seat.estado === 'DISPONIBLE' ? 'disponible' : seat.estado === 'OCUPADO' ? 'ocupado' : 'reservado'}`}
                   whileTap={!disabled ? { scale: 0.88 } : {}}
                   whileHover={!disabled && !selected ? { scale: 1.06 } : {}}
                   animate={selected ? { scale: [1, 1.12, 1], transition: { duration: 0.25 } } : {}}
                   className={`relative flex aspect-square items-center justify-center rounded-lg text-[10px] font-bold transition-colors sm:text-xs ${bg} ${ring} ${text} ${cursor} ${disabled && !current ? 'opacity-60' : ''}`}
                 >
-                  {selected ? <Check size={14} strokeWidth={3} /> : current ? <Check size={14} strokeWidth={3} /> : seat.codigo_espacio}
+                  {selected ? <Check size={14} strokeWidth={3} /> : current ? <Check size={14} strokeWidth={3} /> : seat.estado === 'OCUPADO' ? <XCircle size={14} /> : seat.estado === 'RESERVADO' || seat.estado === 'EN_ESPERA' ? <Lock size={14} /> : seat.codigo_espacio}
                 </motion.button>
               );
             })}
@@ -254,8 +255,8 @@ function CambiarAsiento() {
       <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" />
-          <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-3xl bg-card shadow-xl outline-none">
-            <div className="px-5 pb-6 pt-3 sm:px-6">
+          <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-3xl bg-card shadow-xl outline-none max-h-[82dvh] overflow-y-auto">
+            <div className="px-5 pb-[max(env(safe-area-inset-bottom),1.5rem)] pt-3 sm:px-6">
               <Drawer.Handle className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-border-light" />
 
               <AnimatePresence mode="wait">
@@ -272,8 +273,8 @@ function CambiarAsiento() {
                         <MapPin size={22} />
                       </div>
                       <div>
-                        <p className="text-lg font-black text-foreground">Asiento {selectedSeat.codigo_espacio}</p>
-                        <p className="text-[13px] text-muted">Excelente ubicación — frente al instructor</p>
+                        <p className="text-lg font-black text-foreground">Espacio {selectedSeat.codigo_espacio}</p>
+                        <p className="text-[13px] text-muted">Cambiarás del espacio {currentSeatCode} al {selectedSeat.codigo_espacio}. El espacio {currentSeatCode} quedará disponible para otra persona.</p>
                       </div>
                     </div>
 

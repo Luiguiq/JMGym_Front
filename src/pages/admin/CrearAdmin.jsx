@@ -27,7 +27,7 @@ export default function CrearAdmin() {
 
   return (
     <div className="max-w-lg mx-auto">
-      <h1 className="text-2xl font-bold text-foreground sm:text-3xl mb-6">Crear Administrador</h1>
+      <h1 className="text-2xl font-bold text-foreground sm:text-3xl mb-6">Crear administrador</h1>
 
       {alert && (
         <div className={`mb-4 p-3 rounded-lg text-sm font-medium ${alert.type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
@@ -77,7 +77,7 @@ export default function CrearAdmin() {
             disabled={loading}
             className="w-full px-4 py-2.5 text-sm font-medium text-primary-foreground bg-brand-400 rounded-lg hover:bg-brand-500 disabled:opacity-50"
           >
-            {loading ? 'Creando...' : 'Crear Administrador'}
+            {loading ? 'Creando...' : 'Crear administrador'}
           </button>
         </form>
       </div>

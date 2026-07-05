@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { classService } from '../../services/classService.js';
 import { instructorService } from '../../services/instructorService.js';
+import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 import { reservationService } from '../../services/reservationService.js';
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
@@ -86,7 +87,7 @@ function DetalleClase() {
           instructorService.getById(data.trainerId).then(setInstructorData).catch(() => {});
         }
       })
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(getFriendlyErrorMessage(err, 'No pudimos cargar el detalle de la clase. Intenta nuevamente.')))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -274,7 +275,7 @@ function DetalleClase() {
             <h2 className="mb-2 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Reglas</h2>
             <div className="flex flex-wrap gap-2">
               {clothingRules.map((rule) => (
-                <span key={rule} className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3.5 py-1.5 text-[13px] font-medium text-amber-700">
+                <span key={rule} className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3.5 py-1.5 text-[13px] font-medium text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
                   <AlertTriangle size={14} />
                   {rule}
                 </span>
@@ -313,12 +314,12 @@ function DetalleClase() {
 
           {/* Warnings */}
           {hasActiveReservation && (
-            <div className="mt-5 rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-700">
+            <div className="mt-5 rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
               Ya reservaste esta clase
             </div>
           )}
           {hasDateConflict && (
-            <div className="mt-3 rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-700">
+            <div className="mt-3 rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
               Ya tienes otra reserva activa ese día
             </div>
           )}

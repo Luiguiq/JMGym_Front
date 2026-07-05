@@ -118,12 +118,12 @@ function Configuraciones() {
 
         {/* Messages */}
         {serverError && (
-          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600">
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600 dark:bg-red-500/10 dark:text-red-300">
             {serverError}
           </motion.div>
         )}
         {success && (
-          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-4 flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-600">
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-4 flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300">
             <Check size={16} /> {success}
           </motion.div>
         )}
@@ -291,7 +291,7 @@ function TextSizeCard() {
         <button
           type="button"
           onClick={cycleTextSizeLevel}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-sm font-black text-blue-600 transition hover:bg-blue-100"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-sm font-black text-blue-600 transition hover:bg-blue-100 dark:text-blue-300 dark:hover:bg-primary/15"
           aria-label={`Nivel ${textSizeLevel} de ${maxTextSizeLevel}`}
         >
           Tt

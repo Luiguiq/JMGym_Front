@@ -4,10 +4,10 @@ import { ArrowLeft, CreditCard, CheckCircle, Clock, XCircle, RotateCcw, Search }
 import { paymentService } from '../../services/paymentService.js';
 
 const ESTADO_STYLES = {
-  CONFIRMADO: { bg: 'bg-emerald-50', text: 'text-emerald-700', icon: CheckCircle, label: 'Confirmado' },
-  PENDIENTE: { bg: 'bg-amber-50', text: 'text-amber-700', icon: Clock, label: 'Pendiente' },
-  RECHAZADO: { bg: 'bg-red-50', text: 'text-red-700', icon: XCircle, label: 'Rechazado' },
-  REEMBOLSADO: { bg: 'bg-primary/10', text: 'text-blue-700', icon: RotateCcw, label: 'Reembolsado' },
+  CONFIRMADO: { bg: 'bg-emerald-50 dark:bg-emerald-500/10', text: 'text-emerald-700 dark:text-emerald-300', icon: CheckCircle, label: 'Confirmado' },
+  PENDIENTE: { bg: 'bg-amber-50 dark:bg-amber-500/10', text: 'text-amber-700 dark:text-amber-300', icon: Clock, label: 'Pendiente' },
+  RECHAZADO: { bg: 'bg-red-50 dark:bg-red-500/10', text: 'text-red-700 dark:text-red-300', icon: XCircle, label: 'Rechazado' },
+  REEMBOLSADO: { bg: 'bg-primary/10', text: 'text-blue-700 dark:text-blue-300', icon: RotateCcw, label: 'Reembolsado' },
 };
 
 const METODO_ICONS = {
@@ -65,7 +65,7 @@ function Pagos() {
     .reduce((sum, p) => sum + p.monto, 0);
 
   return (
-    <main className="min-h-screen bg-surface pb-20">
+    <main className="min-h-screen bg-surface pb-32">
       <section className="mx-auto max-w-2xl px-4 pt-8 sm:px-6 sm:pt-12">
         <div className="mb-6 flex items-center gap-4">
           <button
@@ -98,7 +98,7 @@ function Pagos() {
           <div className="mb-6 flex items-center gap-3 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-5 py-4 text-primary-foreground shadow-lg">
             <CreditCard size={24} />
             <div>
-              <p className="text-sm font-semibold opacity-80">Total gastado</p>
+              <p className="text-sm font-semibold opacity-80">Total consumido</p>
               <p className="text-2xl font-black">S/ {totalGastado.toFixed(2)}</p>
             </div>
           </div>

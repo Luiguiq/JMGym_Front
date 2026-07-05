@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { Zap, Music, Smartphone, ArrowLeft, User, IdCard, Mail, Lock } from 'lucide-react';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
+import { DNI_ERROR_MESSAGE, isValidDni, sanitizeDni } from '../../utils/dni.js';
+import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 
 const highlights = [
   { icon: <Zap size={24} />, title: 'Registro rápido', text: 'Crea tu cuenta en segundos y empieza a reservar.' },
@@ -19,27 +21,34 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [dniError, setDniError] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event) {
     event.preventDefault();
     setError('');
+
+    if (!isValidDni(dni)) {
+      setDniError(DNI_ERROR_MESSAGE);
+      return;
+    }
+
     setLoading(true);
 
     try {
       await register({ name, dni, email, password });
       navigate('/cliente/home');
     } catch (err) {
-      setError(err.message);
+      setError(getFriendlyErrorMessage(err, 'No pudimos crear tu cuenta. Revisa tus datos e intenta nuevamente.'));
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5">
-      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-7xl overflow-hidden rounded-[32px] bg-card shadow-[0_24px_70px_rgba(15,23,42,.08)] lg:grid-cols-[0.92fr_1.08fr]">
-        <aside className="flex flex-col justify-between gap-6 bg-gradient-to-br from-brand-600 via-[#0a58ca] to-[#1576ff] p-6 text-primary-foreground sm:p-8 lg:p-10">
+    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5 landscape:p-2 sm:landscape:p-3">
+      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-7xl overflow-hidden rounded-[32px] bg-card shadow-[0_24px_70px_rgba(15,23,42,.08)] landscape:min-h-0 lg:grid-cols-[0.92fr_1.08fr]">
+        <aside className="flex flex-col justify-between gap-6 bg-gradient-to-br from-brand-600 via-[#0a58ca] to-[#1576ff] p-6 text-primary-foreground landscape:gap-4 landscape:p-4 sm:p-8 lg:p-10">
           <Link className="grid h-12 w-12 place-items-center rounded-2xl bg-primary-foreground/15 text-2xl font-black text-primary-foreground transition hover:bg-primary-foreground/20" to="/cliente/login" aria-label="Volver al inicio">
             <ArrowLeft size={24} />
           </Link>
@@ -68,7 +77,7 @@ function Register() {
           </div>
         </aside>
 
-        <form className="flex flex-col justify-center gap-5 p-6 sm:p-8 lg:p-10" onSubmit={handleSubmit}>
+        <form className="flex flex-col justify-center gap-5 p-6 landscape:gap-4 landscape:p-4 sm:p-8 lg:p-10" onSubmit={handleSubmit}>
           <div>
             <h2 className="font-display text-4xl font-bold text-foreground sm:text-5xl">Registro</h2>
             <p className="mt-2 text-secondary">Crea una cuenta nueva.</p>
@@ -88,10 +97,26 @@ function Register() {
 
           <label className="grid gap-2 font-semibold text-foreground">
             DNI
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+            <div className={`flex min-h-14 items-center gap-3 rounded-2xl border-2 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16 ${dniError ? 'border-red-300 dark:border-red-500' : 'border-brand-100'}`}>
               <span aria-hidden="true"><IdCard size={20} /></span>
-              <input className="w-full bg-transparent outline-none text-foreground placeholder:text-muted" type="text" placeholder="12345678" value={dni} onChange={(e) => setDni(e.target.value)} required />
+              <input
+                className="w-full bg-transparent outline-none text-foreground placeholder:text-muted"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]{8}"
+                maxLength={8}
+                placeholder="12345678"
+                value={dni}
+                onChange={(e) => {
+                  setDni(sanitizeDni(e.target.value));
+                  setDniError('');
+                }}
+                aria-invalid={!!dniError}
+                aria-describedby={dniError ? 'register-dni-error' : undefined}
+                required
+              />
             </div>
+            {dniError && <p id="register-dni-error" className="text-xs font-bold text-red-500">{dniError}</p>}
           </label>
 
           <label className="grid gap-2 font-semibold text-foreground">

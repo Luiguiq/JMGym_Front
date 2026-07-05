@@ -13,7 +13,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
       )}
 
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-card shadow-lg transform transition-transform duration-300 ease-in-out lg:hidden dark:bg-surface ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-card shadow-lg transform transition-transform duration-300 ease-in-out lg:hidden dark:bg-card ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         role="dialog"
@@ -24,10 +24,10 @@ const MobileMenu = ({ isOpen, onClose }) => {
           <h2 className="text-xl font-bold text-foreground dark:text-foreground">JM Gym</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-border-light rounded-lg transition-colors dark:hover:bg-border-light"
+            className="p-2 hover:bg-border-light rounded-lg transition-colors dark:hover:bg-surface"
             aria-label="Cerrar menú"
           >
-            <X size={20} className="text-secondary dark:text-muted-foreground" aria-hidden="true" />
+            <X size={20} className="text-secondary dark:text-secondary" aria-hidden="true" />
           </button>
         </div>
         <div className="overflow-y-auto h-[calc(100vh-80px)]">

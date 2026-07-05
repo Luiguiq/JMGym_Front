@@ -4,12 +4,12 @@ import { ArrowLeft, User, Mail, IdCard, Phone, Lock, Camera, CheckCircle } from 
 import { useAuth } from '../../context/AuthContext.jsx';
 import { userService } from '../../services/userService.js';
 import Field from '../../components/user/Field.jsx';
+import { DNI_ERROR_MESSAGE, DNI_REGEX, sanitizeDni } from '../../utils/dni.js';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
 const BACKEND_URL = API_BASE.replace('/api', '');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const DNI_REGEX = /^\d{8}$/;
 const PHONE_REGEX = /^\d{7,15}$/;
 
 function EditarPerfil() {
@@ -90,7 +90,7 @@ function EditarPerfil() {
     if (!dni.trim()) {
       errors.dni = 'El DNI es obligatorio.';
     } else if (!DNI_REGEX.test(dni.trim())) {
-      errors.dni = 'El DNI debe tener exactamente 8 dígitos.';
+      errors.dni = DNI_ERROR_MESSAGE;
     }
 
     if (telefono.trim() && !PHONE_REGEX.test(telefono.trim())) {
@@ -173,9 +173,9 @@ function EditarPerfil() {
   const fotoSrc = fotoPreview || (fotoPerfil ? `${BACKEND_URL}${fotoPerfil}` : null);
 
   return (
-    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5">
-      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-3xl overflow-hidden rounded-[32px] bg-card shadow-[0_24px_70px_rgba(15,23,42,.08)]">
-        <form className="flex flex-col justify-center gap-5 p-6 sm:p-8 lg:p-10" onSubmit={handleSubmit}>
+    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 pb-32 sm:p-4 sm:pb-32 lg:p-5 lg:pb-5 landscape:p-2 landscape:pb-28 sm:landscape:p-3 lg:landscape:p-5">
+      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-3xl overflow-hidden rounded-[32px] bg-card shadow-[0_24px_70px_rgba(15,23,42,.08)] landscape:min-h-0">
+        <form className="flex flex-col justify-center gap-5 p-6 landscape:gap-4 landscape:p-4 sm:p-8 lg:p-10" onSubmit={handleSubmit}>
           <div className="flex items-center gap-4">
             <button
               type="button"
@@ -191,13 +191,13 @@ function EditarPerfil() {
           </div>
 
           {serverError && (
-            <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">
+            <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
               {serverError}
             </div>
           )}
 
           {success && (
-            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-600">
+            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-600 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
               {success}
             </div>
           )}
@@ -205,8 +205,8 @@ function EditarPerfil() {
           {success && (
             <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
               <div className="flex flex-col items-center gap-5 rounded-[32px] bg-card px-10 py-12 shadow-2xl text-center max-w-sm w-full">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
-                  <CheckCircle size={40} className="text-emerald-600" />
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-500/10">
+                  <CheckCircle size={40} className="text-emerald-600 dark:text-emerald-300" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-black text-foreground">¡Cambios guardados!</h3>
@@ -274,7 +274,11 @@ function EditarPerfil() {
               type="text"
               placeholder="12345678"
               value={dni}
-              onChange={(e) => { setDni(e.target.value); clearError('dni'); }}
+              inputMode="numeric"
+              pattern="[0-9]{8}"
+              maxLength={8}
+              aria-invalid={!!fieldErrors.dni}
+              onChange={(e) => { setDni(sanitizeDni(e.target.value)); clearError('dni'); }}
               required
             />
           </Field>

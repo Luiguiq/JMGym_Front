@@ -55,15 +55,15 @@
     "clientNav": "Navegacion cliente",
     "adminNav": "Navegacion principal admin",
     "adminBottomNav": "Navegacion admin",
-    "adminPanel": "Admin Panel",
+    "adminPanel": "Panel administrativo",
     "subtitle": "Reserva clara y rápida",
     "logoAlt": "Logo de JMGym",
-    "dashboard": "Dashboard",
+    "dashboard": "Panel principal",
     "categories": "Categorías",
     "cancellations": "Cancelaciones",
     "users": "Usuarios",
     "instructors": "Instructores",
-    "createAdmin": "Crear Admin"
+    "createAdmin": "Crear administrador"
   },
   "landing": {
     "supera": "Supera tus limites",
@@ -85,7 +85,7 @@
     "clasesGrupales": "Clases grupales",
     "clasesGrupalesText": "Entrena con energía, acompañamiento y una agenda variada de actividades durante la semana.",
     "reservaEspacios": "Reserva de espacios",
-    "reservaEspaciosText": "Gestiona tu asistencia desde el sistema digital y asegura tu lugar antes de llegar al gimnasio.",
+    "reservaEspaciosText": "Gestiona tu asistencia desde el sistema digital y asegura tu espacio antes de llegar al gimnasio.",
     "seguimientoFitness": "Seguimiento fitness",
     "seguimientoText": "Mantente conectado con tus clases, reservas y próximos entrenamientos desde cualquier dispositivo.",
     "personalTrainer": "Personal trainer",
@@ -192,7 +192,7 @@
     "nextClass": "Próxima clase",
     "spots": "{{count}} cupos",
     "classesTitle": "Clases",
-    "classesSubtitle": "Revisa y reserva tu lugar",
+    "classesSubtitle": "Revisa y reserva tu espacio",
     "noClasses": "No hay clases disponibles",
     "noClassesDesc": "Vuelve pronto para ver nuevas opciones.",
     "viewAllClasses": "Ver todas las clases ({{count}})"
@@ -281,7 +281,7 @@
     "active": "Activas",
     "history": "Historial",
     "noReservations": "No tienes reservas activas.",
-    "noReservationsDesc": "Explora las clases disponibles y reserva tu lugar.",
+    "noReservationsDesc": "Explora las clases disponibles y reserva tu espacio.",
     "browseClasses": "Explorar clases",
     "loadingError": "Error al cargar tus reservas.",
     "searchPlaceholder": "Buscar por clase o instructor...",
@@ -295,7 +295,7 @@
     "finished": "Finalizadas",
     "completed": "Completadas",
     "attended": "Asistidas",
-    "spent": "Gastado"
+    "spent": "Consumido"
   },
   "detalleReserva": {
     "title": "Detalle de reserva",
@@ -329,7 +329,7 @@
     "reservations": "Reservas",
     "completed": "Completadas",
     "cancelled": "Canceladas",
-    "spent": "Gastado",
+    "spent": "Consumido",
     "paymentHistory": "Historial de pagos",
     "myAccount": "Mi cuenta",
     "settingsSection": "Configuración",
@@ -410,12 +410,12 @@
     "noSpaces": "No hay espacios disponibles."
   },
   "cambiarAsiento": {
-    "title": "Cambiar asiento",
-    "currentSeat": "Asiento actual",
-    "newSeat": "Nuevo asiento",
-    "confirm": "Cambiar asiento",
-    "success": "Asiento cambiado correctamente",
-    "error": "Error al cambiar el asiento"
+    "title": "Cambiar espacio",
+    "currentSeat": "Espacio actual",
+    "newSeat": "Nuevo espacio",
+    "confirm": "Cambiar espacio",
+    "success": "Espacio cambiado correctamente",
+    "error": "Error al cambiar el espacio"
   },
   "notificaciones": {
     "title": "Notificaciones",
@@ -528,7 +528,7 @@
       "backHome": "Volver al inicio"
     },
     "dashboard": {
-      "title": "Dashboard",
+      "title": "Panel principal",
       "totalClasses": "Total de clases",
       "activeUsers": "Usuarios activos",
       "todayReservations": "Reservas hoy",
@@ -655,7 +655,7 @@
       "error": "Error al enviar la notificación"
     },
     "crearAdmin": {
-      "title": "Crear Admin",
+      "title": "Crear administrador",
       "name": "Nombre",
       "namePlaceholder": "Nombre del administrador",
       "email": "Correo electrónico",
