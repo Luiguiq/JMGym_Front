@@ -1,8 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, CreditCard, ChevronRight, Dumbbell, X } from 'lucide-react';
+import { Calendar, Clock, CreditCard, ChevronRight, Dumbbell, Undo2, X } from 'lucide-react';
 import { reservationService } from '../../services/reservationService.js';
+import {
+  puedeCancelarReserva,
+  puedeCancelarSolicitudReembolso,
+  puedeSolicitarReembolso,
+} from '../../utils/reservationActions.js';
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
 import zumbaImage from '../../assets/images/zumba.jpg';
@@ -55,12 +60,16 @@ function ReservationCard({ reservation, onRefresh }) {
   const navigate = useNavigate();
   const [showCancel, setShowCancel] = useState(false);
   const [canceling, setCanceling] = useState(false);
+  const [processingAction, setProcessingAction] = useState(false);
 
   const image = getClassImage(reservation.className || reservation.nombre_clase || '');
   const daysUntil = getDaysUntil(reservation.fecha_clase);
   const isActive = reservation.estado_reserva === 'ACTIVA';
-  const isPaid = reservation.estado_pago === 'PAGADO' || reservation.estado_pago === 'CONFIRMADO';
   const isPending = reservation.estado_pago === 'PENDIENTE';
+  const isRefundPending = reservation.estado_pago === 'REEMBOLSO_PENDIENTE';
+  const canCancel = puedeCancelarReserva(reservation);
+  const canRequestRefund = puedeSolicitarReembolso(reservation);
+  const canCancelRefundRequest = puedeCancelarSolicitudReembolso(reservation);
 
   async function handleCancel() {
     setCanceling(true);
@@ -72,6 +81,32 @@ function ReservationCard({ reservation, onRefresh }) {
     } finally {
       setCanceling(false);
       setShowCancel(false);
+    }
+  }
+
+  async function handleRequestRefund() {
+    if (!canRequestRefund || processingAction) return;
+    setProcessingAction(true);
+    try {
+      await reservationService.requestRefund(reservation.id);
+      onRefresh?.();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setProcessingAction(false);
+    }
+  }
+
+  async function handleCancelRefundRequest() {
+    if (!canCancelRefundRequest || processingAction) return;
+    setProcessingAction(true);
+    try {
+      await reservationService.cancelRefundRequest(reservation.id);
+      onRefresh?.();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setProcessingAction(false);
     }
   }
 
@@ -129,6 +164,12 @@ function ReservationCard({ reservation, onRefresh }) {
                 Pago pendiente
               </p>
             )}
+            {isRefundPending && (
+              <p className="flex items-center gap-1.5 font-semibold text-orange-600 dark:text-orange-300">
+                <Clock size={14} className="shrink-0" />
+                Reembolso en revisión
+              </p>
+            )}
             {isActive && daysUntil !== null && (
               <p className="flex items-center gap-1.5 font-semibold text-blue-600 dark:text-blue-300">
                 {daysUntil === 0 ? 'Hoy' : daysUntil === 1 ? 'Mañana' : `Empieza en ${daysUntil} días`}
@@ -144,12 +185,31 @@ function ReservationCard({ reservation, onRefresh }) {
               Ver detalle
               <ChevronRight size={14} />
             </button>
-            {isActive && (
+            {canCancel && (
               <button
                 onClick={() => setShowCancel(true)}
                 className="min-h-11 rounded-xl border border-border px-4 py-2.5 text-[12px] font-bold text-secondary transition hover:bg-surface"
               >
                 Cancelar
+              </button>
+            )}
+            {canRequestRefund && (
+              <button
+                onClick={handleRequestRefund}
+                disabled={processingAction}
+                className="min-h-11 rounded-xl border border-orange-200 bg-orange-50 px-4 py-2.5 text-[12px] font-bold text-orange-700 transition hover:bg-orange-100 disabled:opacity-60 dark:border-orange-500/30 dark:bg-orange-500/10 dark:text-orange-300"
+              >
+                <Undo2 size={14} className="inline-block mr-1" />
+                {processingAction ? 'Enviando...' : 'Solicitar reembolso'}
+              </button>
+            )}
+            {canCancelRefundRequest && (
+              <button
+                onClick={handleCancelRefundRequest}
+                disabled={processingAction}
+                className="min-h-11 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-[12px] font-bold text-amber-700 transition hover:bg-amber-100 disabled:opacity-60 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300"
+              >
+                {processingAction ? 'Cancelando...' : 'Cancelar solicitud'}
               </button>
             )}
           </div>

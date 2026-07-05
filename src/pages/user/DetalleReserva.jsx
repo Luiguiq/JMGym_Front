@@ -3,6 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { reservationService } from '../../services/reservationService.js';
 import PageLoader from '../../components/common/PageLoader.jsx';
 import { CheckCircle, XCircle, Flag, CreditCard, Clock, AlertTriangle, Undo2, Search, Calendar, Armchair, User } from 'lucide-react';
+import {
+  puedeCancelarReserva,
+  puedeCancelarSolicitudReembolso,
+  puedeSolicitarReembolso,
+} from '../../utils/reservationActions.js';
 
 const MOTIVOS_LABEL = {
   CAMBIO_HORARIO: 'Cambio de horario',
@@ -139,6 +144,9 @@ function DetalleReserva() {
   const [refunding, setRefunding] = useState(false);
   const [refundError, setRefundError] = useState('');
   const [refundSuccess, setRefundSuccess] = useState('');
+  const [showCancelRefundModal, setShowCancelRefundModal] = useState(false);
+  const [cancelingRefundRequest, setCancelingRefundRequest] = useState(false);
+  const [cancelRefundError, setCancelRefundError] = useState('');
 
   const motivosCancelacion = [
     { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
@@ -148,35 +156,16 @@ function DetalleReserva() {
     { value: 'OTRO', label: 'Otro motivo' },
   ];
 
-  const classStartAt = buildClassStartDate(
-    reservation?.fecha_clase,
-    reservation?.hora_inicio
-  );
-
-  const hasClassStarted = classStartAt
-    ? classStartAt <= new Date()
-    : false;
-
   const isRefundPending =
     reservation?.estado_pago === 'REEMBOLSO_PENDIENTE';
 
   const canChangeSeat =
   reservation?.estado_reserva === 'ACTIVA';
 
-  const canCancel =
-    reservation?.estado_reserva === 'ACTIVA' &&
-    reservation?.estado_pago === 'PENDIENTE';
+  const canCancel = puedeCancelarReserva(reservation);
 
-  const canRefund =
-    reservation?.estado_reserva === 'ACTIVA' &&
-    reservation?.estado_pago === 'PAGADO' &&
-    reservation?.metodo_pago?.toUpperCase() === 'YAPE';
-
-  const canRequestRefund =
-    reservation?.estado_reserva === 'ACTIVA' &&
-    reservation?.estado_pago === 'PAGADO' &&
-    !hasClassStarted &&
-    !isRefundPending;
+  const canRequestRefund = puedeSolicitarReembolso(reservation);
+  const canCancelRefundRequest = puedeCancelarSolicitudReembolso(reservation);
 
   const isCanceled = reservation?.estado_reserva === 'CANCELADA';
   const isCompleted =
@@ -229,6 +218,24 @@ function DetalleReserva() {
       setRefundError(err?.message || 'Error al solicitar el reembolso');
     } finally {
       setRefunding(false);
+    }
+  };
+
+  const handleConfirmCancelRefundRequest = async () => {
+    if (cancelingRefundRequest) return;
+
+    setCancelRefundError('');
+    setRefundSuccess('');
+    setCancelingRefundRequest(true);
+    try {
+      const updated = await reservationService.cancelRefundRequest(id);
+      setReservation(updated);
+      setRefundSuccess('Solicitud cancelada. Tu reserva continúa activa.');
+      setShowCancelRefundModal(false);
+    } catch (err) {
+      setCancelRefundError(err?.message || 'No pudimos cancelar la solicitud de reembolso. Inténtalo nuevamente.');
+    } finally {
+      setCancelingRefundRequest(false);
     }
   };
 
@@ -489,7 +496,7 @@ function DetalleReserva() {
             </button>
           )}
 
-          {canRefund && (
+          {canRequestRefund && (
             <button
               onClick={() => {
                 setRefundError('');
@@ -500,6 +507,20 @@ function DetalleReserva() {
             >
               <Undo2 className="inline-block h-5 w-5 mr-1 -mt-0.5" />
               Solicitar reembolso
+            </button>
+          )}
+
+          {canCancelRefundRequest && (
+            <button
+              onClick={() => {
+                setCancelRefundError('');
+                setRefundSuccess('');
+                setShowCancelRefundModal(true);
+              }}
+              className="flex-1 rounded-2xl bg-amber-50 border border-amber-200 py-3.5 font-bold text-amber-700 transition hover:bg-amber-100 dark:bg-amber-500/10 dark:border-amber-500/30 dark:text-amber-300 dark:hover:bg-amber-500/20"
+            >
+              <Clock className="inline-block h-5 w-5 mr-1 -mt-0.5" />
+              Cancelar solicitud de reembolso
             </button>
           )}
 
@@ -712,6 +733,75 @@ function DetalleReserva() {
                   className="flex-1 rounded-2xl bg-orange-600 py-3 text-sm font-bold text-primary-foreground transition hover:bg-orange-700 disabled:opacity-60"
                 >
                   {refunding ? 'Enviando...' : 'Confirmar solicitud'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCancelRefundModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md sm:p-6"
+          onClick={(e) => { if (e.target === e.currentTarget && !cancelingRefundRequest) setShowCancelRefundModal(false); }}
+        >
+          <div
+            className="w-full max-w-md rounded-[28px] bg-card shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cancel-refund-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-5 sm:p-6">
+              <div className="text-center">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300">
+                  <Clock className="h-7 w-7" aria-hidden="true" />
+                </div>
+                <h3 id="cancel-refund-title" className="text-xl font-black text-foreground">
+                  Cancelar solicitud de reembolso
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-secondary">
+                  ¿Deseas cancelar la solicitud de reembolso? Tu reserva continuará activa y conservarás tu espacio.
+                </p>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-border-light bg-surface p-4 text-sm">
+                <div className="flex justify-between gap-3">
+                  <span className="shrink-0 text-muted">Reserva</span>
+                  <span className="font-bold text-foreground">#{reservation.codigo_reserva}</span>
+                </div>
+                <div className="mt-2 flex justify-between gap-3">
+                  <span className="shrink-0 text-muted">Clase</span>
+                  <span className="max-w-[210px] text-right font-bold text-foreground">{reservation.className}</span>
+                </div>
+                <div className="mt-2 flex justify-between gap-3">
+                  <span className="shrink-0 text-muted">Espacio</span>
+                  <span className="font-bold text-brand-600">{reservation.codigo_espacio}</span>
+                </div>
+              </div>
+
+              {cancelRefundError && (
+                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert">
+                  {cancelRefundError}
+                </div>
+              )}
+
+              <div className="mt-5 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowCancelRefundModal(false)}
+                  disabled={cancelingRefundRequest}
+                  className="flex-1 rounded-2xl border border-border py-3 text-sm font-bold text-secondary transition hover:bg-surface disabled:opacity-60"
+                >
+                  Mantener solicitud
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmCancelRefundRequest}
+                  disabled={cancelingRefundRequest}
+                  className="flex-1 rounded-2xl bg-amber-600 py-3 text-sm font-bold text-primary-foreground transition hover:bg-amber-700 disabled:opacity-60"
+                >
+                  {cancelingRefundRequest ? 'Cancelando...' : 'Cancelar solicitud'}
                 </button>
               </div>
             </div>
