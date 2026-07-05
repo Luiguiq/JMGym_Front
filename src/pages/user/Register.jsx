@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import { Zap, Music, Smartphone, ArrowLeft, User, IdCard, Mail, Lock } from 'lucide-react';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 import { DNI_ERROR_MESSAGE, isValidDni, sanitizeDni } from '../../utils/dni.js';
+import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 
 const highlights = [
   { icon: <Zap size={24} />, title: 'Registro rápido', text: 'Crea tu cuenta en segundos y empieza a reservar.' },
@@ -38,7 +39,7 @@ function Register() {
       await register({ name, dni, email, password });
       navigate('/cliente/home');
     } catch (err) {
-      setError(err.message);
+      setError(getFriendlyErrorMessage(err, 'No pudimos crear tu cuenta. Revisa tus datos e intenta nuevamente.'));
     } finally {
       setLoading(false);
     }

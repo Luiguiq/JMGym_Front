@@ -2,6 +2,8 @@ import { Languages } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
 function LanguageSwitcher({ compact }) {
+  return null;
+
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 

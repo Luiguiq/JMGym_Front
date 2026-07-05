@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 import { Zap, MapPin, Smartphone, ArrowLeft, Mail, Lock } from 'lucide-react';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 
@@ -41,7 +42,7 @@ function Login() {
       await login({ email, password }, remember);
       navigate('/cliente/home');
     } catch (err) {
-      setError(err.message);
+      setError(getFriendlyErrorMessage(err, 'No pudimos iniciar sesión. Revisa tus credenciales e intenta nuevamente.'));
     } finally {
       setLoading(false);
     }

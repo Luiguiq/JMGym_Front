@@ -7,6 +7,7 @@ import {
   puedeCancelarSolicitudReembolso,
   puedeSolicitarReembolso,
 } from '../../utils/reservationActions.js';
+import { getPaymentStatusLabel, getReservationStatusLabel } from '../../utils/reservationPresentation.js';
 
 const MOTIVOS_LABEL = {
   CAMBIO_HORARIO: 'Cambio de horario',
@@ -57,7 +58,7 @@ function ReservationCard({ reservation, onRefresh }) {
           ? 'Finalizada'
           : reservation.estado_reserva === 'COMPLETADA'
             ? 'Completada'
-            : reservation.estado_reserva;
+            : getReservationStatusLabel(reservation.estado_reserva);
 
   const statusColor =
     reservation.estado_reserva === 'ACTIVA'
@@ -86,7 +87,7 @@ function ReservationCard({ reservation, onRefresh }) {
             ? 'Reembolso en revisión'
             : reservation.estado_pago === 'REEMBOLSADO'
               ? 'Reembolsado'
-              : reservation.estado_pago;
+              : getPaymentStatusLabel(reservation.estado_pago);
 
   const pagoColor =
     reservation.estado_pago === 'PAGADO'

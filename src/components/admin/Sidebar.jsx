@@ -22,7 +22,7 @@ const Sidebar = ({ onClose }) => {
   const menuItems = [
     {
       id: 'dashboard',
-      label: 'Dashboard',
+      label: 'Panel principal',
       icon: LayoutDashboard,
       path: '/admin',
     },
@@ -76,7 +76,7 @@ const Sidebar = ({ onClose }) => {
     },
     {
       id: 'crear-admin',
-      label: 'Crear Admin',
+      label: 'Crear administrador',
       icon: ShieldPlus,
       path: '/admin/crear-admin',
     },
@@ -107,7 +107,7 @@ const Sidebar = ({ onClose }) => {
           </div>
           <div className="flex-1">
             <h1 className="font-bold text-foreground dark:text-foreground">JM Gym</h1>
-            <p className="text-xs text-secondary dark:text-muted">Admin Panel</p>
+            <p className="text-xs text-secondary dark:text-muted">Panel administrativo</p>
           </div>
         </div>
       </div>

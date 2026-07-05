@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { classService } from '../../services/classService.js';
 import { instructorService } from '../../services/instructorService.js';
+import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 import { reservationService } from '../../services/reservationService.js';
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
@@ -86,7 +87,7 @@ function DetalleClase() {
           instructorService.getById(data.trainerId).then(setInstructorData).catch(() => {});
         }
       })
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(getFriendlyErrorMessage(err, 'No pudimos cargar el detalle de la clase. Intenta nuevamente.')))
       .finally(() => setLoading(false));
   }, [id]);
 

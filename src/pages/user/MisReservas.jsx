@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Clock, CreditCard, ChevronRight, Dumbbell, Undo2, X } from 'lucide-react';
 import { reservationService } from '../../services/reservationService.js';
+import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 import {
   puedeCancelarReserva,
   puedeCancelarSolicitudReembolso,
   puedeSolicitarReembolso,
 } from '../../utils/reservationActions.js';
+import { getTemporalReservationLabel } from '../../utils/reservationPresentation.js';
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
 import zumbaImage from '../../assets/images/zumba.jpg';
@@ -64,6 +66,7 @@ function ReservationCard({ reservation, onRefresh }) {
 
   const image = getClassImage(reservation.className || reservation.nombre_clase || '');
   const daysUntil = getDaysUntil(reservation.fecha_clase);
+  const temporalLabel = getTemporalReservationLabel(reservation);
   const isActive = reservation.estado_reserva === 'ACTIVA';
   const isPending = reservation.estado_pago === 'PENDIENTE';
   const isRefundPending = reservation.estado_pago === 'REEMBOLSO_PENDIENTE';
@@ -136,7 +139,7 @@ function ReservationCard({ reservation, onRefresh }) {
               {isActive ? (
                 <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[12px] font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  Activa
+                  {temporalLabel === 'Activa' ? 'Próxima' : temporalLabel}
                 </span>
               ) : (
                 <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-border-light px-2.5 py-0.5 text-[12px] font-semibold text-muted">
@@ -170,7 +173,7 @@ function ReservationCard({ reservation, onRefresh }) {
                 Reembolso en revisión
               </p>
             )}
-            {isActive && daysUntil !== null && (
+            {isActive && daysUntil !== null && daysUntil >= 0 && (
               <p className="flex items-center gap-1.5 font-semibold text-blue-600 dark:text-blue-300">
                 {daysUntil === 0 ? 'Hoy' : daysUntil === 1 ? 'Mañana' : `Empieza en ${daysUntil} días`}
               </p>
@@ -300,7 +303,7 @@ function MisReservas() {
     reservationService
       .getMyReservations()
       .then(setReservations)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(getFriendlyErrorMessage(err, 'No pudimos cargar tus reservas. Comprueba tu conexión e intenta nuevamente.')))
       .finally(() => setLoading(false));
   };
 

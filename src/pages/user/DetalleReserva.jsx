@@ -8,6 +8,8 @@ import {
   puedeCancelarSolicitudReembolso,
   puedeSolicitarReembolso,
 } from '../../utils/reservationActions.js';
+import { getPaymentStatusLabel, getReservationStatusLabel } from '../../utils/reservationPresentation.js';
+import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 
 const MOTIVOS_LABEL = {
   CAMBIO_HORARIO: 'Cambio de horario',
@@ -177,7 +179,7 @@ function DetalleReserva() {
     reservationService
       .getMyReservationDetail(id)
       .then(setReservation)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(getFriendlyErrorMessage(err, 'No pudimos cargar el detalle de la reserva. Intenta nuevamente.')))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -305,12 +307,12 @@ function DetalleReserva() {
 
             <div className="flex flex-wrap gap-3 mt-5">
               <span className={`px-4 py-2 rounded-full border text-sm font-bold ${getReservationStatusStyle(reservation.estado_reserva)}`}>
-                <StatusIcon icon={STATUS_ICON[reservation.estado_reserva]} className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {reservation.estado_reserva}
+                <StatusIcon icon={STATUS_ICON[reservation.estado_reserva]} className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {getReservationStatusLabel(reservation.estado_reserva)}
               </span>
 
               {reservation.estado_pago && (
                 <span className={`px-4 py-2 rounded-full border text-sm font-bold ${getPaymentStatusStyle(reservation.estado_pago)}`}>
-                  <StatusIcon icon={PAGO_ICON[reservation.estado_pago]} className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {reservation.estado_pago}
+                  <StatusIcon icon={PAGO_ICON[reservation.estado_pago]} className="inline-block h-4 w-4 mr-1 -mt-0.5" /> {getPaymentStatusLabel(reservation.estado_pago)}
                 </span>
               )}
             </div>
@@ -478,7 +480,7 @@ function DetalleReserva() {
               className="flex-1 rounded-2xl bg-sky-50 border border-sky-200 py-3.5 font-bold text-sky-700 transition hover:bg-sky-100 dark:bg-card dark:border-sky-500/30 dark:text-sky-300 dark:hover:bg-sky-500/10"
             >
               <Armchair className="inline-block h-5 w-5 mr-1 -mt-0.5" />
-              Cambiar asiento
+              Cambiar espacio
             </button>
           )}
 

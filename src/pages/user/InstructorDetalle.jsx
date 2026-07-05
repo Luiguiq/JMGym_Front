@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { instructorService } from '../../services/instructorService.js';
 import { classService } from '../../services/classService.js';
+import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 import {
   ArrowLeft, Star, User, Dumbbell, Zap, Music,
   Clock, MapPin
@@ -117,7 +118,7 @@ export default function InstructorDetalle() {
       classService.getByInstructor(id).catch(() => []),
     ])
       .then(([inst, cls]) => { setInstructor(inst); setClasses(cls); })
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(getFriendlyErrorMessage(err, 'No pudimos cargar el instructor. Intenta nuevamente.')))
       .finally(() => setLoading(false));
   }, [id]);
 

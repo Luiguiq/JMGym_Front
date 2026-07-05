@@ -66,7 +66,7 @@ const ClassTable = ({
               <th className="text-left px-6 py-3 font-semibold text-foreground">Horario</th>
               <th className="text-left px-6 py-3 font-semibold text-foreground">Día</th>
               <th className="text-left px-6 py-3 font-semibold text-foreground">Fecha</th>
-              <th className="text-left px-6 py-3 font-semibold text-foreground">Cupo</th>
+              <th className="text-left px-6 py-3 font-semibold text-foreground">Inscritos</th>
               <th className="text-left px-6 py-3 font-semibold text-foreground">Estado</th>
               <th className="text-center px-6 py-3 font-semibold text-foreground">Acciones</th>
             </tr>
@@ -81,7 +81,7 @@ const ClassTable = ({
                 <td className="px-6 py-4 text-secondary">{formatClassDate(clase.fecha)}</td>
                 <td className="px-6 py-4">
                   <span className="text-foreground">{clase.enrolled}</span>
-                  <span className="text-secondary">/{clase.capacity}</span>
+                  <span className="text-secondary"> de {clase.capacity}</span>
                 </td>
                 <td className="px-6 py-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[clase.status] || statusColors.activa}`}>
@@ -93,7 +93,8 @@ const ClassTable = ({
                     <button
                       onClick={() => onViewUsers?.(clase)}
                       className="p-2 hover:bg-sky-50 text-sky-600 rounded-lg transition-colors dark:text-sky-300 dark:hover:bg-sky-500/10"
-                      aria-label={`Ver usuarios de ${clase.name}`}
+                      aria-label={`Ver inscritos de ${clase.name}`}
+                      title={`Ver inscritos de ${clase.name}`}
                     >
                       <Eye size={16} />
                     </button>
@@ -101,6 +102,7 @@ const ClassTable = ({
                       onClick={() => onEdit?.(clase)}
                       className="p-2 hover:bg-brand-50 text-brand-600 rounded-lg transition-colors dark:text-blue-300 dark:hover:bg-primary/10"
                       aria-label={`Editar ${clase.name}`}
+                      title={`Editar ${clase.name}`}
                     >
                       <Edit2 size={16} />
                     </button>
@@ -108,6 +110,7 @@ const ClassTable = ({
                       onClick={() => onDelete?.(clase.id)}
                       className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors dark:text-red-300 dark:hover:bg-red-500/10"
                       aria-label={`Eliminar ${clase.name}`}
+                      title={`Eliminar ${clase.name}`}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -150,9 +153,9 @@ const ClassTable = ({
                 <span className="text-foreground font-medium">{formatClassDate(clase.fecha)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-secondary">Cupo:</span>
+                <span className="text-secondary">Inscritos:</span>
                 <span className="text-foreground font-medium">
-                  {clase.enrolled}/{clase.capacity}
+                  {clase.enrolled} de {clase.capacity}
                 </span>
               </div>
             </div>
@@ -161,14 +164,16 @@ const ClassTable = ({
               <button
                 onClick={() => onViewUsers?.(clase)}
                 className="flex-1 p-2 bg-sky-50 text-sky-600 rounded-lg font-medium text-sm hover:bg-sky-100 transition-colors dark:bg-sky-500/10 dark:text-sky-300 dark:hover:bg-sky-500/20"
-                aria-label={`Ver usuarios de ${clase.name}`}
+                aria-label={`Ver inscritos de ${clase.name}`}
+                title={`Ver inscritos de ${clase.name}`}
               >
-                <Eye size={16} className="mx-auto" />
+                <span className="inline-flex items-center justify-center gap-1"><Eye size={16} /> Ver inscritos</span>
               </button>
               <button
                 onClick={() => onEdit?.(clase)}
                 className="flex-1 p-2 bg-brand-50 text-brand-600 rounded-lg font-medium text-sm hover:bg-brand-100 transition-colors dark:bg-primary/10 dark:text-blue-300 dark:hover:bg-primary/15"
                 aria-label={`Editar ${clase.name}`}
+                title={`Editar ${clase.name}`}
               >
                 <Edit2 size={16} className="mx-auto" />
               </button>
@@ -176,6 +181,7 @@ const ClassTable = ({
                 onClick={() => onDelete?.(clase.id)}
                 className="flex-1 p-2 bg-red-50 text-red-600 rounded-lg font-medium text-sm hover:bg-red-100 transition-colors dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
                 aria-label={`Eliminar ${clase.name}`}
+                title={`Eliminar ${clase.name}`}
               >
                 <Trash2 size={16} className="mx-auto" />
               </button>

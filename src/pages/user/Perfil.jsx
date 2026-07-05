@@ -41,7 +41,7 @@ function Perfil() {
   const displayEmail = profile?.correo ?? authUser?.email ?? '';
   const displayFoto = profile?.foto_perfil ?? authUser?.foto_perfil ?? '';
   const fechaRegistro = profile?.fecha_registro ?? '';
-  const membresia = profile?.membresia ?? 'Premium';
+  const membresia = profile?.membresia ?? 'Cliente registrado';
   const estado = profile?.estado ?? 'activo';
 
   const monthJoined = fechaRegistro
@@ -305,7 +305,7 @@ function Perfil() {
               { icon: <CreditCard size={20} />, label: 'Historial de pagos', to: '/cliente/pagos' },
               { icon: <Bell size={20} />, label: 'Notificaciones', to: '/cliente/notificaciones' },
               { icon: <Settings size={20} />, label: 'Configuraciones', to: '/cliente/configuraciones' },
-              { icon: <Shield size={20} />, label: 'Seguridad', to: '/cliente/seguridad' },
+              { icon: <Shield size={20} />, label: 'Contraseña y seguridad', to: '/cliente/configuraciones' },
               { icon: <HelpCircle size={20} />, label: 'Ayuda y soporte', to: '/cliente/ayuda' },
             ].map(({ icon, label, to }) => (
               <div key={label} className="overflow-hidden rounded-2xl bg-card shadow-sm">

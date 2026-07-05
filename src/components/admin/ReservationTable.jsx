@@ -1,4 +1,5 @@
 import { Trash2, Edit2, CheckCircle, XCircle, Clock, AlertTriangle, Check } from 'lucide-react';
+import { getPaymentStatusLabel, getReservationStatusLabel } from '../../utils/reservationPresentation.js';
 
 const ReservationTable = ({ 
   data = [], 
@@ -78,12 +79,12 @@ const ReservationTable = ({
                   <td className="px-6 py-4">
                     <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold w-fit ${statusConfig.bg} ${statusConfig.text}`}>
                       <StatusIcon size={14} />
-                      {reservation.status}
+                      {getReservationStatusLabel(reservation.status)}
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full border text-xs font-semibold ${paymentStatusColors[reservation.paymentStatus] || paymentStatusColors.PENDIENTE}`}>
-                      Pago {reservation.paymentStatus}
+                      {getPaymentStatusLabel(reservation.paymentStatus)}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -131,7 +132,7 @@ const ReservationTable = ({
                 </div>
                 <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${statusConfig.bg} ${statusConfig.text}`}>
                   <StatusIcon size={12} />
-                  {reservation.status}
+                  {getReservationStatusLabel(reservation.status)}
                 </div>
               </div>
 
@@ -143,7 +144,7 @@ const ReservationTable = ({
                 <div className="flex justify-between">
                   <span className="text-secondary">Pago:</span>
                   <span className={`rounded-full border px-2 py-0.5 font-medium ${paymentStatusColors[reservation.paymentStatus] || paymentStatusColors.PENDIENTE}`}>
-                    Pago {reservation.paymentStatus}
+                    {getPaymentStatusLabel(reservation.paymentStatus)}
                   </span>
                 </div>
               </div>
@@ -153,6 +154,7 @@ const ReservationTable = ({
                   type="button"
                   onClick={() => onEdit?.(reservation)}
                   aria-label={`Editar reserva de ${reservation.userName}`}
+                  title={`Editar reserva de ${reservation.userName}`}
                   className="flex-1 p-2 bg-brand-50 text-brand-600 rounded-lg font-medium text-sm hover:bg-brand-100 transition-colors dark:bg-primary/10 dark:text-blue-300 dark:hover:bg-primary/15"
                 >
                   <Edit2 size={16} className="mx-auto" aria-hidden="true" />
@@ -161,6 +163,7 @@ const ReservationTable = ({
                   type="button"
                   onClick={() => onDelete?.(reservation.id)}
                   aria-label={`Eliminar reserva de ${reservation.userName}`}
+                  title={`Eliminar reserva de ${reservation.userName}`}
                   className="flex-1 p-2 bg-red-50 text-red-600 rounded-lg font-medium text-sm hover:bg-red-100 transition-colors dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
                 >
                   <Trash2 size={16} className="mx-auto" aria-hidden="true" />

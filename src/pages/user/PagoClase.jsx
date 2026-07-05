@@ -229,7 +229,7 @@ function PagoClase() {
           className="mt-5 flex items-center gap-2 text-[12px] text-muted-foreground"
         >
           <ShieldCheck size={14} className="text-muted-foreground" />
-          Pago seguro — tus datos están protegidos
+          Revisa el método y el importe antes de confirmar.
         </motion.div>
 
         <div className="h-4" />
