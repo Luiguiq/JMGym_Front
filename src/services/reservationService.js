@@ -22,6 +22,7 @@ function mapReservation(item) {
     motivo_cancelacion: item.motivo_cancelacion ?? null,
     detalle_cancelacion: item.detalle_cancelacion ?? null,
     fecha_cancelacion: item.fecha_cancelacion ?? null,
+    historial_estados: item.historial_estados ?? [],
     className: item.clase?.nombre_clase ?? '',
     hora_inicio: item.clase?.hora_inicio ?? '',
     hora_fin: item.clase?.hora_fin ?? '',

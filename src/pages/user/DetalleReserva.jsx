@@ -61,6 +61,56 @@ const PAGO_ICON = {
   REEMBOLSADO: Undo2,
 };
 
+const HISTORIAL_ICON = {
+  RESERVA_CREADA: Calendar,
+  PAGO_PENDIENTE: Clock,
+  PAGO_CONFIRMADO: CreditCard,
+  PAGO_VENCIDO: AlertTriangle,
+  PAGO_RECHAZADO: AlertTriangle,
+  PAGO_REEMBOLSADO: Undo2,
+  RESERVA_CANCELADA: XCircle,
+  REEMBOLSO_SOLICITADO: Clock,
+  REEMBOLSO_APROBADO: CheckCircle,
+  REEMBOLSO_RECHAZADO: XCircle,
+  RESERVA_COMPLETADA: CheckCircle,
+  RESERVA_FINALIZADA: Flag,
+  ASIENTO_CAMBIADO: Armchair,
+};
+
+function getHistoryEventStyle(tipoEvento) {
+  switch (tipoEvento) {
+    case 'PAGO_CONFIRMADO':
+    case 'REEMBOLSO_APROBADO':
+    case 'RESERVA_COMPLETADA':
+      return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30';
+    case 'RESERVA_CANCELADA':
+    case 'PAGO_RECHAZADO':
+    case 'REEMBOLSO_RECHAZADO':
+      return 'bg-red-50 text-red-700 border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/30';
+    case 'PAGO_PENDIENTE':
+    case 'PAGO_VENCIDO':
+    case 'REEMBOLSO_SOLICITADO':
+      return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30';
+    case 'PAGO_REEMBOLSADO':
+      return 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/10 dark:text-purple-300 dark:border-purple-500/30';
+    default:
+      return 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/30';
+  }
+}
+
+function formatHistoryDate(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleString('es-PE', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 function buildClassStartDate(dateStr, timeStr) {
   if (!dateStr || !timeStr) return null;
 
@@ -141,6 +191,7 @@ function DetalleReserva() {
   const isCompleted =
     reservation?.estado_reserva === 'FINALIZADA' ||
     reservation?.estado_reserva === 'COMPLETADA';
+  const historialEstados = reservation?.historial_estados ?? [];
 
   useEffect(() => {
     reservationService
@@ -402,6 +453,50 @@ function DetalleReserva() {
                 </p>
               </div>
             )}
+            <section className="mt-6 rounded-3xl border border-border-light bg-surface p-5">
+              <h3 className="text-xl font-black text-foreground">Historial de la reserva</h3>
+
+              {historialEstados.length === 0 ? (
+                <div className="mt-4 rounded-2xl border border-dashed border-border bg-card p-4 text-sm text-secondary">
+                  No hay cambios anteriores registrados para esta reserva.
+                </div>
+              ) : (
+                <ol className="mt-5 space-y-4">
+                  {historialEstados.map((evento, index) => {
+                    const EventIcon = HISTORIAL_ICON[evento.tipo_evento] || CheckCircle;
+                    const isLast = index === historialEstados.length - 1;
+
+                    return (
+                      <li key={evento.id ?? `${evento.tipo_evento}-${index}`} className="relative flex gap-3 sm:gap-4">
+                        {!isLast && (
+                          <span className="absolute left-5 top-11 h-[calc(100%+0.25rem)] w-px bg-border" aria-hidden="true" />
+                        )}
+                        <span className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border ${getHistoryEventStyle(evento.tipo_evento)}`}>
+                          <EventIcon className="h-5 w-5" aria-hidden="true" />
+                        </span>
+                        <div className="min-w-0 flex-1 rounded-2xl border border-border-light bg-card p-4">
+                          <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                            <p className="font-black text-foreground">
+                              {evento.titulo || 'Cambio registrado'}
+                            </p>
+                            {evento.fecha_hora && (
+                              <time className="text-xs font-semibold text-muted sm:text-right" dateTime={evento.fecha_hora}>
+                                {formatHistoryDate(evento.fecha_hora)}
+                              </time>
+                            )}
+                          </div>
+                          {evento.descripcion && (
+                            <p className="mt-1 text-sm leading-relaxed text-secondary">
+                              {evento.descripcion}
+                            </p>
+                          )}
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ol>
+              )}
+            </section>
           </div>
         </div>
 
