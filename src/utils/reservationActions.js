@@ -7,33 +7,65 @@ function buildClassStartDate(reservation) {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+function normalize(value) {
+  if (value == null) return '';
+  return String(value).trim().toUpperCase();
+}
+
+function getEstadoReserva(reservation) {
+  return normalize(reservation?.estado_reserva ?? reservation?.status);
+}
+
+function getEstadoPago(reservation) {
+  return normalize(reservation?.estado_pago ?? reservation?.paymentStatus);
+}
+
+function getMetodoPago(reservation) {
+  return normalize(
+    reservation?.metodo_pago ??
+    reservation?.metodoPago ??
+    reservation?.paymentMethod
+  );
+}
+
 export function claseYaInicio(reservation) {
   const classStart = buildClassStartDate(reservation);
   return classStart ? classStart <= new Date() : false;
 }
 
 export function puedeCancelarReserva(reservation) {
+  const estadoReserva = getEstadoReserva(reservation);
+  const estadoPago = getEstadoPago(reservation);
+
   return (
-    reservation?.estado_reserva === 'ACTIVA' &&
-    reservation?.estado_pago === 'PENDIENTE' &&
+    estadoReserva === 'ACTIVA' &&
+    estadoPago === 'PENDIENTE' &&
     !claseYaInicio(reservation)
   );
 }
 
 export function puedeSolicitarReembolso(reservation) {
+  const metodoPago = getMetodoPago(reservation);
+  const estadoReserva = getEstadoReserva(reservation);
+  const estadoPago = getEstadoPago(reservation);
+
   return (
-    reservation?.metodo_pago?.toUpperCase() === 'YAPE' &&
-    reservation?.estado_reserva === 'ACTIVA' &&
-    reservation?.estado_pago === 'PAGADO' &&
+    metodoPago === 'YAPE' &&
+    estadoReserva === 'ACTIVA' &&
+    estadoPago === 'PAGADO' &&
     !claseYaInicio(reservation)
   );
 }
 
 export function puedeCancelarSolicitudReembolso(reservation) {
+  const metodoPago = getMetodoPago(reservation);
+  const estadoReserva = getEstadoReserva(reservation);
+  const estadoPago = getEstadoPago(reservation);
+
   return (
-    reservation?.metodo_pago?.toUpperCase() === 'YAPE' &&
-    reservation?.estado_reserva === 'ACTIVA' &&
-    reservation?.estado_pago === 'REEMBOLSO_PENDIENTE' &&
+    metodoPago === 'YAPE' &&
+    estadoReserva === 'ACTIVA' &&
+    estadoPago === 'REEMBOLSO_PENDIENTE' &&
     !claseYaInicio(reservation)
   );
 }

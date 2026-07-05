@@ -190,7 +190,7 @@ function ReservationCard({ reservation, onRefresh }) {
                 onClick={() => setShowCancel(true)}
                 className="min-h-11 rounded-xl border border-border px-4 py-2.5 text-[12px] font-bold text-secondary transition hover:bg-surface"
               >
-                Cancelar
+                Cancelar reserva
               </button>
             )}
             {canRequestRefund && (

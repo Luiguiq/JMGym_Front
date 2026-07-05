@@ -286,7 +286,7 @@ function ReservationCard({ reservation, onRefresh }) {
               aria-label={`Cancelar la reserva ${reservation.codigo_reserva || ''}`}
               className="flex-1 rounded-xl bg-red-50 py-2.5 text-xs font-bold text-red-600 transition hover:bg-red-100 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
             >
-              <XCircle className="inline-block w-3.5 h-3.5 mr-1" /> Cancelar
+              <XCircle className="inline-block w-3.5 h-3.5 mr-1" /> Cancelar reserva
             </button>
           )}
 
@@ -447,7 +447,7 @@ function ReservationCard({ reservation, onRefresh }) {
                     </span>
                   ) : (
                     <span className="inline-flex items-center justify-center gap-1.5">
-                      <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" /> Cancelar
+                      <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" /> Cancelar reserva
                     </span>
                   )}
                 </button>
