@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { reservationService } from '../../services/reservationService.js';
 import PageLoader from '../../components/common/PageLoader.jsx';
 import { CheckCircle, XCircle, Flag, CreditCard, Clock, AlertTriangle, Undo2, Search, Calendar, Armchair, User } from 'lucide-react';
-import QRCode from 'react-qr-code';
 
 const MOTIVOS_LABEL = {
   CAMBIO_HORARIO: 'Cambio de horario',
@@ -127,14 +126,6 @@ function DetalleReserva() {
   const navigate = useNavigate();
 
   const [reservation, setReservation] = useState(null);
-  const qrValue = reservation?.qr_checkin || reservation?.qr_url || null;
-
-  const canShowQR =
-    reservation?.estado_reserva === 'ACTIVA' &&
-    (
-      reservation?.estado_pago === 'PAGADO' ||
-      reservation?.estado_pago === 'PENDIENTE'
-    );
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -407,38 +398,6 @@ function DetalleReserva() {
                 </div>
               )}
             </div>
-
-            {canShowQR && qrValue ? (
-              <div className="rounded-3xl border border-blue-100/50 bg-card p-6">
-                <h3 className="mb-4 text-center font-black text-foreground">
-                  C�digo QR de Check-in
-                </h3>
-
-                <div className="flex justify-center">
-                  <div className="rounded-2xl bg-card p-3 shadow-sm">
-                    <QRCode
-                      value={qrValue}
-                      size={220}
-                    />
-                  </div>
-                </div>
-
-                <p className="mt-4 text-center text-sm text-secondary">
-                  Presenta este c�digo al ingresar al sal�n.
-                </p>
-              </div>
-            ) : (
-              <div className="rounded-3xl border border-dashed border-border bg-surface p-6 text-center">
-                <p className="mt-2 text-sm text-secondary">
-                  El c�digo QR solo est� disponible para reservas activas
-                  pendientes o pagadas.
-                </p>
-
-                <p className="mt-2 text-sm text-secondary">
-                  Esta reserva todav�a no tiene un c�digo QR generado.
-                </p>
-              </div>
-            )}
 
             {reservation.estado_reserva === 'ACTIVA' && reservation.estado_pago === 'PENDIENTE' && reservation.fecha_limite_pago && (
               <div className="mt-6 rounded-3xl bg-amber-50 border border-amber-200 p-4 text-center dark:bg-amber-500/10 dark:border-amber-500/30">
