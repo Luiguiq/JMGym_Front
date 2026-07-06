@@ -38,6 +38,8 @@ import Register from '../pages/user/Register.jsx';;
 import SeleccionEspacio from '../pages/user/SeleccionEspacio';
 import PagoClase from '../pages/user/PagoClase';
 import Notificaciones from '../pages/user/Notificaciones.jsx';
+import RestablecerContrasena from '../pages/user/RestablecerContrasena.jsx';
+import NotFound from '../pages/user/NotFound.jsx';
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) return <Navigate to="/cliente/login" replace />;
@@ -64,6 +66,7 @@ function AppRoutes() {
         <Route index element={<Navigate to="login" replace />} />
         <Route path="login" element={<Login />} />
         <Route path="registro" element={<Register />} />
+        <Route path="restablecer-contrasena" element={<RestablecerContrasena />} />
         <Route path="home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="clases" element={<ProtectedRoute><ListaClases /></ProtectedRoute>} />
         <Route path="clases/:id" element={<ProtectedRoute><DetalleClase /></ProtectedRoute>} />
@@ -88,6 +91,7 @@ function AppRoutes() {
           <Route path="/cliente/clases/:id" element={<DetalleClase />} />
           <Route path="/cliente/seleccion-espacio/:id" element={<SeleccionEspacio />} />
         <Route path="/cliente/pago/:id" element={<PagoClase />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
 
       <Route path="/admin/login" element={<AdminLogin />} />

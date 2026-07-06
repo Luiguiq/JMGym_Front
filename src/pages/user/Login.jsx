@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { authService } from '../../services/authService.js';
+import { Zap, MapPin, Smartphone, ArrowLeft, Mail, Lock, X } from 'lucide-react';
 import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 import { Zap, MapPin, Smartphone, ArrowLeft, Mail, Lock } from 'lucide-react';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
@@ -27,11 +29,16 @@ function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(true);
+
+  const [showForgot, setShowForgot] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotMessage, setForgotMessage] = useState('');
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -39,12 +46,27 @@ function Login() {
     setLoading(true);
 
     try {
-      await login({ email, password }, remember);
+      await login({ identifier, password }, remember);
       navigate('/cliente/home');
     } catch (err) {
       setError(getFriendlyErrorMessage(err, 'No pudimos iniciar sesión. Revisa tus credenciales e intenta nuevamente.'));
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleForgotSubmit(event) {
+    event.preventDefault();
+    setForgotLoading(true);
+    setForgotMessage('');
+
+    try {
+      const res = await authService.forgotPassword({ correo: forgotEmail });
+      setForgotMessage(res.mensaje || 'Revisa tu correo para continuar.');
+    } catch (err) {
+      setForgotMessage(err.message);
+    } finally {
+      setForgotLoading(false);
     }
   }
 
@@ -205,10 +227,10 @@ function Login() {
               <span aria-hidden="true"><Mail size={20} /></span>
               <input
                 className="w-full bg-transparent outline-none text-foreground placeholder:text-muted"
-                type="email"
+                type="text"
                 placeholder="tu@correo.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 required
               />
             </div>
@@ -243,6 +265,7 @@ function Login() {
             <button
               className="font-bold text-brand-600 transition hover:text-brand-700"
               type="button"
+              onClick={() => setShowForgot(true)}
             >
               ¿Olvidaste tu contraseña?
             </button>
@@ -288,6 +311,60 @@ function Login() {
           </Link>
         </form>
       </section>
+
+      {showForgot && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-[32px] bg-card p-6 shadow-soft sm:p-8">
+            <div className="mb-6 flex items-center justify-between">
+              <h3 className="font-display text-2xl font-bold text-foreground">Restablecer contraseña</h3>
+              <button
+                className="grid h-10 w-10 place-items-center rounded-xl text-secondary transition hover:bg-surface"
+                type="button"
+                onClick={() => { setShowForgot(false); setForgotMessage(''); setForgotEmail(''); }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleForgotSubmit} className="grid gap-5">
+              <label className="grid gap-2 font-semibold text-foreground">
+            Correo
+                <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)]">
+                  <span aria-hidden="true"><Mail size={20} /></span>
+                  <input
+                    className="w-full bg-transparent outline-none text-foreground placeholder:text-muted"
+                    type="email"
+                    placeholder="tu@correo.com"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </label>
+
+              {forgotMessage && (
+                <div className="rounded-2xl border px-4 py-3 text-sm font-bold"
+                  style={{
+                    borderColor: forgotMessage.includes('Revisa') || forgotMessage.includes('Si el correo') ? '#bbf7d0' : '#fecaca',
+                    backgroundColor: forgotMessage.includes('Revisa') || forgotMessage.includes('Si el correo') ? '#f0fdf4' : '#fef2f2',
+                    color: forgotMessage.includes('Revisa') || forgotMessage.includes('Si el correo') ? '#166534' : '#dc2626',
+                  }}
+                >
+                  {forgotMessage}
+                </div>
+              )}
+
+              <button
+                className="min-h-12 rounded-2xl bg-brand-600 font-bold text-primary-foreground shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70"
+                type="submit"
+                disabled={forgotLoading}
+              >
+                {forgotLoading ? 'Enviando...' : 'Enviar enlace'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

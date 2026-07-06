@@ -39,8 +39,8 @@ export function AuthProvider({ children }) {
     };
   }
 
-  const login = useCallback(async ({ email, password }, remember = true) => {
-    const data = await authService.login({ correo_personal: email, password });
+  const login = useCallback(async ({ identifier, password }, remember = true) => {
+    const data = await authService.login({ correo_personal: identifier, password });
     const user = mapUser(data.user);
     setUser(user);
     setToken(data.token);
