@@ -1,0 +1,227 @@
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { authService } from '../../services/authService.js';
+import { Zap, MapPin, Smartphone, ArrowLeft, Mail, Lock, X, Check } from 'lucide-react';
+import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
+
+const highlights = [
+  { icon: <Zap size={24} />, title: 'Reserva rápida', text: 'Encuentra y reserva clases en pocos pasos.' },
+  { icon: <MapPin size={24} />, title: 'Control claro', text: 'Selecciona tu espacio y continúa sin confusión.' },
+  { icon: <Smartphone size={24} />, title: 'Acceso flexible', text: 'Funciona bien en móvil, tablet y escritorio.' },
+];
+
+function RestablecerContrasena() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const tokenFromUrl = searchParams.get('token');
+
+  const [step, setStep] = useState(tokenFromUrl ? 2 : 1);
+  const [correo, setCorreo] = useState('');
+  const [token, setToken] = useState(tokenFromUrl || '');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (tokenFromUrl) {
+      setToken(tokenFromUrl);
+    }
+  }, [tokenFromUrl]);
+
+  async function handleRequestReset(event) {
+    event.preventDefault();
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    try {
+      const res = await authService.forgotPassword({ correo });
+      setSuccess(res.mensaje || 'Revisa tu correo para continuar.');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleResetPassword(event) {
+    event.preventDefault();
+    setError('');
+    setSuccess('');
+
+    if (password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Las contraseñas no coinciden.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await authService.resetPassword({ token, password });
+      setSuccess(res.mensaje || 'Contraseña restablecida exitosamente.');
+      setTimeout(() => navigate('/cliente/login'), 2000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5">
+      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-7xl overflow-hidden rounded-[32px] bg-card shadow-[0_24px_70px_rgba(15,23,42,.08)] lg:grid-cols-[0.92fr_1.08fr]">
+        <aside className="flex flex-col justify-between gap-6 bg-gradient-to-br from-brand-600 via-[#0a58ca] to-[#1576ff] p-6 text-primary-foreground sm:p-8 lg:p-10">
+          <Link className="grid h-12 w-12 place-items-center rounded-2xl bg-primary-foreground/15 text-2xl font-black text-primary-foreground transition hover:bg-primary-foreground/20" to="/cliente/login" aria-label="Volver al inicio">
+            <ArrowLeft size={24} />
+          </Link>
+
+          <div className="grid gap-6">
+            <div className="flex items-center gap-4">
+              <img className="h-20 w-20 rounded-3xl bg-card object-contain shadow-[0_12px_28px_rgba(0,0,0,.12)] sm:h-24 sm:w-24" src={logoJmGym} alt="Logo de JMGym" />
+              <div>
+                <h1 className="font-display text-4xl font-bold leading-none sm:text-5xl lg:text-6xl">JMGym</h1>
+                <p className="mt-2 text-sm text-primary-foreground/85 sm:text-base">Tu espacio de reservas de baile, simple y claro.</p>
+              </div>
+            </div>
+
+            <div className="max-w-xl">
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-primary-foreground/75">Seguridad</p>
+              <h2 className="mt-4 max-w-[16ch] font-display text-4xl font-bold leading-[0.95] sm:text-5xl lg:text-6xl">
+                {step === 1 ? 'Restablece tu contraseña' : 'Nueva contraseña'}
+              </h2>
+              <p className="mt-4 max-w-lg text-sm leading-relaxed text-primary-foreground/85 sm:text-base lg:text-lg">
+                {step === 1
+                  ? 'Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.'
+                  : 'Ingresa tu nueva contraseña para acceder de nuevo a tu cuenta.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            {highlights.map((item) => (
+              <article key={item.title} className="rounded-[24px] bg-primary-foreground/10 p-4 ring-1 ring-white/10 backdrop-blur-sm sm:p-5">
+                <div className="mb-3 text-2xl">{item.icon}</div>
+                <h3 className="font-bold text-primary-foreground">{item.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-primary-foreground/80">{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </aside>
+
+        <div className="flex flex-col justify-center gap-5 p-6 sm:p-8 lg:p-10">
+          {step === 1 && (
+            <form className="grid gap-5" onSubmit={handleRequestReset}>
+              <div>
+                <h2 className="font-display text-4xl font-bold text-foreground sm:text-5xl">Solicitar cambio</h2>
+                <p className="mt-2 text-secondary">Te enviaremos un enlace a tu correo.</p>
+              </div>
+
+              {error && (
+                <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">{error}</div>
+              )}
+              {success && (
+                <div className="rounded-2xl border border-green-100 bg-green-50 px-4 py-3 text-sm font-bold text-green-700">{success}</div>
+              )}
+
+              <label className="grid gap-2 font-semibold text-foreground">
+                Correo electrónico
+                <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+                  <span aria-hidden="true"><Mail size={20} /></span>
+                  <input
+                    className="w-full bg-transparent outline-none text-foreground placeholder:text-muted"
+                    type="email"
+                    placeholder="tu@correo.com"
+                    value={correo}
+                    onChange={(e) => setCorreo(e.target.value)}
+                    required
+                  />
+                </div>
+              </label>
+
+              <button
+                className="min-h-14 rounded-2xl bg-brand-600 font-bold text-primary-foreground shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-16"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? 'Enviando...' : 'Enviar enlace'}
+              </button>
+
+              <Link className="text-center text-sm font-bold text-brand-600 transition hover:text-brand-700" to="/cliente/login">
+                Volver al inicio de sesión
+              </Link>
+            </form>
+          )}
+
+          {step === 2 && (
+            <form className="grid gap-5" onSubmit={handleResetPassword}>
+              <div>
+                <h2 className="font-display text-4xl font-bold text-foreground sm:text-5xl">Nueva contraseña</h2>
+                <p className="mt-2 text-secondary">Ingresa y confirma tu nueva contraseña.</p>
+              </div>
+
+              {error && (
+                <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">{error}</div>
+              )}
+              {success && (
+                <div className="rounded-2xl border border-green-100 bg-green-50 px-4 py-3 text-sm font-bold text-green-700">{success}</div>
+              )}
+
+              <label className="grid gap-2 font-semibold text-foreground">
+                Nueva contraseña
+                <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+                  <span aria-hidden="true"><Lock size={20} /></span>
+                  <input
+                    className="w-full bg-transparent outline-none text-foreground placeholder:text-muted"
+                    type="password"
+                    placeholder="Mínimo 6 caracteres"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                  />
+                </div>
+              </label>
+
+              <label className="grid gap-2 font-semibold text-foreground">
+                Confirmar contraseña
+                <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
+                  <span aria-hidden="true"><Check size={20} /></span>
+                  <input
+                    className="w-full bg-transparent outline-none text-foreground placeholder:text-muted"
+                    type="password"
+                    placeholder="Repite la contraseña"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    minLength={6}
+                  />
+                </div>
+              </label>
+
+              <button
+                className="min-h-14 rounded-2xl bg-brand-600 font-bold text-primary-foreground shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-16"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? 'Restableciendo...' : 'Restablecer contraseña'}
+              </button>
+
+              <Link className="text-center text-sm font-bold text-brand-600 transition hover:text-brand-700" to="/cliente/login">
+                Volver al inicio de sesión
+              </Link>
+            </form>
+          )}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+export default RestablecerContrasena;
