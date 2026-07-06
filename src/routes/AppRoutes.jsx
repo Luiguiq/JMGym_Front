@@ -28,6 +28,7 @@ import Perfil from '../pages/user/Perfil.jsx';
 import AyudaSoporte from '../pages/user/AyudaSoporte.jsx';
 import CambiarAsiento from '../pages/user/CambiarAsiento.jsx';
 import CancelacionesAdmin from '../pages/admin/CancelacionesAdmin.jsx';
+import PagosYapeAdmin from '../pages/admin/PagosYapeAdmin.jsx';
 import CategoriasAdmin from '../pages/admin/CategoriasAdmin.jsx';
 import ConfiguracionesAdmin from '../pages/admin/ConfiguracionesAdmin.jsx';
 import Configuraciones from '../pages/user/Configuraciones.jsx';
@@ -105,6 +106,7 @@ function AppRoutes() {
         <Route path="instructores" element={<InstructoresAdmin />} />
         <Route path="categorias" element={<CategoriasAdmin />} />
         <Route path="cancelaciones" element={<CancelacionesAdmin />} />
+        <Route path="pagos-yape" element={<PagosYapeAdmin />} />
         <Route path="usuarios" element={<UsuariosAdmin />} />
         <Route path="crear-admin" element={<CrearAdmin />} />
         <Route path="notificaciones" element={<NotificacionesAdmin />} />

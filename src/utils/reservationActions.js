@@ -36,12 +36,16 @@ export function claseYaInicio(reservation) {
 export function puedeCancelarReserva(reservation) {
   const estadoReserva = getEstadoReserva(reservation);
   const estadoPago = getEstadoPago(reservation);
+  const metodoPago = getMetodoPago(reservation);
 
-  return (
-    estadoReserva === 'ACTIVA' &&
-    estadoPago === 'PENDIENTE' &&
-    !claseYaInicio(reservation)
-  );
+  if (estadoReserva !== 'ACTIVA') return false;
+  if (claseYaInicio(reservation)) return false;
+
+  if (estadoPago === 'PENDIENTE') return true;
+
+  if (metodoPago === 'EFECTIVO' && estadoPago === 'PAGADO') return true;
+
+  return false;
 }
 
 export function puedeSolicitarReembolso(reservation) {

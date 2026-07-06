@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Drawer } from 'vaul';
 import {
   ArrowLeft, Check, CheckCircle, Dumbbell, MapPin,
-  Clock, Lock, User, XCircle, ArrowRight, ChevronRight
+  Clock, Lock, User, XCircle, ArrowRight, ChevronRight,
+  Eye
 } from 'lucide-react';
 import { classService } from '../../services/classService.js';
 import { reservationService } from '../../services/reservationService.js';
@@ -67,7 +68,7 @@ function CambiarAsiento() {
     try {
       await reservationService.changeSeat(id, selectedSeat.id_espacio);
       setSuccess(true);
-      setTimeout(() => navigate(`/cliente/reservas/${id}`), 1800);
+      setTimeout(() => navigate(`/cliente/reservas/${id}`, { replace: true }), 1500);
     } catch (err) {
       setError(err?.message || 'Error al cambiar el espacio');
       setDrawerOpen(false);
@@ -105,6 +106,12 @@ function CambiarAsiento() {
           </div>
           <h2 className="text-2xl font-black text-foreground">Espacio cambiado</h2>
           <p className="text-sm text-muted">Tu nuevo espacio se ha asignado correctamente.</p>
+          <Link
+            to={`/cliente/reservas/${id}`}
+            className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-brand-600 px-6 py-3 font-bold text-primary-foreground shadow-soft transition hover:bg-brand-700"
+          >
+            <Eye size={18} /> Ver mi reserva
+          </Link>
         </motion.div>
       </main>
     );

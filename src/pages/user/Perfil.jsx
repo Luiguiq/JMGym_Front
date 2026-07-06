@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
   UserRound, Pencil, Bell, Shield, LogOut, CreditCard,
   Calendar, Trophy, XCircle, DollarSign, Dumbbell, ChevronRight,
-  HelpCircle, ArrowRight, Camera, Sparkles, Settings
+  HelpCircle, Camera, Sparkles, Settings
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { userService } from '../../services/userService.js';
@@ -259,37 +259,7 @@ function Perfil() {
           </motion.div>
         )}
 
-        {/* ─── Acciones rápidas ─── */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.25 }}
-          className="mt-6"
-        >
-          <p className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Acceso rápido</p>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { label: 'Reservar clase', icon: Calendar, to: '/cliente/clases', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-primary/10 dark:bg-card', border: 'border-primary/10 dark:border-primary/30', text: 'text-foreground', arrow: 'text-muted-foreground', iconBg: 'bg-card dark:bg-primary/10' },
-              { label: 'Ver reservas', icon: Dumbbell, to: '/cliente/reservas', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-card', border: 'border-emerald-100 dark:border-emerald-500/30', text: 'text-emerald-950 dark:text-foreground', arrow: 'text-emerald-700 dark:text-muted-foreground', iconBg: 'bg-card dark:bg-emerald-500/10' },
-              { label: 'Mi historial', icon: Trophy, to: '/cliente/reservas?tab=historial', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-card', border: 'border-amber-100 dark:border-amber-500/30', text: 'text-amber-950 dark:text-foreground', arrow: 'text-amber-700 dark:text-muted-foreground', iconBg: 'bg-card dark:bg-amber-500/10' },
-              { label: 'Código QR', icon: CreditCard, to: '/cliente/qr', color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-card', border: 'border-purple-100 dark:border-purple-500/30', text: 'text-purple-950 dark:text-foreground', arrow: 'text-purple-700 dark:text-muted-foreground', iconBg: 'bg-card dark:bg-purple-500/10' },
-            ].map(({ label, icon: Icon, to, color, bg, border, text, arrow, iconBg }) => (
-              <button
-                key={label}
-                onClick={() => navigate(to)}
-                className={`flex items-center gap-3 rounded-2xl border ${border} ${bg} p-4 text-left shadow-sm transition hover:shadow-md`}
-              >
-                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconBg} shadow-sm`}>
-                  <Icon size={20} className={color} />
-                </div>
-                <div>
-                  <p className={`text-[13px] font-bold ${text}`}>{label}</p>
-                  <ArrowRight size={12} className={`mt-0.5 ${arrow}`} />
-                </div>
-              </button>
-            ))}
-          </div>
-        </motion.div>
+
 
         {/* ─── Mi cuenta ─── */}
         <motion.div

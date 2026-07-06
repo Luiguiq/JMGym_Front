@@ -62,9 +62,10 @@ export const reservationService = {
       method: 'PATCH',
       body: JSON.stringify({ motivo, detalle }),
     }),
-  requestRefund: (id) =>
+  requestRefund: (id, motivo, detalle) =>
     apiRequest(`/reservations/${id}/refund-request`, {
       method: 'PATCH',
+      body: JSON.stringify({ motivo, detalle }),
     }).then(mapReservation),
   cancelRefundRequest: (id) =>
     apiRequest(`/reservations/${id}/refund-request/cancel`, {

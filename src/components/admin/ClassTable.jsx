@@ -107,7 +107,7 @@ const ClassTable = ({
                       <Edit2 size={16} />
                     </button>
                     <button
-                      onClick={() => onDelete?.(clase.id)}
+                      onClick={() => onDelete?.(clase)}
                       className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors dark:text-red-300 dark:hover:bg-red-500/10"
                       aria-label={`Eliminar ${clase.name}`}
                       title={`Eliminar ${clase.name}`}
@@ -178,7 +178,7 @@ const ClassTable = ({
                 <Edit2 size={16} className="mx-auto" />
               </button>
               <button
-                onClick={() => onDelete?.(clase.id)}
+                onClick={() => onDelete?.(clase)}
                 className="flex-1 p-2 bg-red-50 text-red-600 rounded-lg font-medium text-sm hover:bg-red-100 transition-colors dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
                 aria-label={`Eliminar ${clase.name}`}
                 title={`Eliminar ${clase.name}`}

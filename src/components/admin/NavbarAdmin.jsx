@@ -1,12 +1,108 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Menu, Bell, Search, LogOut } from 'lucide-react';
-import { useState } from 'react';
+import { Menu, Bell, Search, LogOut, X } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import React from 'react';
+import { notificationService } from '../../services/notificationService.js';
+import {
+  AlarmClock, CreditCard, CheckCircle, Clock, User, Target,
+  XCircle, DollarSign, Lock, ClipboardList, Trash2, Armchair, Megaphone
+} from 'lucide-react';
+
+const typeIcons = {
+  RECORDATORIO: AlarmClock, PAGO: CreditCard, PAGO_CONFIRMADO: CheckCircle,
+  CAMBIO_HORARIO: Clock, CAMBIO_INSTRUCTOR: User, NUEVA_CLASE: Target,
+  CANCELACION: XCircle, REEMBOLSO: DollarSign, BLOQUEO_CUENTA: Lock,
+  RESERVA_CONFIRMADA: ClipboardList, RESERVA_CANCELADA: Trash2,
+  CAMBIO_ESPACIO: Armchair, NOTIFICACION_GENERAL: Megaphone,
+};
+
+const typeColors = {
+  RECORDATORIO: 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300',
+  PAGO: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300',
+  PAGO_CONFIRMADO: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300',
+  CAMBIO_HORARIO: 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300',
+  CAMBIO_INSTRUCTOR: 'bg-purple-100 text-purple-700 dark:bg-purple-500/10 dark:text-purple-300',
+  NUEVA_CLASE: 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300',
+  CANCELACION: 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-300',
+  REEMBOLSO: 'bg-teal-100 text-teal-700 dark:bg-teal-500/10 dark:text-teal-300',
+  BLOQUEO_CUENTA: 'bg-orange-100 text-orange-700 dark:bg-orange-500/10 dark:text-orange-300',
+  RESERVA_CONFIRMADA: 'bg-sky-100 text-sky-700 dark:bg-sky-500/10 dark:text-sky-300',
+  RESERVA_CANCELADA: 'bg-border-light text-secondary dark:bg-surface dark:text-muted',
+  CAMBIO_ESPACIO: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300',
+  NOTIFICACION_GENERAL: 'bg-gray-100 text-gray-700 dark:bg-surface dark:text-secondary',
+};
+
+function formatTime(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const now = new Date();
+  const diff = now - d;
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Ahora';
+  if (mins < 60) return `Hace ${mins} min`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `Hace ${hours}h`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `Hace ${days}d`;
+  return d.toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
+}
 
 const NavbarAdmin = ({ onMenuClick, sidebarOpen }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [unread, setUnread] = useState(0);
+  const [items, setItems] = useState([]);
+  const [notifPos, setNotifPos] = useState({ top: 0, right: 0 });
+  const notifRef = useRef(null);
+  const notifBtnRef = useRef(null);
+
+  const fetchAll = useCallback(async () => {
+    try {
+      const data = await notificationService.getAllNotifications();
+      setItems(data.slice(0, 5));
+      const unreadCount = data.filter((n) => !n.read).length;
+      setUnread(unreadCount);
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    fetchAll();
+    const interval = setInterval(fetchAll, 30000);
+    return () => clearInterval(interval);
+  }, [fetchAll]);
+
+  useEffect(() => {
+    if (notifOpen) fetchAll();
+  }, [notifOpen, fetchAll]);
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  async function handleMarkAllRead() {
+    try {
+      await notificationService.markAllAsRead();
+      setUnread(0);
+      setItems((prev) => prev.map((n) => ({ ...n, read: true })));
+    } catch {}
+  }
+
+  async function handleMarkRead(id) {
+    try {
+      await notificationService.markAsRead(id);
+      setUnread((prev) => Math.max(0, prev - 1));
+      setItems((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+    } catch {}
+  }
 
   const handleLogout = () => {
     logout();
@@ -40,10 +136,83 @@ const NavbarAdmin = ({ onMenuClick, sidebarOpen }) => {
       {/* Right - Notifications & User */}
       <div className="flex items-center gap-4">
         {/* Notifications */}
-        <button className="relative p-2 hover:bg-border-light rounded-lg transition-colors dark:hover:bg-card" aria-label="Notificaciones">
-          <Bell size={20} className="text-secondary dark:text-secondary" aria-hidden="true" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" aria-hidden="true" />
-        </button>
+        <div ref={notifRef} className="relative">
+          <button
+            ref={notifBtnRef}
+            onClick={() => {
+              if (!notifOpen) {
+                const rect = notifBtnRef.current?.getBoundingClientRect();
+                if (rect) {
+                  setNotifPos({
+                    top: rect.bottom + 8,
+                    right: window.innerWidth - rect.right,
+                  });
+                }
+              }
+              setNotifOpen((prev) => !prev);
+            }}
+            className="relative p-2 hover:bg-border-light rounded-lg transition-colors dark:hover:bg-card"
+            aria-label="Notificaciones"
+          >
+            <Bell size={20} className="text-secondary dark:text-secondary" aria-hidden="true" />
+            {unread > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-primary-foreground shadow">
+                {unread > 99 ? '99+' : unread}
+              </span>
+            )}
+          </button>
+
+          {/* Notifications dropdown */}
+          {notifOpen && (
+            <div style={{ position: 'fixed', top: notifPos.top, right: notifPos.right }} className="z-[9999] w-[380px] rounded-2xl border border-border-light bg-card shadow-xl dark:border-border dark:bg-card">
+              <div className="flex items-center justify-between border-b border-border-light px-4 py-3 dark:border-border">
+                <h3 className="text-sm font-bold text-foreground dark:text-foreground">Notificaciones</h3>
+                <div className="flex items-center gap-2">
+                  {unread > 0 && (
+                    <button onClick={handleMarkAllRead} className="text-xs font-semibold text-brand-600 hover:text-brand-700">
+                      Marcar todo leído
+                    </button>
+                  )}
+                  <button onClick={() => { setNotifOpen(false); }} className="text-xs font-semibold text-muted-foreground hover:text-secondary dark:text-muted dark:hover:text-muted-foreground">
+                    Cerrar <X size={12} className="inline" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="max-h-[360px] overflow-y-auto">
+                {items.length === 0 ? (
+                  <div className="flex flex-col items-center py-10 text-muted-foreground dark:text-muted">
+                    <Bell size={32} strokeWidth={1.5} />
+                    <p className="mt-2 text-sm">Sin notificaciones</p>
+                  </div>
+                ) : (
+                  items.map((n) => (
+                    <button
+                      key={n.id}
+                      onClick={() => {
+                        if (!n.read) handleMarkRead(n.id);
+                        setNotifOpen(false);
+                      }}
+                      className={`flex w-full gap-3 px-4 py-3 text-left transition hover:bg-surface dark:hover:bg-border/50 ${!n.read ? 'bg-brand-50/40 dark:bg-brand-500/10' : ''}`}
+                    >
+                      <span className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm ${typeColors[n.type] || 'bg-border-light text-secondary'}`}>
+                        {typeIcons[n.type] ? React.createElement(typeIcons[n.type], { size: 16 }) : <Bell size={16} />}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <p className={`text-sm ${!n.read ? 'font-bold text-foreground dark:text-foreground' : 'text-secondary dark:text-muted-foreground'}`}>{n.title}</p>
+                          {!n.read && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-500" />}
+                        </div>
+                        <p className="mt-0.5 line-clamp-2 text-xs text-muted dark:text-muted-foreground">{n.message}</p>
+                        <p className="mt-1 text-[10px] text-muted-foreground dark:text-muted">{formatTime(n.sentAt)}</p>
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* User Dropdown */}
         <div className="relative">

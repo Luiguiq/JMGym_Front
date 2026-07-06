@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Bell, AlarmClock, CreditCard, CheckCircle, Clock, User, Target, XCircle, DollarSign, Lock, ClipboardList, Trash2, Armchair, Megaphone } from 'lucide-react';
 import { notificationService } from '../../services/notificationService.js';
@@ -40,7 +41,9 @@ function NotificationBell({ floating }) {
   const [unread, setUnread] = useState(0);
   const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const menuRef = useRef(null);
+  const buttonRef = useRef(null);
   const navigate = useNavigate();
 
   const fetchUnread = useCallback(async () => {
@@ -95,12 +98,14 @@ function NotificationBell({ floating }) {
     } catch {}
   }
 
-  const dropdown = open && (
+  const dropdown = (
     <div className={`${
       floating
         ? 'fixed bottom-[5.5rem] right-5 sm:right-8'
-        : 'absolute right-0 top-full mt-2'
-    } z-50 w-[calc(100vw-32px)] rounded-2xl border border-border-light bg-card shadow-xl sm:w-[380px] dark:border-border dark:bg-card`}>
+        : ''
+    } z-[9999] w-[calc(100vw-32px)] rounded-2xl border border-border-light bg-card shadow-xl sm:w-[380px] dark:border-border dark:bg-card`}
+      style={!floating ? { position: 'fixed', top: dropdownPos.top, right: dropdownPos.right } : {}}
+    >
       <div className="flex items-center justify-between border-b border-border-light px-4 py-3 dark:border-border">
         <h3 className="text-sm font-bold text-foreground dark:text-foreground">Notificaciones</h3>
         <div className="flex items-center gap-2">
@@ -150,10 +155,24 @@ function NotificationBell({ floating }) {
     </div>
   );
 
+  function handleToggle() {
+    if (!floating && !open) {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (rect) {
+        setDropdownPos({
+          top: rect.bottom + 8,
+          right: window.innerWidth - rect.right,
+        });
+      }
+    }
+    setOpen((prev) => !prev);
+  }
+
   return (
     <div ref={menuRef} className={floating ? '' : 'relative'}>
       <button
-        onClick={() => setOpen((prev) => !prev)}
+        ref={buttonRef}
+        onClick={handleToggle}
         className={`relative flex items-center justify-center rounded-full bg-card text-secondary shadow-lg ring-1 ring-border transition hover:ring-brand-200 dark:bg-card dark:text-muted-foreground dark:ring-border ${
           floating
             ? 'h-14 w-14 shadow-[0_8px_24px_rgba(0,0,0,0.15)]'
@@ -170,7 +189,7 @@ function NotificationBell({ floating }) {
           </span>
         )}
       </button>
-      {dropdown}
+      {open && createPortal(dropdown, document.body)}
     </div>
   );
 }

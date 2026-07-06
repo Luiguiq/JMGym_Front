@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
+import NotificationBell from './NotificationBell.jsx';
 
 function Navbar() {
   return (
@@ -12,6 +13,10 @@ function Navbar() {
         />
         <strong className="text-sm font-black text-foreground">JMGym</strong>
       </Link>
+
+      <div className="flex items-center gap-2">
+        <NotificationBell />
+      </div>
     </header>
   );
 }

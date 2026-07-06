@@ -106,34 +106,6 @@ const Dashboard = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
-        <button
-          onClick={() => navigate('/admin/clases/crear')}
-          className="bg-gradient-to-br from-brand-50 to-brand-100 border border-brand-200 rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow text-left dark:from-primary/20 dark:to-card dark:border-primary/30"
-        >
-          <div className="flex items-start justify-between mb-2 gap-3">
-            <div>
-              <h3 className="font-bold text-foreground text-base sm:text-lg dark:text-foreground">Crear nueva clase</h3>
-              <p className="text-xs sm:text-sm text-secondary dark:text-muted-foreground">Agrega una nueva clase al catálogo</p>
-            </div>
-            <Plus className="text-brand-600 flex-shrink-0 dark:text-blue-300" size={20} />
-          </div>
-        </button>
-
-        <button
-          onClick={() => navigate('/admin/reservas')}
-          className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow text-left dark:from-green-500/15 dark:to-card dark:border-green-500/30"
-        >
-          <div className="flex items-start justify-between mb-2 gap-3">
-            <div>
-              <h3 className="font-bold text-foreground text-base sm:text-lg dark:text-foreground">Ver reservas</h3>
-              <p className="text-xs sm:text-sm text-secondary dark:text-muted-foreground">Gestiona todas las reservas</p>
-            </div>
-            <Calendar className="text-green-600 flex-shrink-0 dark:text-green-300" size={20} />
-          </div>
-        </button>
-      </div>
-
       <div className="bg-card rounded-2xl border border-border p-4 sm:p-6 shadow-md dark:bg-card dark:border-border">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <h2 className="text-lg sm:text-2xl font-bold text-foreground dark:text-foreground">Reservas recientes</h2>

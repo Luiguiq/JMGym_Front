@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, ImageIcon } from 'lucide-react';
+import { X, ImageIcon, Upload } from 'lucide-react';
 import { instructorService } from '../../services/instructorService.js';
 import { genreService } from '../../services/genreService.js';
 import { classService } from '../../services/classService.js';
+import { userService } from '../../services/userService.js';
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
 import zumbaImage from '../../assets/images/zumba.jpg';
@@ -80,6 +81,8 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
   const [showImagePicker, setShowImagePicker] = useState(false);
   const [availableImages, setAvailableImages] = useState([]);
   const [loadingImages, setLoadingImages] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef(null);
 
   const loadAvailableImages = useCallback(async () => {
     setLoadingImages(true);
@@ -116,6 +119,21 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
   const handleSelectImage = (url) => {
     setFormData((prev) => ({ ...prev, imagen_clase: url }));
     setShowImagePicker(false);
+  };
+
+  const handleUploadImage = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const result = await userService.uploadPhoto(file);
+      setFormData((prev) => ({ ...prev, imagen_clase: result.url }));
+    } catch {
+      setErrors((prev) => ({ ...prev, imagen_clase: 'Error al subir la imagen' }));
+    } finally {
+      setUploadingImage(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const validateForm = () => {
@@ -413,7 +431,7 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
           {/* Imagen */}
           <div>
             <label htmlFor="class-imagen" className="block text-sm font-semibold text-foreground mb-2">Imagen de la Clase <span className="text-muted-foreground text-xs font-normal">(opcional)</span></label>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <input
                 id="class-imagen"
                 type="text"
@@ -432,6 +450,17 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
                 <ImageIcon size={18} aria-hidden="true" />
                 <span className="hidden sm:inline">Elegir</span>
               </button>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingImage}
+                className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg font-medium text-secondary hover:bg-surface transition-colors shrink-0 disabled:opacity-50"
+                aria-label="Subir imagen"
+              >
+                <Upload size={18} aria-hidden="true" />
+                <span className="hidden sm:inline">{uploadingImage ? 'Subiendo...' : 'Subir'}</span>
+              </button>
+              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleUploadImage} />
             </div>
             {formData.imagen_clase && (
               <div className="mt-3 relative inline-block">

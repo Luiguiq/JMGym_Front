@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Mail, IdCard, Phone, Lock, Camera, CheckCircle } from 'lucide-react';
+import { ArrowLeft, User, Mail, IdCard, Phone, Camera, CheckCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { userService } from '../../services/userService.js';
 import Field from '../../components/user/Field.jsx';
@@ -25,8 +25,6 @@ function EditarPerfil() {
   const [fotoPreview, setFotoPreview] = useState('');
   const [fotoFile, setFotoFile] = useState(null);
   const [fotoError, setFotoError] = useState('');
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState('');
@@ -97,14 +95,6 @@ function EditarPerfil() {
       errors.telefono = 'El teléfono debe contener solo números (7 a 15 dígitos).';
     }
 
-    if (newPassword && !oldPassword) {
-      errors.oldPassword = 'Ingresa tu contraseña actual para cambiarla.';
-    }
-
-    if (newPassword && newPassword.length < 6) {
-      errors.newPassword = 'La nueva contraseña debe tener al menos 6 caracteres.';
-    }
-
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
   }
@@ -133,11 +123,6 @@ function EditarPerfil() {
       if (telefono.trim()) body.telefono = telefono.trim();
       if (fotoUrl) body.foto_perfil = fotoUrl;
 
-      if (oldPassword && newPassword) {
-        body.old_password = oldPassword;
-        body.password = newPassword;
-      }
-
       const updated = await userService.updateMyProfile(body);
 
       setUser((prev) => ({
@@ -152,11 +137,7 @@ function EditarPerfil() {
 
       setTimeout(() => navigate('/cliente/perfil'), 2000);
     } catch (err) {
-      if (err.message?.includes('contraseña actual no es correcta')) {
-        setFieldErrors((prev) => ({ ...prev, oldPassword: 'La contraseña actual no es correcta.' }));
-      } else {
-        setServerError(err.message);
-      }
+      setServerError(err.message);
     } finally {
       setLoading(false);
     }
@@ -293,29 +274,6 @@ function EditarPerfil() {
             />
           </Field>
 
-          <div className="border-t border-border-light pt-5">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-muted">Cambiar contraseña</h3>
-
-            <Field label="Contraseña actual" icon={Lock} error={fieldErrors.oldPassword} className="mb-4">
-              <input
-                className="w-full bg-transparent outline-none"
-                type="password"
-                placeholder="Ingresa tu contraseña actual"
-                value={oldPassword}
-                onChange={(e) => { setOldPassword(e.target.value); clearError('oldPassword'); }}
-              />
-            </Field>
-
-            <Field label="Nueva contraseña" icon={Lock} error={fieldErrors.newPassword}>
-              <input
-                className="w-full bg-transparent outline-none"
-                type="password"
-                placeholder="Mínimo 6 caracteres"
-                value={newPassword}
-                onChange={(e) => { setNewPassword(e.target.value); clearError('newPassword'); }}
-              />
-            </Field>
-          </div>
 
           <button
             className="min-h-14 rounded-2xl bg-brand-600 font-bold text-primary-foreground shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-16"

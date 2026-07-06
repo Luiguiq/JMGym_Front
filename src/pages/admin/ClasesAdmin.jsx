@@ -23,6 +23,10 @@ const ClasesAdmin = () => {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [showCancelClassModal, setShowCancelClassModal] = useState(false);
+  const [cancelClassTarget, setCancelClassTarget] = useState(null);
+  const [cancelingClass, setCancelingClass] = useState(false);
+  const [cancelClassError, setCancelClassError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
@@ -109,8 +113,14 @@ const ClasesAdmin = () => {
   };
 
   const handleDeleteClass = (clase) => {
-    setDeleteTarget(clase);
-    setDeleteError('');
+    if (clase.enrolled > 0) {
+      setCancelClassTarget(clase);
+      setShowCancelClassModal(true);
+      setCancelClassError('');
+    } else {
+      setDeleteTarget(clase);
+      setDeleteError('');
+    }
   };
 
   const handleConfirmDelete = async () => {
@@ -125,6 +135,38 @@ const ClasesAdmin = () => {
     } catch (error) {
       console.error('Error eliminando clase:', error);
       setDeleteError(error.message || 'No se pudo eliminar la clase');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleCancelClass = async () => {
+    if (!cancelClassTarget) return;
+    try {
+      setCancelingClass(true);
+      setCancelClassError('');
+      await classService.updateClass(cancelClassTarget.id, { estado: 'CANCELADA' });
+      await loadClasses();
+      setShowCancelClassModal(false);
+      setCancelClassTarget(null);
+    } catch (error) {
+      setCancelClassError(error.message || 'Error al cancelar la clase');
+    } finally {
+      setCancelingClass(false);
+    }
+  };
+
+  const handleHardDeleteWithNotify = async () => {
+    if (!cancelClassTarget) return;
+    try {
+      setDeleting(true);
+      setDeleteError('');
+      await classService.deleteClass(cancelClassTarget.id);
+      await loadClasses();
+      setShowCancelClassModal(false);
+      setCancelClassTarget(null);
+    } catch (error) {
+      setDeleteError(error.message || 'Error al eliminar la clase');
     } finally {
       setDeleting(false);
     }
@@ -303,6 +345,96 @@ const ClasesAdmin = () => {
                   {deleting ? 'Eliminando...' : 'Eliminar'}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCancelClassModal && cancelClassTarget && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => { if (e.target === e.currentTarget && !cancelingClass && !deleting) { setShowCancelClassModal(false); setCancelClassTarget(null); } }}
+        >
+          <div
+            className="bg-card rounded-2xl shadow-xl max-w-md w-full overflow-hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cancel-modal-title"
+          >
+            <div className="border-b border-border px-5 py-4 flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-500/10">
+                  <AlertTriangle size={20} className="text-amber-600 dark:text-amber-300" />
+                </div>
+                <div>
+                  <h2 id="cancel-modal-title" className="text-lg font-bold text-foreground">{cancelClassTarget.name}</h2>
+                  <p className="text-sm text-muted mt-1">{cancelClassTarget.enrolled} alumno(s) inscritos</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => { setShowCancelClassModal(false); setCancelClassTarget(null); }}
+                disabled={cancelingClass || deleting}
+                className="text-muted-foreground hover:text-secondary transition-colors"
+                aria-label="Cerrar"
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4">
+              <p className="text-sm text-secondary">
+                Esta clase tiene alumnos inscritos. Elige qué acción realizar:
+              </p>
+
+              {cancelClassError && (
+                <div className="rounded-lg bg-red-50 px-4 py-2 text-sm font-medium text-red-600 dark:bg-red-500/10 dark:text-red-300" role="alert">
+                  {cancelClassError}
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={handleCancelClass}
+                disabled={cancelingClass || deleting}
+                className="w-full rounded-xl bg-amber-500 py-3 text-sm font-bold text-primary-foreground transition hover:bg-amber-600 disabled:opacity-50 text-left px-4"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/20">
+                    <AlertTriangle size={18} />
+                  </div>
+                  <div>
+                    <p className="font-bold">Cancelar clase</p>
+                    <p className="text-xs text-primary-foreground/80">Los alumnos recibirán una notificación y podrán solicitar reembolso</p>
+                  </div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleHardDeleteWithNotify}
+                disabled={cancelingClass || deleting}
+                className="w-full rounded-xl bg-red-600 py-3 text-sm font-bold text-primary-foreground transition hover:bg-red-700 disabled:opacity-50 text-left px-4"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/20">
+                    <Trash2 size={18} />
+                  </div>
+                  <div>
+                    <p className="font-bold">Eliminar clase</p>
+                    <p className="text-xs text-primary-foreground/80">Se notificará a los alumnos que pueden solicitar reembolso</p>
+                  </div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setShowCancelClassModal(false); setCancelClassTarget(null); }}
+                disabled={cancelingClass || deleting}
+                className="w-full rounded-xl border border-border py-3 text-sm font-bold text-secondary transition hover:bg-surface disabled:opacity-50"
+              >
+                Volver
+              </button>
             </div>
           </div>
         </div>

@@ -12,6 +12,7 @@ import {
   LogOut,
   Tags,
   Settings,
+  Smartphone,
 } from 'lucide-react';
 
 const Sidebar = ({ onClose }) => {
@@ -49,6 +50,12 @@ const Sidebar = ({ onClose }) => {
       label: 'Cancelaciones',
       icon: XCircle,
       path: '/admin/cancelaciones',
+    },
+    {
+      id: 'pagos-yape',
+      label: 'Pagos Yape',
+      icon: Smartphone,
+      path: '/admin/pagos-yape',
     },
     {
       id: 'usuarios',

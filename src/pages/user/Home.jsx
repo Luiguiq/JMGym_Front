@@ -46,20 +46,29 @@ const itemAnim = {
 function Home() {
   const { user } = useAuth();
   const [todayClasses, setTodayClasses] = useState([]);
+  const [allClasses, setAllClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     classService
       .getTodayClasses()
-      .then(setTodayClasses)
+      .then((data) => {
+        setTodayClasses(data);
+        if (data.length === 0) {
+          return classService.getAllClasses().then(setAllClasses);
+        }
+        setAllClasses([]);
+      })
       .catch((err) => setError(getFriendlyErrorMessage(err, 'No pudimos cargar las clases. Comprueba tu conexión e intenta nuevamente.')))
       .finally(() => setLoading(false));
   }, []);
 
-  const activeClasses = useMemo(() => todayClasses.filter(isClassActive), [todayClasses]);
-  const nextClass = todayClasses[0];
-  const totalAvailableSpots = todayClasses.reduce(
+  const displayClasses = todayClasses.length > 0 ? todayClasses : allClasses;
+
+  const activeClasses = useMemo(() => displayClasses.filter(isClassActive), [displayClasses]);
+  const nextClass = displayClasses[0];
+  const totalAvailableSpots = displayClasses.reduce(
     (acc, classItem) => acc + Number(classItem.availableSpots ?? 0),
     0
   );
@@ -106,7 +115,7 @@ function Home() {
           <div className="mb-5 flex items-center gap-6">
             <div className="text-center">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/60">Clases de hoy</p>
-              <p className="mt-0.5 text-2xl font-black">{todayClasses.length}</p>
+              <p className="mt-0.5 text-2xl font-black">{displayClasses.length}</p>
             </div>
             <div className="h-8 w-px bg-primary-foreground/15" />
             <div className="text-center">
@@ -154,9 +163,9 @@ function Home() {
         <motion.div variants={itemAnim} className="mt-6">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-[15px] font-bold text-foreground">Clases disponibles</h2>
-            {todayClasses.length > 0 && (
+            {displayClasses.length > 0 && (
               <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[12px] font-semibold text-blue-600">
-                {todayClasses.length}
+                {displayClasses.length}
               </span>
             )}
           </div>
@@ -170,7 +179,7 @@ function Home() {
               </>
             ) : error ? (
               <div className="rounded-2xl bg-red-50 p-4 text-center text-sm font-medium text-red-600 dark:bg-red-500/10 dark:text-red-300">{error}</div>
-            ) : todayClasses.length === 0 ? (
+            ) : displayClasses.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-12 text-center">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-border-light">
                   <Calendar size={28} className="text-muted-foreground" />
@@ -179,18 +188,18 @@ function Home() {
                 <p className="text-sm text-muted-foreground">Consulta otros horarios para encontrar una clase.</p>
               </div>
             ) : (
-              todayClasses.slice(0, 3).map((classItem) => (
+              displayClasses.slice(0, 3).map((classItem) => (
                 <ClassCard classItem={classItem} key={classItem.id} />
               ))
             )}
           </div>
 
-          {!loading && todayClasses.length > 3 && (
+          {!loading && displayClasses.length > 3 && (
             <Link
               to="/cliente/clases"
               className="mt-4 flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border py-3 text-sm font-bold text-muted transition hover:border-blue-200 hover:text-blue-600"
             >
-              Ver todas las clases ({todayClasses.length})
+              Ver todas las clases ({displayClasses.length})
             </Link>
           )}
         </motion.div>

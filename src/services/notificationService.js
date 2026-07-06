@@ -19,30 +19,32 @@ function mapNotification(item) {
 
 export const notificationService = {
   getMyNotifications: () =>
-    apiRequest('/notifications/me').then((d) => (d ?? []).map(mapNotification)),
+    apiRequest('/notifications/me', { skipAuthRedirect: true }).then((d) => (d ?? []).map(mapNotification)),
 
   getUnreadCount: () =>
-    apiRequest('/notifications/me/unread-count'),
+    apiRequest('/notifications/me/unread-count', { skipAuthRedirect: true }),
 
   markAsRead: (notificationId) =>
-    apiRequest(`/notifications/${notificationId}/read`, { method: 'PATCH' }),
+    apiRequest(`/notifications/${notificationId}/read`, { method: 'PATCH', skipAuthRedirect: true }),
 
   markAllAsRead: () =>
-    apiRequest('/notifications/read-all', { method: 'POST' }),
+    apiRequest('/notifications/read-all', { method: 'POST', skipAuthRedirect: true }),
 
   respondToNotification: (notificationId, respuesta) =>
     apiRequest(`/notifications/${notificationId}/respond`, {
       method: 'POST',
       body: JSON.stringify({ respuesta }),
+      skipAuthRedirect: true,
     }),
 
   // Admin
   getAllNotifications: () =>
-    apiRequest('/notifications').then((d) => (d ?? []).map(mapNotification)),
+    apiRequest('/notifications', { skipAuthRedirect: true }).then((d) => (d ?? []).map(mapNotification)),
 
   sendNotification: (data) =>
     apiRequest('/notifications/send', {
       method: 'POST',
       body: JSON.stringify(data),
+      skipAuthRedirect: true,
     }),
 };

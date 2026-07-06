@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { reservationService } from '../../services/reservationService.js';
 import PageLoader from '../../components/common/PageLoader.jsx';
-import { CheckCircle, XCircle, Flag, CreditCard, Clock, AlertTriangle, Undo2, Search, Calendar, Armchair, User } from 'lucide-react';
+import { CheckCircle, XCircle, Flag, CreditCard, Clock, AlertTriangle, Undo2, Search, Calendar, Armchair, User, QrCode } from 'lucide-react';
+import QRCode from 'react-qr-code';
 import {
   puedeCancelarReserva,
   puedeCancelarSolicitudReembolso,
@@ -146,9 +147,12 @@ function DetalleReserva() {
   const [refunding, setRefunding] = useState(false);
   const [refundError, setRefundError] = useState('');
   const [refundSuccess, setRefundSuccess] = useState('');
+  const [refundMotivo, setRefundMotivo] = useState('ECONOMICO');
+  const [refundDetalle, setRefundDetalle] = useState('');
   const [showCancelRefundModal, setShowCancelRefundModal] = useState(false);
   const [cancelingRefundRequest, setCancelingRefundRequest] = useState(false);
   const [cancelRefundError, setCancelRefundError] = useState('');
+  const [showQRModal, setShowQRModal] = useState(false);
 
   const motivosCancelacion = [
     { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
@@ -168,6 +172,11 @@ function DetalleReserva() {
 
   const canRequestRefund = puedeSolicitarReembolso(reservation);
   const canCancelRefundRequest = puedeCancelarSolicitudReembolso(reservation);
+
+  const canShowQR =
+    reservation?.estado_reserva === 'ACTIVA' &&
+    (reservation?.estado_pago === 'PAGADO' || reservation?.estado_pago === 'CONFIRMADO') &&
+    reservation?.qr_checkin;
 
   const isCanceled = reservation?.estado_reserva === 'CANCELADA';
   const isCompleted =
@@ -212,7 +221,7 @@ function DetalleReserva() {
     setRefundSuccess('');
     setRefunding(true);
     try {
-      const updated = await reservationService.requestRefund(id);
+      const updated = await reservationService.requestRefund(id, refundMotivo, refundDetalle || null);
       setReservation(updated);
       setRefundSuccess('Solicitud de reembolso enviada. Sera revisada por un administrador.');
       setShowRefundModal(false);
@@ -283,10 +292,10 @@ function DetalleReserva() {
     <main className="min-h-dvh bg-surface px-5 py-6 pb-36 max-md:landscape:py-4">
       <div className="max-w-3xl mx-auto lg:max-w-4xl">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/cliente/reservas')}
           className="mb-5 flex items-center gap-2 font-bold text-secondary hover:text-foreground transition"
         >
-          ? Volver
+          ? Volver a mis reservas
         </button>
 
         <div className="overflow-hidden rounded-[32px] bg-card shadow-[0_15px_40px_rgba(15,86,130,.12)] border border-blue-100/50">
@@ -470,6 +479,16 @@ function DetalleReserva() {
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
 
+          {canShowQR && (
+            <button
+              onClick={() => setShowQRModal(true)}
+              className="flex-1 rounded-2xl bg-purple-50 border border-purple-200 py-3.5 font-bold text-purple-700 transition hover:bg-purple-100 dark:bg-card dark:border-purple-500/30 dark:text-purple-300 dark:hover:bg-purple-500/10"
+            >
+              <QrCode className="inline-block h-5 w-5 mr-1 -mt-0.5" />
+              Ver QR de ingreso
+            </button>
+          )}
+
           {canChangeSeat && (
             <button
               onClick={() =>
@@ -503,6 +522,8 @@ function DetalleReserva() {
               onClick={() => {
                 setRefundError('');
                 setRefundSuccess('');
+                setRefundMotivo('ECONOMICO');
+                setRefundDetalle('');
                 setShowRefundModal(true);
               }}
               className="flex-1 rounded-2xl bg-orange-50 border border-orange-200 py-3.5 font-bold text-orange-600 transition hover:bg-orange-100 dark:bg-orange-500/10 dark:border-orange-500/30 dark:text-orange-300 dark:hover:bg-orange-500/20"
@@ -687,14 +708,14 @@ function DetalleReserva() {
             aria-labelledby="refund-title"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-5 sm:p-6">
+            <div className="max-h-[90vh] overflow-y-auto p-5 sm:p-6">
               <div className="text-center">
                 <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-orange-50 text-orange-500 dark:bg-orange-500/10 dark:text-orange-300">
                   <Undo2 className="h-7 w-7" aria-hidden="true" />
                 </div>
                 <h3 id="refund-title" className="text-xl font-black text-foreground">Solicitar reembolso</h3>
                 <p className="mt-2 text-sm leading-relaxed text-secondary">
-                  Deseas solicitar el reembolso de esta reserva? La solicitud sera revisada por un administrador.
+                  Selecciona el motivo del reembolso. La solicitud será revisada por un administrador.
                 </p>
               </div>
 
@@ -712,6 +733,56 @@ function DetalleReserva() {
                   <span className="font-bold text-foreground">S/ {Number(reservation.monto).toFixed(2)}</span>
                 </div>
               </div>
+
+              <div className="mt-4">
+                <label className="text-sm font-bold text-foreground block mb-2">Motivo del reembolso</label>
+                <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 sm:gap-2">
+                  {[
+                    { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
+                    { value: 'SALUD', label: 'Problemas de salud' },
+                    { value: 'ECONOMICO', label: 'Motivo económico' },
+                    { value: 'OTRO', label: 'Otro motivo' },
+                  ].map((m) => (
+                    <label
+                      key={m.value}
+                      className={`flex items-center gap-2 rounded-xl border-2 px-3 py-2.5 cursor-pointer transition-all ${
+                        refundMotivo === m.value
+                          ? 'border-orange-500 bg-orange-50/50 shadow-sm'
+                          : 'border-border-light bg-card hover:border-border'
+                      }`}
+                    >
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                        refundMotivo === m.value ? 'border-orange-500' : 'border-border'
+                      }`}>
+                        {refundMotivo === m.value && (
+                          <div className="w-2 h-2 rounded-full bg-orange-500" />
+                        )}
+                      </div>
+                      <input
+                        type="radio"
+                        name="refundMotivo"
+                        value={m.value}
+                        checked={refundMotivo === m.value}
+                        onChange={(e) => setRefundMotivo(e.target.value)}
+                        className="sr-only"
+                      />
+                      <span className="text-xs sm:text-sm font-medium text-foreground">{m.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {refundMotivo === 'OTRO' && (
+                <div className="mt-3">
+                  <textarea
+                    value={refundDetalle}
+                    onChange={(e) => setRefundDetalle(e.target.value)}
+                    placeholder="Describe el motivo (opcional)..."
+                    className="w-full rounded-xl border-2 border-border-light bg-card px-4 py-3 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 resize-none text-foreground placeholder:text-muted"
+                    rows={2}
+                  />
+                </div>
+              )}
 
               {refundError && (
                 <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert">
@@ -807,6 +878,41 @@ function DetalleReserva() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showQRModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowQRModal(false); }}
+        >
+          <div
+            className="w-full max-w-sm rounded-[28px] bg-card shadow-2xl p-6 text-center"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="qr-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-500/10">
+              <QrCode size={24} className="text-purple-600 dark:text-purple-300" />
+            </div>
+            <h3 id="qr-title" className="text-xl font-black text-foreground">QR de ingreso</h3>
+            <p className="mt-1 text-sm text-secondary mb-6">
+              Muestra este código al ingresar al gimnasio.
+            </p>
+            <div className="mx-auto flex justify-center p-4 bg-white rounded-2xl shadow-inner w-fit">
+              <QRCode value={reservation.qr_checkin} size={200} />
+            </div>
+            <p className="mt-4 text-[11px] text-muted-foreground">
+              Reserva #{reservation.codigo_reserva}
+            </p>
+            <button
+              onClick={() => setShowQRModal(false)}
+              className="mt-6 w-full rounded-2xl bg-brand-600 py-3 font-bold text-primary-foreground transition hover:bg-brand-700"
+            >
+              Cerrar
+            </button>
           </div>
         </div>
       )}
