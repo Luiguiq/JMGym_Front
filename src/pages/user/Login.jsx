@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { authService } from '../../services/authService.js';
 import { Zap, MapPin, Smartphone, ArrowLeft, Mail, Lock, X } from 'lucide-react';
+import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
+import { Zap, MapPin, Smartphone, ArrowLeft, Mail, Lock } from 'lucide-react';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 
 const highlights = [
@@ -47,7 +49,7 @@ function Login() {
       await login({ identifier, password }, remember);
       navigate('/cliente/home');
     } catch (err) {
-      setError(err.message);
+      setError(getFriendlyErrorMessage(err, 'No pudimos iniciar sesión. Revisa tus credenciales e intenta nuevamente.'));
     } finally {
       setLoading(false);
     }
@@ -69,12 +71,13 @@ function Login() {
   }
 
   return (
-    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5">
+    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5 landscape:p-2 sm:landscape:p-3">
       <section
         className="
           mx-auto
           grid
           min-h-[calc(100dvh-1.5rem)]
+          landscape:min-h-0
           max-w-7xl
           overflow-hidden
           rounded-[32px]
@@ -95,6 +98,7 @@ function Login() {
               to-[#1576ff]
             p-6
             text-primary-foreground
+            landscape:p-4
             sm:p-8
             lg:p-10
           "
@@ -195,6 +199,8 @@ function Login() {
             justify-center
             gap-5
             p-6
+            landscape:gap-4
+            landscape:p-4
             sm:p-8
             lg:p-10
           "

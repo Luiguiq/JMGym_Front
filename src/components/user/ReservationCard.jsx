@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, XCircle, Flag, CreditCard, Clock, Undo2, Calendar, MapPin, Search, User, AlertTriangle } from 'lucide-react';
 import { reservationService } from '../../services/reservationService.js';
+import {
+  puedeCancelarReserva,
+  puedeCancelarSolicitudReembolso,
+  puedeSolicitarReembolso,
+} from '../../utils/reservationActions.js';
+import { getPaymentStatusLabel, getReservationStatusLabel } from '../../utils/reservationPresentation.js';
 
 const MOTIVOS_LABEL = {
   CAMBIO_HORARIO: 'Cambio de horario',
@@ -16,6 +22,7 @@ function ReservationCard({ reservation, onRefresh }) {
 
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [canceling, setCanceling] = useState(false);
+  const [processingAction, setProcessingAction] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [cancelMotivo, setCancelMotivo] = useState('OTRO');
   const [cancelDetalle, setCancelDetalle] = useState('');
@@ -30,9 +37,9 @@ function ReservationCard({ reservation, onRefresh }) {
     { value: 'OTRO', label: 'Otro motivo' },
   ];
 
-  const canCancel =
-    reservation.estado_reserva === 'ACTIVA' &&
-    reservation.estado_pago === 'PENDIENTE';
+  const canCancel = puedeCancelarReserva(reservation);
+  const canRequestRefund = puedeSolicitarReembolso(reservation);
+  const canCancelRefundRequest = puedeCancelarSolicitudReembolso(reservation);
 
   const fecha = reservation.fecha_clase
     ? new Date(reservation.fecha_clase + 'T00:00:00').toLocaleDateString('es-PE', {
@@ -51,7 +58,7 @@ function ReservationCard({ reservation, onRefresh }) {
           ? 'Finalizada'
           : reservation.estado_reserva === 'COMPLETADA'
             ? 'Completada'
-            : reservation.estado_reserva;
+            : getReservationStatusLabel(reservation.estado_reserva);
 
   const statusColor =
     reservation.estado_reserva === 'ACTIVA'
@@ -76,15 +83,19 @@ function ReservationCard({ reservation, onRefresh }) {
         ? 'Pendiente'
         : reservation.estado_pago === 'VENCIDO'
           ? 'Vencido'
-          : reservation.estado_pago === 'REEMBOLSADO'
-            ? 'Reembolsado'
-            : reservation.estado_pago;
+          : reservation.estado_pago === 'REEMBOLSO_PENDIENTE'
+            ? 'Reembolso en revisión'
+            : reservation.estado_pago === 'REEMBOLSADO'
+              ? 'Reembolsado'
+              : getPaymentStatusLabel(reservation.estado_pago);
 
   const pagoColor =
     reservation.estado_pago === 'PAGADO'
       ? 'bg-green-50 text-green-600 border-green-200 dark:bg-green-500/10 dark:text-green-300 dark:border-green-500/30'
       : reservation.estado_pago === 'PENDIENTE'
         ? 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30'
+      : reservation.estado_pago === 'REEMBOLSO_PENDIENTE'
+        ? 'bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-500/10 dark:text-orange-300 dark:border-orange-500/30'
         : 'bg-red-50 text-red-600 border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/30';
 
   const pagoIcon =
@@ -127,6 +138,36 @@ function ReservationCard({ reservation, onRefresh }) {
       setShowCancelModal(false);
     } finally {
       setCanceling(false);
+    }
+  };
+
+  const handleRequestRefund = async () => {
+    if (!canRequestRefund || processingAction) return;
+    setProcessingAction(true);
+    setFeedback('');
+    try {
+      await reservationService.requestRefund(reservation.id);
+      setFeedback('Solicitud de reembolso enviada. Será revisada por un administrador.');
+      onRefresh?.();
+    } catch (error) {
+      setFeedback(error?.message || 'No se pudo solicitar el reembolso.');
+    } finally {
+      setProcessingAction(false);
+    }
+  };
+
+  const handleCancelRefundRequest = async () => {
+    if (!canCancelRefundRequest || processingAction) return;
+    setProcessingAction(true);
+    setFeedback('');
+    try {
+      await reservationService.cancelRefundRequest(reservation.id);
+      setFeedback('Solicitud cancelada. Tu reserva continúa activa.');
+      onRefresh?.();
+    } catch (error) {
+      setFeedback(error?.message || 'No pudimos cancelar la solicitud de reembolso.');
+    } finally {
+      setProcessingAction(false);
     }
   };
 
@@ -246,7 +287,31 @@ function ReservationCard({ reservation, onRefresh }) {
               aria-label={`Cancelar la reserva ${reservation.codigo_reserva || ''}`}
               className="flex-1 rounded-xl bg-red-50 py-2.5 text-xs font-bold text-red-600 transition hover:bg-red-100 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
             >
-              <XCircle className="inline-block w-3.5 h-3.5 mr-1" /> Cancelar
+              <XCircle className="inline-block w-3.5 h-3.5 mr-1" /> Cancelar reserva
+            </button>
+          )}
+
+          {canRequestRefund && (
+            <button
+              type="button"
+              onClick={handleRequestRefund}
+              disabled={processingAction}
+              className="flex-1 rounded-xl bg-orange-50 py-2.5 text-xs font-bold text-orange-600 transition hover:bg-orange-100 disabled:opacity-60 dark:bg-orange-500/10 dark:text-orange-300 dark:hover:bg-orange-500/20"
+            >
+              <Undo2 className="inline-block w-3.5 h-3.5 mr-1" />
+              {processingAction ? 'Enviando...' : 'Solicitar reembolso'}
+            </button>
+          )}
+
+          {canCancelRefundRequest && (
+            <button
+              type="button"
+              onClick={handleCancelRefundRequest}
+              disabled={processingAction}
+              className="flex-1 rounded-xl bg-amber-50 py-2.5 text-xs font-bold text-amber-700 transition hover:bg-amber-100 disabled:opacity-60 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20"
+            >
+              <Clock className="inline-block w-3.5 h-3.5 mr-1" />
+              {processingAction ? 'Cancelando...' : 'Cancelar solicitud'}
             </button>
           )}
         </div>
@@ -383,7 +448,7 @@ function ReservationCard({ reservation, onRefresh }) {
                     </span>
                   ) : (
                     <span className="inline-flex items-center justify-center gap-1.5">
-                      <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" /> Cancelar
+                      <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" /> Cancelar reserva
                     </span>
                   )}
                 </button>

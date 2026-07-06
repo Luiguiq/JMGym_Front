@@ -3,21 +3,21 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Drawer } from 'vaul';
 import {
-  ArrowLeft, Check, Dumbbell, MapPin, Clock, User, ChevronRight
+  ArrowLeft, Check, Clock, Dumbbell, Lock, MapPin, User, XCircle, ChevronRight
 } from 'lucide-react';
 import { classService } from '../../services/classService.js';
 
 const SEAT_STATUS = {
-  DISPONIBLE: { label: 'Libre', ring: 'ring-border-light', bg: 'bg-card', text: 'text-secondary', dot: 'bg-card ring-2 ring-border-light' },
+  DISPONIBLE: { label: 'Disponible', ring: 'ring-border-light', bg: 'bg-card', text: 'text-secondary', dot: 'bg-card ring-2 ring-border-light' },
   EN_ESPERA: { label: 'Reservado', ring: 'ring-amber-200', bg: 'bg-amber-50', text: 'text-amber-600', dot: 'bg-amber-50 ring-2 ring-amber-200' },
   RESERVADO: { label: 'Reservado', ring: 'ring-amber-200', bg: 'bg-amber-50', text: 'text-amber-600', dot: 'bg-amber-50 ring-2 ring-amber-200' },
-  OCUPADO: { label: 'Ocupado', ring: 'ring-emerald-200', bg: 'bg-emerald-50', text: 'text-emerald-600', dot: 'bg-emerald-50 ring-2 ring-emerald-200' },
+  OCUPADO: { label: 'Ocupado', ring: 'ring-red-200', bg: 'bg-red-50', text: 'text-red-600', dot: 'bg-red-50 ring-2 ring-red-200' },
 };
 
 const LEGEND_ITEMS = [
-  { label: 'Libre', dot: 'bg-card ring-2 ring-border' },
+  { label: 'Disponible', dot: 'bg-card ring-2 ring-border' },
   { label: 'Reservado', dot: 'bg-amber-50 ring-2 ring-amber-300' },
-  { label: 'Ocupado', dot: 'bg-emerald-50 ring-2 ring-emerald-300' },
+  { label: 'Ocupado', dot: 'bg-red-50 ring-2 ring-red-300' },
   { label: 'Seleccionado', dot: 'bg-blue-600 ring-2 ring-blue-400' },
 ];
 
@@ -89,8 +89,8 @@ function SeleccionEspacio() {
   }
 
   return (
-    <main className="min-h-screen bg-surface pb-32">
-      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5">
+    <main className="min-h-dvh bg-surface pb-36 max-md:landscape:pb-8">
+      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5 max-md:landscape:pt-3">
 
         {/* Back + title */}
         <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}>
@@ -109,6 +109,9 @@ function SeleccionEspacio() {
         >
           Selecciona tu espacio
         </motion.h1>
+        <p className="mt-2 rounded-2xl border border-border-light bg-card px-4 py-3 text-sm text-secondary">
+          Toca un espacio disponible para seleccionarlo. Después podrás revisar el detalle antes de continuar al pago.
+        </p>
 
         {/* Class info mini card */}
         <motion.div
@@ -161,12 +164,21 @@ function SeleccionEspacio() {
             {seats.map((seat) => {
               const status = SEAT_STATUS[seat.estado] || SEAT_STATUS.DISPONIBLE;
               const selected = isSelected(seat);
+              const label = selected ? 'seleccionado' : status.label.toLowerCase();
+              const Icon = selected
+                ? Check
+                : seat.estado === 'RESERVADO' || seat.estado === 'EN_ESPERA'
+                  ? Lock
+                  : seat.estado === 'OCUPADO'
+                    ? XCircle
+                    : null;
               return (
                 <motion.button
                   key={seat.id_espacio}
                   layout
                   onClick={() => handleSeatClick(seat)}
                   disabled={seat.estado !== 'DISPONIBLE'}
+                  aria-label={`Espacio ${seat.codigo_espacio}, ${label}`}
                   whileTap={seat.estado === 'DISPONIBLE' ? { scale: 0.88 } : {}}
                   whileHover={seat.estado === 'DISPONIBLE' && !selected ? { scale: 1.06 } : {}}
                   animate={selected ? { scale: [1, 1.12, 1], transition: { duration: 0.25 } } : {}}
@@ -176,7 +188,12 @@ function SeleccionEspacio() {
                       : `${status.bg} ${status.ring} ring-1 ${status.text} ${seat.estado === 'DISPONIBLE' ? 'cursor-pointer hover:ring-blue-400' : 'cursor-not-allowed opacity-60'}`
                   }`}
                 >
-                  {selected ? <Check size={14} strokeWidth={3} /> : seat.codigo_espacio}
+                  {Icon ? (
+                    <span className="inline-flex items-center gap-0.5">
+                      <Icon size={13} strokeWidth={3} />
+                      <span>{selected ? seat.codigo_espacio : ''}</span>
+                    </span>
+                  ) : seat.codigo_espacio}
                 </motion.button>
               );
             })}
@@ -191,8 +208,8 @@ function SeleccionEspacio() {
       <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" />
-          <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-3xl bg-card shadow-xl outline-none">
-            <div className="px-5 pb-6 pt-3 sm:px-6">
+          <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-3xl bg-card shadow-xl outline-none max-h-[82dvh] overflow-y-auto">
+            <div className="px-5 pb-[max(env(safe-area-inset-bottom),1.5rem)] pt-3 sm:px-6">
               <Drawer.Handle className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-border-light" />
 
               <AnimatePresence mode="wait">
@@ -211,7 +228,7 @@ function SeleccionEspacio() {
                       </div>
                       <div>
                         <p className="text-lg font-black text-foreground">{selectedSeat.codigo_espacio}</p>
-                        <p className="text-[13px] text-muted">Excelente ubicación — frente al instructor</p>
+                        <p className="text-[13px] text-muted">Has seleccionado el espacio {selectedSeat.codigo_espacio}.</p>
                       </div>
                     </div>
 

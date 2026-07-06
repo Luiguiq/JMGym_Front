@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, SlidersHorizontal, ChevronLeft, Calendar, Flame, Music, Dumbbell, Zap, Clock } from 'lucide-react';
 import ClassCard from '../../components/user/ClassCard.jsx';
 import { classService } from '../../services/classService.js';
+import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 
 const mesNombres = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'];
 const diasCorto = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
@@ -176,7 +177,7 @@ function ListaClases() {
     classService
       .getAllClasses()
       .then(setClasses)
-      .catch((err) => setError(err.message))
+      .catch((err) => setError(getFriendlyErrorMessage(err, 'No pudimos cargar las clases. Comprueba tu conexión e intenta nuevamente.')))
       .finally(() => setLoading(false));
   }, []);
 

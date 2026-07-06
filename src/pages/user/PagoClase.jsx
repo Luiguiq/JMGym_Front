@@ -90,8 +90,8 @@ function PagoClase() {
   if (!classInfo) return null;
 
   return (
-    <main className="min-h-screen bg-surface pb-36">
-      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5">
+    <main className="min-h-dvh bg-surface pb-40 max-md:landscape:pb-6">
+      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5 max-md:landscape:pt-3">
 
         {/* Header */}
         <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}>
@@ -229,14 +229,14 @@ function PagoClase() {
           className="mt-5 flex items-center gap-2 text-[12px] text-muted-foreground"
         >
           <ShieldCheck size={14} className="text-muted-foreground" />
-          Pago seguro — tus datos están protegidos
+          Revisa el método y el importe antes de confirmar.
         </motion.div>
 
         <div className="h-4" />
       </div>
 
       {/* ─── Fixed bottom bar ─── */}
-      <div className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-3xl border-t border-border-light bg-card/95 px-5 pb-6 pt-4 shadow-xl backdrop-blur-md sm:px-6">
+      <div className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-3xl border-t border-border-light bg-card/95 px-5 pb-[max(env(safe-area-inset-bottom),1.5rem)] pt-4 shadow-xl backdrop-blur-md sm:px-6 max-md:landscape:static max-md:landscape:mt-5 max-md:landscape:rounded-3xl max-md:landscape:border max-md:landscape:pb-4">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Total</p>

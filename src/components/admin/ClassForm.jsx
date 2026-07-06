@@ -158,8 +158,8 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
-      <div className="bg-card rounded-2xl shadow-xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 flex items-start justify-center z-50 p-2 sm:items-center sm:p-4">
+      <div className="bg-card rounded-2xl shadow-xl max-w-2xl w-full max-h-[calc(100dvh-1rem)] sm:max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-card border-b border-border px-4 sm:px-6 py-4 flex items-center justify-between gap-3 z-10">
           <h2 className="text-lg sm:text-2xl font-bold text-foreground">
             {initialData ? 'Editar Clase' : 'Crear Nueva Clase'}
@@ -169,7 +169,7 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-5" noValidate>
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-6" noValidate>
           {/* Nombre */}
           <div>
             <label htmlFor="class-nombre" className="block text-sm font-semibold text-foreground mb-2">
@@ -298,7 +298,7 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
           </fieldset>
 
           {/* Duración, Capacidad, Precio, Alumnos Mínimos */}
-          <fieldset className="grid grid-cols-2 md:grid-cols-4 gap-4 border-0 p-0 m-0">
+          <fieldset className="grid grid-cols-1 gap-4 border-0 p-0 m-0 sm:grid-cols-2 lg:grid-cols-4">
             <legend className="sr-only">Detalles de la clase</legend>
             <div>
               <label htmlFor="class-duracion" className="block text-sm font-semibold text-foreground mb-2">
@@ -517,18 +517,18 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
           )}
 
           {/* Botones */}
-          <div className="flex gap-3 pt-4 border-t border-border">
+          <div className="flex flex-col gap-3 pt-4 border-t border-border sm:flex-row">
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 px-4 py-2 border border-border text-foreground rounded-lg font-medium hover:bg-surface transition-colors"
+              className="min-h-11 flex-1 px-4 py-2 border border-border text-foreground rounded-lg font-medium hover:bg-surface transition-colors"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50"
+              className="min-h-11 flex-1 px-4 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50"
             >
               {loading ? 'Guardando...' : initialData ? 'Actualizar' : 'Crear Clase'}
             </button>

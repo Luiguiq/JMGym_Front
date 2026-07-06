@@ -96,7 +96,7 @@ export default function UsuariosAdmin() {
       </div>
 
       {alert && (
-        <div role="alert" className={`mb-4 p-3 rounded-lg text-sm font-medium flex items-center justify-between ${alert.type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+        <div role="alert" className={`mb-4 p-3 rounded-lg text-sm font-medium flex items-center justify-between ${alert.type === 'error' ? 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-300' : 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-300'}`}>
           <span>{alert.message}</span>
           <button className="text-current opacity-60 hover:opacity-100 flex-shrink-0 ml-3" onClick={() => setAlert(null)} aria-label="Cerrar mensaje">×</button>
         </div>
@@ -148,7 +148,7 @@ export default function UsuariosAdmin() {
                         <td className="px-3 py-2 text-secondary">{formatDateTime(r.fecha_reserva)}</td>
                         <td className="px-3 py-2">{r.fecha_clase ? formatDate(r.fecha_clase) : '—'}</td>
                         <td className="px-3 py-2 text-center">
-                          <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${r.estado_reserva === 'CONFIRMADA' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                          <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${r.estado_reserva === 'CONFIRMADA' ? 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300'}`}>
                             {r.estado_reserva}
                           </span>
                         </td>
@@ -171,7 +171,7 @@ export default function UsuariosAdmin() {
             placeholder="Buscar por nombre, correo o DNI..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 min-w-[200px] px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+            className="flex-1 min-w-[200px] px-3 py-2 border border-border bg-card text-foreground placeholder:text-muted-foreground rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
           <select
             aria-label="Filtrar por estado de usuario"
@@ -205,7 +205,7 @@ export default function UsuariosAdmin() {
                   <td className="px-4 py-3 text-secondary">{u.correo}</td>
                   <td className="px-4 py-3 text-secondary">{u.telefono || '—'}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${u.estado === 'ACTIVO' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${u.estado === 'ACTIVO' ? 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-300'}`}>
                       {u.estado}
                     </span>
                   </td>

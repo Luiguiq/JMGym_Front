@@ -1,7 +1,7 @@
 function ProfileOption({ icon, label, badge, danger = false, onClick }) {
   return (
     <button
-      className={`flex min-h-14 w-full items-center gap-4 px-5 text-left font-extrabold transition hover:bg-surface ${danger ? 'justify-center rounded-2xl border-2 border-red-300 text-red-500 hover:bg-red-50' : 'text-secondary'}`}
+      className={`flex min-h-14 w-full items-center gap-4 px-5 text-left font-extrabold transition hover:bg-surface ${danger ? 'justify-center rounded-2xl border-2 border-red-300 text-red-500 hover:bg-red-50 dark:border-red-500/30 dark:text-red-300 dark:hover:bg-red-500/10' : 'text-secondary'}`}
       type="button"
       onClick={onClick}
     >

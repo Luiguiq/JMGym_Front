@@ -31,6 +31,7 @@ import CancelacionesAdmin from '../pages/admin/CancelacionesAdmin.jsx';
 import CategoriasAdmin from '../pages/admin/CategoriasAdmin.jsx';
 import ConfiguracionesAdmin from '../pages/admin/ConfiguracionesAdmin.jsx';
 import Configuraciones from '../pages/user/Configuraciones.jsx';
+import CodigoQR from '../pages/user/CodigoQR.jsx';
 import EditarPerfil from '../pages/user/EditarPerfil.jsx';
 import Pagos from '../pages/user/Pagos.jsx';
 import Register from '../pages/user/Register.jsx';;
@@ -82,6 +83,7 @@ function AppRoutes() {
         <Route path="perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
         <Route path="perfil/editar" element={<ProtectedRoute><EditarPerfil /></ProtectedRoute>} />
         <Route path="configuraciones" element={<ProtectedRoute><Configuraciones /></ProtectedRoute>} />
+        <Route path="qr" element={<ProtectedRoute><CodigoQR /></ProtectedRoute>} />
         <Route path="ayuda" element={<ProtectedRoute><AyudaSoporte /></ProtectedRoute>} />
         <Route path="reservas/:id/cambiar-asiento" element={<ProtectedRoute><CambiarAsiento /></ProtectedRoute>} />
         <Route path="pagos" element={<ProtectedRoute><Pagos /></ProtectedRoute>} />

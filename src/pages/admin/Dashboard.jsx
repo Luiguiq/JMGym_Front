@@ -58,7 +58,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Loader size="lg" text="Cargando Dashboard..." />
+        <Loader size="lg" text="Cargando panel..." />
       </div>
     );
   }
@@ -98,9 +98,9 @@ const Dashboard = () => {
           onClick={() => navigate('/admin/usuarios')}
         />
         <StatsCard
-          title="Hoy"
+          title="Reservas recientes"
           value={recentReservations.length}
-          subtitle="Reservas recientes"
+          subtitle="Últimos registros"
           icon={TrendingUp}
           color="red"
         />
@@ -109,34 +109,34 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
         <button
           onClick={() => navigate('/admin/clases/crear')}
-          className="bg-gradient-to-br from-brand-50 to-brand-100 border border-brand-200 rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow text-left dark:from-brand-950 dark:to-brand-900 dark:border-brand-800"
+          className="bg-gradient-to-br from-brand-50 to-brand-100 border border-brand-200 rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow text-left dark:from-primary/20 dark:to-card dark:border-primary/30"
         >
           <div className="flex items-start justify-between mb-2 gap-3">
             <div>
-              <h3 className="font-bold text-foreground text-base sm:text-lg dark:text-foreground">Crear Nueva Clase</h3>
+              <h3 className="font-bold text-foreground text-base sm:text-lg dark:text-foreground">Crear nueva clase</h3>
               <p className="text-xs sm:text-sm text-secondary dark:text-muted-foreground">Agrega una nueva clase al catálogo</p>
             </div>
-            <Plus className="text-brand-600 flex-shrink-0" size={20} />
+            <Plus className="text-brand-600 flex-shrink-0 dark:text-blue-300" size={20} />
           </div>
         </button>
 
         <button
           onClick={() => navigate('/admin/reservas')}
-          className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow text-left dark:from-green-950 dark:to-green-900 dark:border-green-800"
+          className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow text-left dark:from-green-500/15 dark:to-card dark:border-green-500/30"
         >
           <div className="flex items-start justify-between mb-2 gap-3">
             <div>
-              <h3 className="font-bold text-foreground text-base sm:text-lg dark:text-foreground">Ver Reservas</h3>
+              <h3 className="font-bold text-foreground text-base sm:text-lg dark:text-foreground">Ver reservas</h3>
               <p className="text-xs sm:text-sm text-secondary dark:text-muted-foreground">Gestiona todas las reservas</p>
             </div>
-            <Calendar className="text-green-600 flex-shrink-0" size={20} />
+            <Calendar className="text-green-600 flex-shrink-0 dark:text-green-300" size={20} />
           </div>
         </button>
       </div>
 
       <div className="bg-card rounded-2xl border border-border p-4 sm:p-6 shadow-md dark:bg-card dark:border-border">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h2 className="text-lg sm:text-2xl font-bold text-foreground dark:text-foreground">Reservas Recientes</h2>
+          <h2 className="text-lg sm:text-2xl font-bold text-foreground dark:text-foreground">Reservas recientes</h2>
           <button
             onClick={() => navigate('/admin/reservas')}
             className="text-brand-600 hover:text-brand-700 font-medium text-xs sm:text-sm whitespace-nowrap"
@@ -162,8 +162,8 @@ const Dashboard = () => {
                   <p className="text-sm text-secondary whitespace-nowrap dark:text-muted-foreground">{reservation.date}</p>
                   <span className={`inline-block px-2 sm:px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
                     reservation.status === 'ACTIVA' || reservation.status === 'confirmada'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-amber-100 text-amber-800'
+                      ? 'bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-300'
+                      : 'bg-amber-100 text-amber-800 dark:bg-amber-500/10 dark:text-amber-300'
                   }`}>
                     {reservation.status === 'ACTIVA' ? 'confirmada' : reservation.status}
                   </span>

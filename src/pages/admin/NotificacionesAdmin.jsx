@@ -119,8 +119,8 @@ function NotificacionesAdmin() {
                     onClick={() => setTipo(value)}
                     className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
                       tipo === value
-                        ? 'bg-brand-100 text-brand-700 ring-2 ring-brand-300'
-                        : 'bg-surface text-muted ring-1 ring-border hover:bg-border-light'
+                        ? 'bg-brand-100 text-brand-700 ring-2 ring-brand-300 dark:bg-primary/15 dark:text-blue-300 dark:ring-primary/30'
+                        : 'bg-surface text-muted ring-1 ring-border hover:bg-border-light dark:text-secondary dark:hover:bg-card'
                     }`}
                   >
                     {typeIcons[value] ? React.createElement(typeIcons[value], { size: 14 }) : <Megaphone size={14} />} {label}
@@ -142,8 +142,8 @@ function NotificacionesAdmin() {
                     onClick={() => setTarget(value)}
                     className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition ${
                       target === value
-                        ? 'bg-brand-100 text-brand-700 ring-2 ring-brand-300'
-                        : 'bg-surface text-muted ring-1 ring-border hover:bg-border-light'
+                        ? 'bg-brand-100 text-brand-700 ring-2 ring-brand-300 dark:bg-primary/15 dark:text-blue-300 dark:ring-primary/30'
+                        : 'bg-surface text-muted ring-1 ring-border hover:bg-border-light dark:text-secondary dark:hover:bg-card'
                     }`}
                   >
                     <Icon size={14} />
@@ -222,8 +222,8 @@ function NotificacionesAdmin() {
               <div
                 className={`rounded-xl p-3 text-sm font-medium ${
                   result.error
-                    ? 'bg-red-50 text-red-700'
-                    : 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-300'
+                    : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300'
                 }`}
               >
                 {result.error || result.message}
@@ -249,7 +249,7 @@ function NotificacionesAdmin() {
               {notifications.slice(0, 100).map((n) => (
                 <div
                   key={n.id}
-                  className="flex items-start gap-3 rounded-xl bg-surface p-3 transition hover:bg-border-light"
+                  className="flex items-start gap-3 rounded-xl bg-surface p-3 transition hover:bg-border-light dark:hover:bg-card"
                 >
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-card text-base shadow-sm">
                     {typeIcons[n.type] ? React.createElement(typeIcons[n.type], { size: 16 }) : <Bell size={16} />}

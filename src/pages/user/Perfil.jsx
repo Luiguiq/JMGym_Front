@@ -41,7 +41,7 @@ function Perfil() {
   const displayEmail = profile?.correo ?? authUser?.email ?? '';
   const displayFoto = profile?.foto_perfil ?? authUser?.foto_perfil ?? '';
   const fechaRegistro = profile?.fecha_registro ?? '';
-  const membresia = profile?.membresia ?? 'Premium';
+  const membresia = profile?.membresia ?? 'Cliente registrado';
   const estado = profile?.estado ?? 'activo';
 
   const monthJoined = fechaRegistro
@@ -189,7 +189,7 @@ function Perfil() {
               { label: 'Reservas', value: stats.total, color: 'text-blue-600', icon: Calendar, bg: 'bg-primary/10' },
               { label: 'Completadas', value: stats.completed, color: 'text-emerald-600', icon: Trophy, bg: 'bg-emerald-50' },
               { label: 'Canceladas', value: stats.cancelled, color: 'text-red-500', icon: XCircle, bg: 'bg-red-50' },
-              { label: 'Gastado', value: `S/${stats.totalSpent.toFixed(0)}`, color: 'text-amber-600', icon: DollarSign, bg: 'bg-amber-50' },
+              { label: 'Consumido', value: `S/${stats.totalSpent.toFixed(0)}`, color: 'text-amber-600', icon: DollarSign, bg: 'bg-amber-50' },
             ].map(({ label, value, color, icon: Icon, bg }) => (
               <div key={label} className="relative overflow-hidden rounded-2xl bg-card p-4 shadow-sm">
                 <Icon size={48} className="absolute -bottom-2 -right-2 text-muted/20" />
@@ -305,7 +305,7 @@ function Perfil() {
               { icon: <CreditCard size={20} />, label: 'Historial de pagos', to: '/cliente/pagos' },
               { icon: <Bell size={20} />, label: 'Notificaciones', to: '/cliente/notificaciones' },
               { icon: <Settings size={20} />, label: 'Configuraciones', to: '/cliente/configuraciones' },
-              { icon: <Shield size={20} />, label: 'Seguridad', to: '/cliente/seguridad' },
+              { icon: <Shield size={20} />, label: 'Contraseña y seguridad', to: '/cliente/configuraciones' },
               { icon: <HelpCircle size={20} />, label: 'Ayuda y soporte', to: '/cliente/ayuda' },
             ].map(({ icon, label, to }) => (
               <div key={label} className="overflow-hidden rounded-2xl bg-card shadow-sm">

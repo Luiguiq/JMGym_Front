@@ -3,10 +3,10 @@ import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 
 function Navbar() {
   return (
-    <header className="flex items-center justify-between rounded-2xl bg-primary-foreground/80 px-4 py-2 shadow-sm backdrop-blur-xl">
+    <header className="flex items-center justify-between rounded-2xl border border-border bg-card/90 px-4 py-2 shadow-sm backdrop-blur-xl dark:bg-card/95">
       <Link to="/cliente/home" className="flex items-center gap-2">
         <img
-          className="h-8 w-8 rounded-xl object-contain shadow-sm"
+          className="h-8 w-8 rounded-xl object-contain shadow-sm ring-1 ring-border"
           src={logoJmGym}
           alt="Logo de JMGym"
         />

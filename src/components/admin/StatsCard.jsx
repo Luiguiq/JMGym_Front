@@ -10,24 +10,24 @@ const StatsCard = ({
   onClick 
 }) => {
   const colorClasses = {
-    brand: 'bg-gradient-to-br from-brand-50 to-brand-100 border-brand-200 dark:from-brand-950 dark:to-brand-900 dark:border-brand-800',
-    green: 'bg-gradient-to-br from-green-50 to-green-100 border-green-200 dark:from-green-950 dark:to-green-900 dark:border-green-800',
-    amber: 'bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200 dark:from-amber-950 dark:to-amber-900 dark:border-amber-800',
-    red: 'bg-gradient-to-br from-red-50 to-red-100 border-red-200 dark:from-red-950 dark:to-red-900 dark:border-red-800',
+    brand: 'bg-gradient-to-br from-brand-50 to-brand-100 border-brand-200 dark:from-primary/20 dark:to-card dark:border-primary/30',
+    green: 'bg-gradient-to-br from-green-50 to-green-100 border-green-200 dark:from-green-500/15 dark:to-card dark:border-green-500/30',
+    amber: 'bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200 dark:from-amber-500/15 dark:to-card dark:border-amber-500/30',
+    red: 'bg-gradient-to-br from-red-50 to-red-100 border-red-200 dark:from-red-500/15 dark:to-card dark:border-red-500/30',
   };
 
   const iconColorClasses = {
-    brand: 'text-brand-600',
-    green: 'text-green-600',
-    amber: 'text-amber-600',
-    red: 'text-red-600',
+    brand: 'text-brand-600 dark:text-blue-300',
+    green: 'text-green-600 dark:text-green-300',
+    amber: 'text-amber-600 dark:text-amber-300',
+    red: 'text-red-600 dark:text-red-300',
   };
 
   const trendColorClasses = {
-    brand: 'text-brand-600',
-    green: 'text-green-600',
-    amber: 'text-amber-600',
-    red: 'text-red-600',
+    brand: 'text-brand-600 dark:text-blue-300',
+    green: 'text-green-600 dark:text-green-300',
+    amber: 'text-amber-600 dark:text-amber-300',
+    red: 'text-red-600 dark:text-red-300',
   };
 
   const isTrendingUp = trend && trend > 0;
@@ -58,7 +58,7 @@ const StatsCard = ({
           )}
         </div>
         {Icon && (
-          <div className={`${iconColorClasses[color]} p-2 sm:p-3 bg-card rounded-xl flex-shrink-0 dark:bg-card`}>
+          <div className={`${iconColorClasses[color]} p-2 sm:p-3 bg-card rounded-xl flex-shrink-0 shadow-sm ring-1 ring-border-light dark:bg-surface dark:ring-border`}>
             <Icon size={20} className="sm:hidden" />
             <Icon size={24} className="hidden sm:block" />
           </div>
