@@ -4,7 +4,6 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import { authService } from '../../services/authService.js';
 import { Zap, MapPin, Smartphone, ArrowLeft, Mail, Lock, X } from 'lucide-react';
 import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
-import { Zap, MapPin, Smartphone, ArrowLeft, Mail, Lock } from 'lucide-react';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 
 const highlights = [
