@@ -16,7 +16,7 @@ const tipoOptions = [
   { value: 'NOTIFICACION_GENERAL', label: 'General' },
   { value: 'RECORDATORIO', label: 'Recordatorio' },
   { value: 'NUEVA_CLASE', label: 'Nueva clase' },
-  { value: 'CANCELACION', label: 'Cancelación' },
+  { value: 'CANCELACION', label: 'Anulación' },
   { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
   { value: 'CAMBIO_INSTRUCTOR', label: 'Cambio de instructor' },
 ];

@@ -117,7 +117,7 @@ const ClasesAdmin = () => {
       for (const reservation of activeUsers) {
         await notificationService.sendNotification({
           titulo: `Cambio en tu clase "${oldData.name}"`,
-          mensaje: `La clase ha cambiado su ${cambiosStr}. Revisa los nuevos detalles y confirma si deseas continuar con la reserva o cancelarla.`,
+          mensaje: `La clase ha cambiado su ${cambiosStr}. Revisa los nuevos detalles y confirma si deseas continuar con la reserva o anularla.`,
           tipo: 'CAMBIO_HORARIO',
           all_users: false,
           user_ids: [reservation.id_usuario],
@@ -183,7 +183,7 @@ const ClasesAdmin = () => {
       setShowCancelClassModal(false);
       setCancelClassTarget(null);
     } catch (error) {
-      setCancelClassError(error.message || 'Error al cancelar la clase');
+      setCancelClassError(error.message || 'Error al anular la clase');
     } finally {
       setCancelingClass(false);
     }
@@ -437,7 +437,7 @@ const ClasesAdmin = () => {
                     <AlertTriangle size={18} />
                   </div>
                   <div>
-                    <p className="font-bold">Cancelar clase</p>
+                    <p className="font-bold">Anular clase</p>
                     <p className="text-xs text-primary-foreground/80">Los alumnos recibirán una notificación y podrán solicitar reembolso</p>
                   </div>
                 </div>

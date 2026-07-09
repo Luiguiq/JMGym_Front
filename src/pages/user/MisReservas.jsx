@@ -10,6 +10,7 @@ import {
   puedeSolicitarReembolso,
 } from '../../utils/reservationActions.js';
 import { getTemporalReservationLabel } from '../../utils/reservationPresentation.js';
+import { resolveImageUrl } from '../../utils/imageUrl.js';
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
 import zumbaImage from '../../assets/images/zumba.jpg';
@@ -71,7 +72,7 @@ function ReservationCard({ reservation, onRefresh }) {
   const [canceling, setCanceling] = useState(false);
   const [processingAction, setProcessingAction] = useState(false);
 
-  const image = getClassImage(reservation.className || reservation.nombre_clase || '');
+  const image = resolveImageUrl(reservation.imagen_clase) || getClassImage(reservation.className || reservation.nombre_clase || '');
   const daysUntil = getDaysUntil(reservation.fecha_clase);
   const temporalLabel = getTemporalReservationLabel(reservation);
   const isActive = reservation.estado_reserva === 'ACTIVA';
@@ -150,7 +151,7 @@ function ReservationCard({ reservation, onRefresh }) {
                 </span>
               ) : (
                 <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-border-light px-2.5 py-0.5 text-[12px] font-semibold text-muted">
-                  {reservation.estado_reserva === 'FINALIZADA' || reservation.estado_reserva === 'COMPLETADA' ? 'Finalizada' : 'Cancelada'}
+                  {reservation.estado_reserva === 'FINALIZADA' || reservation.estado_reserva === 'COMPLETADA' ? 'Finalizada' : 'Anulada'}
                 </span>
               )}
             </div>
@@ -200,7 +201,7 @@ function ReservationCard({ reservation, onRefresh }) {
                 onClick={() => setShowCancel(true)}
                 className="min-h-11 rounded-xl border border-border px-4 py-2.5 text-[12px] font-bold text-secondary transition hover:bg-surface"
               >
-                Cancelar reserva
+                Anular reserva
               </button>
             )}
             {canRequestRefund && (
@@ -219,7 +220,7 @@ function ReservationCard({ reservation, onRefresh }) {
                 disabled={processingAction}
                 className="min-h-11 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-[12px] font-bold text-amber-700 transition hover:bg-amber-100 disabled:opacity-60 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300"
               >
-                {processingAction ? 'Cancelando...' : 'Cancelar solicitud'}
+                {processingAction ? 'Anulando...' : 'Anular solicitud'}
               </button>
             )}
           </div>
@@ -249,8 +250,8 @@ function ReservationCard({ reservation, onRefresh }) {
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/10">
                 <Dumbbell size={22} className="text-red-500" />
               </div>
-              <h3 className="mt-4 text-lg font-bold text-foreground">Cancelar reserva</h3>
-              <p className="mt-1 text-sm text-muted">¿Estás seguro de cancelar esta reserva?</p>
+              <h3 className="mt-4 text-lg font-bold text-foreground">Anular reserva</h3>
+              <p className="mt-1 text-sm text-muted">¿Estás seguro de anular esta reserva?</p>
               <div className="mt-5 flex gap-3">
                 <button
                   onClick={() => setShowCancel(false)}
@@ -263,7 +264,7 @@ function ReservationCard({ reservation, onRefresh }) {
                   disabled={canceling}
                   className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-bold text-primary-foreground transition hover:bg-red-700 disabled:opacity-50"
                 >
-                  {canceling ? 'Cancelando...' : 'Sí, cancelar'}
+                  {canceling ? 'Anulando...' : 'Sí, anular'}
                 </button>
               </div>
             </motion.div>
@@ -379,7 +380,7 @@ function MisReservas() {
             {[
               { label: 'Total', value: stats.total, color: 'text-foreground' },
               { label: 'Asistidas', value: stats.completed, color: 'text-emerald-600' },
-              { label: 'Canceladas', value: stats.cancelled, color: 'text-red-500' },
+              { label: 'Anuladas', value: stats.cancelled, color: 'text-red-500' },
               { label: 'Consumido', value: `S/${stats.totalSpent.toFixed(0)}`, color: 'text-blue-600' },
             ].map(({ label, value, color }) => (
               <div key={label} className="rounded-2xl bg-card p-3 text-center shadow-sm">
@@ -412,7 +413,7 @@ function MisReservas() {
             rawHistory.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-16 text-center">
                 <p className="text-lg font-bold text-muted">Sin historial</p>
-                <p className="text-sm text-muted-foreground">Las reservas finalizadas o canceladas aparecerán aquí.</p>
+                <p className="text-sm text-muted-foreground">Las reservas finalizadas o anuladas aparecerán aquí.</p>
               </div>
             ) : (
               <AnimatePresence>

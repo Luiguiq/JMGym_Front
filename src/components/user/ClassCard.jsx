@@ -10,6 +10,7 @@ const genreIcons = {
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
 import zumbaImage from '../../assets/images/zumba.jpg';
+import { resolveImageUrl } from '../../utils/imageUrl.js';
 
 const classImages = [
   { match: 'zumba', image: zumbaImage },
@@ -38,7 +39,7 @@ function getIntensityMeta(level = '') {
 
 function ClassCard({ classItem }) {
   const navigate = useNavigate();
-  const image = classItem.imagen_clase || getClassImage(classItem.name);
+  const image = resolveImageUrl(classItem.imagen_clase) || getClassImage(classItem.name);
   const availability = getAvailabilityMeta(Number(classItem.availableSpots || 0));
   const intensity = getIntensityMeta(classItem.level);
   const formattedDate = classItem.date

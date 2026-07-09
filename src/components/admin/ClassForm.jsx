@@ -5,6 +5,7 @@ import { instructorService } from '../../services/instructorService.js';
 import { genreService } from '../../services/genreService.js';
 import { classService } from '../../services/classService.js';
 import { userService } from '../../services/userService.js';
+import { resolveImageUrl } from '../../utils/imageUrl.js';
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
 import zumbaImage from '../../assets/images/zumba.jpg';
@@ -465,7 +466,7 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
             {formData.imagen_clase && (
               <div className="mt-3 relative inline-block">
                 <img
-                  src={formData.imagen_clase}
+                  src={resolveImageUrl(formData.imagen_clase)}
                   alt="Vista previa de la imagen seleccionada"
                   className="h-28 w-48 rounded-xl object-cover border border-border"
                   onError={(e) => { e.target.style.display = 'none'; }}
@@ -517,7 +518,7 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
                         >
                           <div className="aspect-[4/3] bg-border-light">
                             <img
-                              src={img.url}
+                              src={resolveImageUrl(img.url)}
                               alt={img.label}
                               className="h-full w-full object-cover"
                               onError={(e) => {

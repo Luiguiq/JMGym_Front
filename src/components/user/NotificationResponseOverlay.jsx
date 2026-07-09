@@ -75,7 +75,7 @@ function NotificationResponseOverlay() {
               disabled={loading}
               className="w-full rounded-2xl bg-red-50 py-3.5 font-bold text-sm text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50"
             >
-              Cancelar reserva
+              Anular reserva
             </button>
           </div>
         </div>

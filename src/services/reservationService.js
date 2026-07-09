@@ -28,6 +28,7 @@ function mapReservation(item) {
     hora_fin: item.clase?.hora_fin ?? '',
     duracion_minutos: item.clase?.duracion_minutos ?? 0,
     instructor_nombre: item.clase?.instructor_nombre ?? '',
+    imagen_clase: item.clase?.imagen_clase ?? '',
     codigo_espacio: item.espacio?.codigo_espacio ?? '',
     userName: item.usuario?.nombre_completo ?? item.usuarioNombre ?? '',
     usuarioNombre: item.usuario?.nombre_completo ?? item.usuarioNombre ?? '',

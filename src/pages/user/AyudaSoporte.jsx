@@ -8,8 +8,8 @@ const FAQS = [
     answer: 'Ve a "Clases" desde el menú principal, selecciona la clase que te interese, elige tu espacio disponible y confirma la reserva. Recibirás un código QR de check-in.',
   },
   {
-    question: '¿Cómo cancelar una reserva?',
-    answer: 'Ingresa a "Mis reservas", selecciona la reserva que deseas cancelar y presiona el botón "Cancelar". Revisa nuestra política de cancelación para conocer plazos y condiciones.',
+    question: '¿Cómo anular una reserva?',
+    answer: 'Ingresa a "Mis reservas", selecciona la reserva que deseas anular y presiona el botón "Anular". Revisa nuestra política de anulación para conocer plazos y condiciones.',
   },
   {
     question: '¿Cómo funcionan los pagos?',
@@ -29,7 +29,7 @@ const FAQS = [
   },
   {
     question: '¿Qué hago si no puedo asistir a una clase reservada?',
-    answer: 'Cancela tu reserva desde la sección "Mis reservas" con al menos 2 horas de anticipación para evitar cargos.',
+    answer: 'Anula tu reserva desde la sección "Mis reservas" con al menos 2 horas de anticipación para evitar cargos.',
   },
   {
     question: '¿Cómo contactar con soporte?',

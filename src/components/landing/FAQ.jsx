@@ -5,9 +5,9 @@ import { ChevronDown } from 'lucide-react';
 const faqs = [
   { q: '¿Necesito una membresía para reservar clases?', a: 'No, puedes reservar clases individuales sin compromiso. Si entrenas con frecuencia, ofrecemos planes mensuales con descuento.' },
   { q: '¿Puedo reservar desde mi celular?', a: 'Sí, toda la plataforma está optimizada para móviles. Puedes reservar, pagar y gestionar tus clases desde cualquier dispositivo.' },
-  { q: '¿Cómo cancelo una reserva?', a: 'Desde tu perfil, en la sección "Mis reservas", puedes cancelar hasta 2 horas antes de la clase. Los reembolsos se procesan según nuestra política.' },
+  { q: '¿Cómo anulo una reserva?', a: 'Desde tu perfil, en la sección "Mis reservas", puedes anular hasta 2 horas antes de la clase. Los reembolsos se procesan según nuestra política.' },
   { q: '¿Qué métodos de pago aceptan?', a: 'Aceptamos Yape, efectivo y próximamente tarjetas de crédito y débito. Todos los pagos son procesados de forma segura.' },
-  { q: '¿Puedo cambiar mi reserva a otro horario?', a: 'Actualmente puedes cancelar y reservar de nuevo si hay espacio disponible. Estamos trabajando en un sistema de cambio directo.' },
+  { q: '¿Puedo cambiar mi reserva a otro horario?', a: 'Actualmente puedes anular y reservar de nuevo si hay espacio disponible. Estamos trabajando en un sistema de cambio directo.' },
   { q: '¿Hay instructores para entrenamiento personalizado?', a: 'Sí, contamos con personal trainers disponibles para sesiones个人izadas. Consulta los horarios y precios en nuestra sección de servicios.' },
 ];
 

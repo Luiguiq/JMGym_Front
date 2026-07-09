@@ -103,7 +103,7 @@ function PagoClase() {
       setProcessing(false);
       const msg = err?.message || '';
       if (msg.includes('Ya tienes una reserva activa para esa fecha')) {
-        setError('Ya tienes una clase reservada para esa fecha. Si deseas reservar esta clase, primero cancela la reserva anterior.');
+        setError('Ya tienes una clase reservada para esa fecha. Si deseas reservar esta clase, primero anula la reserva anterior.');
         return;
       }
       setError(msg);
