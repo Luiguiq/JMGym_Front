@@ -105,7 +105,7 @@ function ReservationCard({ reservation, onRefresh }) {
                 </span>
               ) : (
                 <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-border-light px-2.5 py-0.5 text-[12px] font-semibold text-muted">
-                  {reservation.estado_reserva === 'FINALIZADA' || reservation.estado_reserva === 'COMPLETADA' ? 'Finalizada' : 'Cancelada'}
+                  {reservation.estado_reserva === 'FINALIZADA' || reservation.estado_reserva === 'COMPLETADA' ? 'Finalizada' : 'Anulada'}
                 </span>
               )}
             </div>
@@ -309,7 +309,7 @@ function MisReservas() {
             {[
               { label: 'Total', value: stats.total, color: 'text-foreground' },
               { label: 'Asistidas', value: stats.completed, color: 'text-emerald-600' },
-              { label: 'Canceladas', value: stats.cancelled, color: 'text-red-500' },
+              { label: 'Anuladas', value: stats.cancelled, color: 'text-red-500' },
               { label: 'Gastado', value: `S/${stats.totalSpent.toFixed(0)}`, color: 'text-blue-600' },
             ].map(({ label, value, color }) => (
               <div key={label} className="rounded-2xl bg-card p-3 text-center shadow-sm">
@@ -342,7 +342,7 @@ function MisReservas() {
             rawHistory.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-16 text-center">
                 <p className="text-lg font-bold text-muted">Sin historial</p>
-                <p className="text-sm text-muted-foreground">Las reservas finalizadas o canceladas aparecerán aquí.</p>
+                <p className="text-sm text-muted-foreground">Las reservas finalizadas o anuladas aparecerán aquí.</p>
               </div>
             ) : (
               <AnimatePresence>

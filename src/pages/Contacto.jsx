@@ -1,11 +1,52 @@
+import { useState } from 'react';
 import { IdCard, MessageCircle, Phone, User } from 'lucide-react';
 import PublicFooter from '../components/common/PublicFooter.jsx';
 import PublicHeader from '../components/common/PublicHeader.jsx';
+import { useToast } from '../components/common/Toast.jsx';
 import heroBackgroundImage from '../assets/images/jmworkoutport2.jpg';
 
 const gymAddress = 'Av. Conde de Lemos 420, Callao 07006';
+const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER ?? '';
 
 function Contacto() {
+  const toast = useToast();
+  const [form, setForm] = useState({
+    nombres: '',
+    apellidos: '',
+    dni: '',
+    celular: '',
+    mensaje: '',
+  });
+
+  const updateField = (field, value) => {
+    setForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!form.nombres.trim() || !form.apellidos.trim() || !form.celular.trim()) {
+      toast.error('Completa nombres, apellidos y celular');
+      return;
+    }
+
+    const message = [
+      'Hola JMGym, quiero información.',
+      `Nombre: ${form.nombres.trim()} ${form.apellidos.trim()}`,
+      form.dni.trim() ? `DNI: ${form.dni.trim()}` : null,
+      `Celular: ${form.celular.trim()}`,
+      form.mensaje.trim() ? `Mensaje: ${form.mensaje.trim()}` : null,
+      `Sede: JMGym Callao - ${gymAddress}`,
+    ].filter(Boolean).join('\n');
+
+    if (!whatsappNumber) {
+      toast.info('Consulta lista. Falta configurar VITE_WHATSAPP_NUMBER para abrir WhatsApp.');
+      return;
+    }
+
+    toast.success('Abriendo WhatsApp para completar tu consulta');
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <main className="min-h-screen bg-white text-slate-950">
       <PublicHeader subtitle="Contacto" />
@@ -33,13 +74,15 @@ function Contacto() {
           </div>
 
           <div className="mx-auto mt-12 max-w-4xl">
-            <form className="rounded-[38px] bg-white p-6 shadow-[0_24px_80px_rgba(7,17,31,.1)] ring-1 ring-slate-200 lg:p-8">
+            <form onSubmit={handleSubmit} className="rounded-[38px] bg-white p-6 shadow-[0_24px_80px_rgba(7,17,31,.1)] ring-1 ring-slate-200 lg:p-8">
               <div className="grid gap-5">
                 <label className="group relative block">
                   <User className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition group-focus-within:text-cyan-500" aria-hidden="true" />
                   <input
                     type="text"
                     placeholder="Nombres"
+                    value={form.nombres}
+                    onChange={(event) => updateField('nombres', event.target.value)}
                     className="w-full rounded-[24px] border border-slate-200 bg-white py-5 pl-14 pr-5 text-lg outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
                   />
                 </label>
@@ -49,6 +92,8 @@ function Contacto() {
                   <input
                     type="text"
                     placeholder="Apellidos"
+                    value={form.apellidos}
+                    onChange={(event) => updateField('apellidos', event.target.value)}
                     className="w-full rounded-[24px] border border-slate-200 bg-white py-5 pl-14 pr-5 text-lg outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
                   />
                 </label>
@@ -58,6 +103,8 @@ function Contacto() {
                   <input
                     type="text"
                     placeholder="DNI"
+                    value={form.dni}
+                    onChange={(event) => updateField('dni', event.target.value)}
                     className="w-full rounded-[24px] border border-slate-200 bg-white py-5 pl-14 pr-5 text-lg outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
                   />
                 </label>
@@ -67,6 +114,8 @@ function Contacto() {
                   <input
                     type="tel"
                     placeholder="Celular"
+                    value={form.celular}
+                    onChange={(event) => updateField('celular', event.target.value)}
                     className="w-full rounded-[24px] border border-slate-200 bg-white py-5 pl-14 pr-5 text-lg outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
                   />
                 </label>
@@ -80,11 +129,13 @@ function Contacto() {
                 <textarea
                   rows="4"
                   placeholder="Mensaje opcional"
+                  value={form.mensaje}
+                  onChange={(event) => updateField('mensaje', event.target.value)}
                   className="w-full resize-none rounded-[24px] border border-slate-200 bg-white p-5 text-lg outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
                 />
 
                 <button
-                  type="button"
+                  type="submit"
                   className="group inline-flex items-center justify-center gap-3 rounded-[24px] bg-[#07111f] px-7 py-5 text-lg font-black text-white transition hover:-translate-y-1 hover:bg-brand-700"
                 >
                   <MessageCircle className="h-6 w-6 text-cyan-200 transition group-hover:scale-110" aria-hidden="true" />

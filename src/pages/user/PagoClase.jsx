@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { classService } from '../../services/classService.js';
 import { reservationService } from '../../services/reservationService.js';
+import { useToast } from '../../components/common/Toast.jsx';
 import yapeLogo from '../../assets/images/yapelogo.png';
 
 const PAYMENT_METHODS = [
@@ -34,6 +35,7 @@ function PagoClase() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const seatCode = location.state?.seatCode || 'Pendiente';
   const seatId = location.state?.seatId;
@@ -48,7 +50,11 @@ function PagoClase() {
     if (!seatId) { navigate(`/cliente/clases/${id}`); return; }
     classService.getClassById(id)
       .then(setClassInfo)
-      .catch((err) => setError('Error al cargar la clase: ' + err.message))
+      .catch((err) => {
+        const message = 'Error al cargar la clase: ' + err.message;
+        setError(message);
+        toast.error(message);
+      })
       .finally(() => setLoading(false));
   }, [id, seatId, navigate]);
 
@@ -61,15 +67,19 @@ function PagoClase() {
         seatId: Number(seatId),
         paymentMethod: method,
       });
+      toast.success('Reserva registrada correctamente');
       navigate('/cliente/reservas', { replace: true });
     } catch (err) {
       setProcessing(false);
       const msg = err?.message || '';
       if (msg.includes('Ya tienes una reserva activa para esa fecha')) {
-        setError('Ya tienes una clase reservada para esa fecha. Si deseas reservar esta clase, primero cancela la reserva anterior.');
+        const message = 'Ya tienes una clase reservada para esa fecha. Si deseas reservar esta clase, primero cancela la reserva anterior.';
+        setError(message);
+        toast.error(message);
         return;
       }
       setError(msg);
+      toast.error(msg || 'No se pudo registrar la reserva');
     }
   };
 

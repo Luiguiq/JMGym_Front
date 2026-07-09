@@ -46,7 +46,7 @@ function ReservationCard({ reservation, onRefresh }) {
     reservation.estado_reserva === 'ACTIVA'
       ? 'Activa'
       : reservation.estado_reserva === 'CANCELADA'
-        ? 'Cancelada'
+        ? 'Anulada'
         : reservation.estado_reserva === 'FINALIZADA'
           ? 'Finalizada'
           : reservation.estado_reserva === 'COMPLETADA'
@@ -112,7 +112,7 @@ function ReservationCard({ reservation, onRefresh }) {
       await reservationService.cancelReservation(reservation.id, cancelMotivo, cancelDetalle || null);
 
       setShowCancelModal(false);
-      setFeedback('Reserva cancelada. El espacio quedó disponible nuevamente.');
+      setFeedback('Reserva anulada. El espacio quedó disponible nuevamente.');
 
       if (onRefresh) {
         setTimeout(() => onRefresh(), 700);
@@ -220,7 +220,7 @@ function ReservationCard({ reservation, onRefresh }) {
           <div
             role="alert"
             className={`mt-4 rounded-2xl border px-4 py-3 text-sm font-medium ${
-              feedback.toLowerCase().includes('cancelada')
+              feedback.toLowerCase().includes('anulada')
                 ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                 : 'border-amber-200 bg-amber-50 text-amber-700'
             }`}

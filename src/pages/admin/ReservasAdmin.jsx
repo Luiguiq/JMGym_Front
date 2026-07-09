@@ -26,7 +26,7 @@ function ReservasAdmin() {
   const [refundError, setRefundError] = useState('');
 
   const adminMotivos = [
-    { value: 'CLASE_CANCELADA', label: 'Clase cancelada' },
+    { value: 'CLASE_CANCELADA', label: 'Clase anulada' },
     { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
     { value: 'CAMBIO_INSTRUCTOR', label: 'Cambio de instructor' },
     { value: 'VENCIMIENTO_PAGO', label: 'Vencimiento de pago' },

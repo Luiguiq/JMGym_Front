@@ -24,4 +24,22 @@ export const instructorService = {
 
   toggleStatus: (id) =>
     apiRequest(`/instructors/${id}/toggle-status`, { method: 'PATCH' }),
+
+  getSchedules: (instructorId) =>
+    apiRequest(`/instructors/${instructorId}/schedules`),
+
+  createSchedule: (instructorId, data) =>
+    apiRequest(`/instructors/${instructorId}/schedules`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  updateSchedule: (scheduleId, data) =>
+    apiRequest(`/instructors/schedules/${scheduleId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  deleteSchedule: (scheduleId) =>
+    apiRequest(`/instructors/schedules/${scheduleId}`, { method: 'DELETE' }),
 };

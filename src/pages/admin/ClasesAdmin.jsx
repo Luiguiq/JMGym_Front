@@ -6,9 +6,11 @@ import ClassForm from '../../components/admin/ClassForm';
 import Loader from '../../components/admin/Loader';
 import { classService } from '../../services/classService';
 import { reservationService } from '../../services/reservationService';
+import { useToast } from '../../components/common/Toast.jsx';
 
 const ClasesAdmin = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const [classes, setClasses] = useState([]);
   const [filteredClasses, setFilteredClasses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,6 +59,7 @@ const ClasesAdmin = () => {
       );
     } catch (error) {
       console.error('Error cargando clases:', error);
+      toast.error(error?.message || 'Error cargando clases');
     } finally {
       setLoading(false);
     }
@@ -87,8 +90,10 @@ const ClasesAdmin = () => {
       await classService.createClass(formData);
       await loadClasses();
       setShowForm(false);
+      toast.success('Clase creada correctamente');
     } catch (error) {
       console.error('Error creando clase:', error);
+      toast.error(error?.message || 'Error creando clase');
     } finally {
       setLoading(false);
     }
@@ -101,8 +106,10 @@ const ClasesAdmin = () => {
       await loadClasses();
       setSelectedClass(null);
       setShowForm(false);
+      toast.success('Clase actualizada correctamente');
     } catch (error) {
       console.error('Error actualizando clase:', error);
+      toast.error(error?.message || 'Error actualizando clase');
     } finally {
       setLoading(false);
     }
@@ -122,9 +129,11 @@ const ClasesAdmin = () => {
       await classService.deleteClass(deleteTarget.id);
       await loadClasses();
       setDeleteTarget(null);
+      toast.success('Clase eliminada correctamente');
     } catch (error) {
       console.error('Error eliminando clase:', error);
       setDeleteError(error.message || 'No se pudo eliminar la clase');
+      toast.error(error?.message || 'No se pudo eliminar la clase');
     } finally {
       setDeleting(false);
     }
@@ -151,6 +160,7 @@ const ClasesAdmin = () => {
       setClassUsers([...new Set(users)]);
     } catch (error) {
       setClassUsersError(error?.message || 'Error cargando usuarios de la clase');
+      toast.error(error?.message || 'Error cargando usuarios de la clase');
     } finally {
       setLoadingClassUsers(false);
     }

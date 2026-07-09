@@ -29,7 +29,7 @@ const typeLabels = {
   RECORDATORIO: 'Recordatorio', PAGO: 'Pago', PAGO_CONFIRMADO: 'Pago confirmado',
   CAMBIO_HORARIO: 'Cambio de horario', CAMBIO_INSTRUCTOR: 'Cambio de instructor',
   NUEVA_CLASE: 'Nueva clase', CANCELACION: 'Cancelación', REEMBOLSO: 'Reembolso',
-  BLOQUEO_CUENTA: 'Cuenta', RESERVA_CONFIRMADA: 'Reserva', RESERVA_CANCELADA: 'Reserva cancelada',
+  BLOQUEO_CUENTA: 'Cuenta', RESERVA_CONFIRMADA: 'Reserva', RESERVA_CANCELADA: 'Reserva anulada',
   CAMBIO_ESPACIO: 'Cambio de espacio', NOTIFICACION_GENERAL: 'Información',
 };
 
@@ -259,7 +259,7 @@ function Notificaciones() {
                               n.userResponse === 'ACEPTADO' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
                             }`}>
                               {n.userResponse === 'ACEPTADO' ? <Check size={12} /> : <X size={12} />}
-                              {n.userResponse === 'ACEPTADO' ? 'Aceptado' : 'Cancelado'}
+                              {n.userResponse === 'ACEPTADO' ? 'Aceptado' : 'Anulado'}
                             </span>
                           )}
                         </div>

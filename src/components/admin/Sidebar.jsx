@@ -46,7 +46,7 @@ const Sidebar = ({ onClose }) => {
     },
     {
       id: 'cancelaciones',
-      label: 'Cancelaciones',
+      label: 'Anulaciones',
       icon: XCircle,
       path: '/admin/cancelaciones',
     },

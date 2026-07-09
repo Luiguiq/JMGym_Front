@@ -188,7 +188,7 @@ function Perfil() {
             {[
               { label: 'Reservas', value: stats.total, color: 'text-blue-600', icon: Calendar, bg: 'bg-blue-50' },
               { label: 'Completadas', value: stats.completed, color: 'text-emerald-600', icon: Trophy, bg: 'bg-emerald-50' },
-              { label: 'Canceladas', value: stats.cancelled, color: 'text-red-500', icon: XCircle, bg: 'bg-red-50' },
+              { label: 'Anuladas', value: stats.cancelled, color: 'text-red-500', icon: XCircle, bg: 'bg-red-50' },
               { label: 'Gastado', value: `S/${stats.totalSpent.toFixed(0)}`, color: 'text-amber-600', icon: DollarSign, bg: 'bg-amber-50' },
             ].map(({ label, value, color, icon: Icon, bg }) => (
               <div key={label} className="relative overflow-hidden rounded-2xl bg-card p-4 shadow-sm">

@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { X, Search, AlertTriangle, User } from 'lucide-react';
+import { X, Search, AlertTriangle, User, Trash2 } from 'lucide-react';
 import { instructorService } from '../../services/instructorService.js';
 import InstructorForm from '../../components/admin/InstructorForm.jsx';
+import { useToast } from '../../components/common/Toast.jsx';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
 const UPLOAD_URL = API_BASE.replace('/api', '');
@@ -11,6 +12,226 @@ const FILTER_OPTIONS = [
   { value: 'ACTIVO', label: 'Activos' },
   { value: 'INACTIVO', label: 'Inactivos' },
 ];
+
+const DAYS = [
+  { value: 'LUNES', label: 'Lunes' },
+  { value: 'MARTES', label: 'Martes' },
+  { value: 'MIERCOLES', label: 'Miércoles' },
+  { value: 'JUEVES', label: 'Jueves' },
+  { value: 'VIERNES', label: 'Viernes' },
+  { value: 'SABADO', label: 'Sábado' },
+  { value: 'DOMINGO', label: 'Domingo' },
+];
+
+const EMPTY_SCHEDULE = {
+  dia: 'LUNES',
+  hora_inicio: '08:00',
+  hora_fin: '09:00',
+};
+
+function formatTime(value) {
+  return value?.slice(0, 5) || '';
+}
+
+function getDayLabel(value) {
+  return DAYS.find((day) => day.value === value)?.label || value;
+}
+
+function ScheduleModal({ instructor, onClose }) {
+  const toast = useToast();
+  const [schedules, setSchedules] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [form, setForm] = useState(EMPTY_SCHEDULE);
+
+  const loadSchedules = async () => {
+    try {
+      setLoading(true);
+      const data = await instructorService.getSchedules(instructor.id_instructor);
+      setSchedules(data ?? []);
+    } catch (err) {
+      toast.error(err?.message || 'Error al cargar horarios');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { loadSchedules(); }, [instructor.id_instructor]);
+
+  const resetForm = () => {
+    setEditingId(null);
+    setForm(EMPTY_SCHEDULE);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (form.hora_inicio >= form.hora_fin) {
+      toast.error('La hora de inicio debe ser menor que la hora fin');
+      return;
+    }
+
+    try {
+      setSaving(true);
+      if (editingId) {
+        await instructorService.updateSchedule(editingId, form);
+        toast.success('Horario actualizado correctamente');
+      } else {
+        await instructorService.createSchedule(instructor.id_instructor, form);
+        toast.success('Horario agregado correctamente');
+      }
+      resetForm();
+      await loadSchedules();
+    } catch (err) {
+      toast.error(err?.message || 'Error al guardar horario');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleEdit = (schedule) => {
+    setEditingId(schedule.id_horario);
+    setForm({
+      dia: schedule.dia,
+      hora_inicio: formatTime(schedule.hora_inicio),
+      hora_fin: formatTime(schedule.hora_fin),
+    });
+  };
+
+  const handleDelete = async (scheduleId) => {
+    if (!window.confirm('¿Eliminar este horario?')) return;
+    try {
+      await instructorService.deleteSchedule(scheduleId);
+      toast.success('Horario eliminado correctamente');
+      if (editingId === scheduleId) resetForm();
+      await loadSchedules();
+    } catch (err) {
+      toast.error(err?.message || 'Error al eliminar horario');
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+      onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}
+    >
+      <div className="max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-[28px] bg-white shadow-2xl">
+        <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-6 py-5">
+          <div>
+            <h2 className="text-xl font-black text-slate-900">Horario del instructor</h2>
+            <p className="mt-1 text-sm font-medium text-slate-500">{instructor.nombre_completo}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            aria-label="Cerrar horarios"
+          >
+            <X size={20} aria-hidden="true" />
+          </button>
+        </div>
+
+        <div className="max-h-[calc(90vh-88px)] overflow-y-auto p-6">
+          <form onSubmit={handleSubmit} className="grid gap-3 rounded-3xl border border-slate-100 bg-slate-50 p-4 md:grid-cols-[1.2fr_1fr_1fr_auto]">
+            <label className="text-xs font-black uppercase tracking-wide text-slate-500">
+              Día
+              <select
+                value={form.dia}
+                onChange={(event) => setForm((current) => ({ ...current, dia: event.target.value }))}
+                className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold text-slate-800 outline-none focus:border-[#004aab] focus:ring-2 focus:ring-blue-100"
+              >
+                {DAYS.map((day) => <option key={day.value} value={day.value}>{day.label}</option>)}
+              </select>
+            </label>
+            <label className="text-xs font-black uppercase tracking-wide text-slate-500">
+              Hora inicio
+              <input
+                type="time"
+                value={form.hora_inicio}
+                onChange={(event) => setForm((current) => ({ ...current, hora_inicio: event.target.value }))}
+                className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold text-slate-800 outline-none focus:border-[#004aab] focus:ring-2 focus:ring-blue-100"
+                required
+              />
+            </label>
+            <label className="text-xs font-black uppercase tracking-wide text-slate-500">
+              Hora fin
+              <input
+                type="time"
+                value={form.hora_fin}
+                onChange={(event) => setForm((current) => ({ ...current, hora_fin: event.target.value }))}
+                className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold text-slate-800 outline-none focus:border-[#004aab] focus:ring-2 focus:ring-blue-100"
+                required
+              />
+            </label>
+            <div className="flex items-end gap-2">
+              <button
+                type="submit"
+                disabled={saving}
+                className="rounded-xl bg-[#004aab] px-4 py-2.5 text-sm font-black text-white transition hover:opacity-90 disabled:opacity-60"
+              >
+                {saving ? 'Guardando...' : editingId ? 'Actualizar' : 'Agregar'}
+              </button>
+              {editingId && (
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-black text-slate-600 transition hover:bg-slate-50"
+                >
+                  Cancelar
+                </button>
+              )}
+            </div>
+          </form>
+
+          <div className="mt-5 overflow-x-auto rounded-3xl border border-slate-100">
+            <table className="w-full min-w-[560px] text-left text-sm">
+              <thead className="bg-slate-50 text-xs font-black uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th className="px-4 py-3">Día</th>
+                  <th className="px-4 py-3">Hora inicio</th>
+                  <th className="px-4 py-3">Hora fin</th>
+                  <th className="px-4 py-3 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 bg-white">
+                {loading ? (
+                  <tr><td colSpan="4" className="px-4 py-8 text-center font-bold text-slate-400">Cargando horarios...</td></tr>
+                ) : schedules.length === 0 ? (
+                  <tr><td colSpan="4" className="px-4 py-8 text-center font-bold text-slate-400">Este instructor no tiene horarios registrados.</td></tr>
+                ) : schedules.map((schedule) => (
+                  <tr key={schedule.id_horario}>
+                    <td className="px-4 py-3 font-bold text-slate-800">{getDayLabel(schedule.dia)}</td>
+                    <td className="px-4 py-3 text-slate-600">{formatTime(schedule.hora_inicio)}</td>
+                    <td className="px-4 py-3 text-slate-600">{formatTime(schedule.hora_fin)}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleEdit(schedule)}
+                          className="rounded-xl bg-blue-50 px-3 py-2 text-xs font-black text-[#004aab] transition hover:bg-blue-100"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(schedule.id_horario)}
+                          className="rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100"
+                          aria-label="Eliminar horario"
+                        >
+                          <Trash2 size={14} aria-hidden="true" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function parseEspecialidades(raw) {
   if (!raw) return [];
@@ -31,6 +252,7 @@ function getInitials(name) {
 }
 
 export default function InstructoresAdmin() {
+  const toast = useToast();
   const [instructors, setInstructors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -38,15 +260,15 @@ export default function InstructoresAdmin() {
   const [activeFilter, setActiveFilter] = useState('TODOS');
   const [showForm, setShowForm] = useState(false);
   const [editInstructor, setEditInstructor] = useState(null);
-  const [alert, setAlert] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
+  const [scheduleInstructor, setScheduleInstructor] = useState(null);
 
   const loadInstructors = async () => {
     try {
       const data = await instructorService.getAll();
       setInstructors(data);
-    } catch {
-      setAlert({ type: 'error', message: 'Error al cargar instructores' });
+    } catch (err) {
+      toast.error(err?.message || 'Error al cargar instructores');
     } finally {
       setLoading(false);
     }
@@ -74,10 +296,10 @@ export default function InstructoresAdmin() {
     try {
       if (editInstructor) {
         await instructorService.update(editInstructor.id_instructor, formData);
-        setAlert({ type: 'success', message: 'Instructor actualizado correctamente' });
+        toast.success('Instructor actualizado correctamente');
       } else {
         await instructorService.create(formData);
-        setAlert({ type: 'success', message: 'Instructor creado correctamente' });
+        toast.success('Instructor creado correctamente');
       }
       setShowForm(false);
       setEditInstructor(null);
@@ -85,17 +307,17 @@ export default function InstructoresAdmin() {
     } catch (err) {
       setShowForm(false);
       setEditInstructor(null);
-      setAlert({ type: 'error', message: err.message || 'Error al guardar instructor' });
+      toast.error(err.message || 'Error al guardar instructor');
     }
   };
 
   const handleToggleStatus = async (id) => {
     try {
       await instructorService.toggleStatus(id);
-      setAlert({ type: 'success', message: 'Estado del instructor actualizado' });
+      toast.success('Estado del instructor actualizado');
       loadInstructors();
-    } catch {
-      setAlert({ type: 'error', message: 'Error al cambiar estado' });
+    } catch (err) {
+      toast.error(err?.message || 'Error al cambiar estado');
     }
     setConfirmId(null);
   };
@@ -104,10 +326,10 @@ export default function InstructoresAdmin() {
     if (!window.confirm('¿Eliminar este instructor permanentemente?')) return;
     try {
       await instructorService.delete(id);
-      setAlert({ type: 'success', message: 'Instructor eliminado correctamente' });
+      toast.success('Instructor eliminado correctamente');
       loadInstructors();
-    } catch {
-      setAlert({ type: 'error', message: 'Error al eliminar instructor' });
+    } catch (err) {
+      toast.error(err?.message || 'Error al eliminar instructor');
     }
   };
 
@@ -142,18 +364,6 @@ export default function InstructoresAdmin() {
           <span className="hidden sm:inline">Nuevo</span>
         </button>
       </div>
-
-      {/* Alert */}
-      {alert && (
-        <div className={`mb-4 flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold shadow-sm ${
-          alert.type === 'error'
-            ? 'bg-red-50 text-red-700 border border-red-200'
-            : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-        }`}>
-          <span>{alert.message}</span>
-          <button onClick={() => setAlert(null)} className="opacity-60 hover:opacity-100 ml-3"><X size={18} /></button>
-        </div>
-      )}
 
       {/* Search + Filter */}
       <div className="mb-5 flex gap-2">
@@ -224,6 +434,13 @@ export default function InstructoresAdmin() {
           initial={editInstructor}
           onSave={handleSave}
           onCancel={() => { setShowForm(false); setEditInstructor(null); }}
+        />
+      )}
+
+      {scheduleInstructor && (
+        <ScheduleModal
+          instructor={scheduleInstructor}
+          onClose={() => setScheduleInstructor(null)}
         />
       )}
 
@@ -355,7 +572,7 @@ export default function InstructoresAdmin() {
                 </button>
 
                 <button
-                  onClick={() => setAlert({ type: 'success', message: `Gestión de horarios de ${inst.nombre_completo} — próximamente` })}
+                  onClick={() => setScheduleInstructor(inst)}
                   className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-50 py-2.5 text-xs font-bold text-[#004aab] transition hover:bg-brand-100 active:scale-[0.97]"
                 >
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+  import { useState, useEffect } from 'react';
 import { Search, XCircle, User, Calendar, Clock, FileText, Filter } from 'lucide-react';
 import { cancelacionService } from '../../services/cancelacionService.js';
 import Loader from '../../components/admin/Loader.jsx';
@@ -8,7 +8,7 @@ const MOTIVOS_LABEL = {
   SALUD: 'Problemas de salud',
   ECONOMICO: 'Motivo económico',
   CAMBIO_SECTOR: 'Cambio de sector',
-  CLASE_CANCELADA: 'Clase cancelada',
+  CLASE_CANCELADA: 'Clase anulada',
   VENCIMIENTO_PAGO: 'Vencimiento de pago',
   OTRO: 'Otro motivo',
 };
@@ -57,8 +57,8 @@ function CancelacionesAdmin() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Gestión de Cancelaciones</h1>
-        <p className="text-slate-600 text-sm mt-1">Visualiza todas las cancelaciones de reservas</p>
+        <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Gestión de Anulaciones</h1>
+        <p className="text-slate-600 text-sm mt-1">Visualiza todas las anulaciones de reservas</p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
@@ -66,7 +66,7 @@ function CancelacionesAdmin() {
           <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
           <input
             type="text"
-            aria-label="Buscar cancelaciones por usuario, clase o código"
+            aria-label="Buscar anulaciones por usuario, clase o código"
             placeholder="Buscar por usuario, clase o código..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -76,7 +76,7 @@ function CancelacionesAdmin() {
         <div className="relative">
           <Filter size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true" />
           <select
-            aria-label="Filtrar por motivo de cancelación"
+            aria-label="Filtrar por motivo de anulación"
             value={filterMotivo}
             onChange={(e) => setFilterMotivo(e.target.value)}
             className="pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none bg-white min-w-[180px]"
@@ -89,9 +89,9 @@ function CancelacionesAdmin() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4" role="group" aria-label="Resumen de cancelaciones">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4" role="group" aria-label="Resumen de anulaciones">
         <div className="bg-white rounded-xl border border-slate-200 p-4" role="status">
-          <p className="text-slate-600 text-sm mb-1">Total cancelaciones</p>
+          <p className="text-slate-600 text-sm mb-1">Total anulaciones</p>
           <p className="text-3xl font-bold text-slate-900">{cancelaciones.length}</p>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-4" role="status">
@@ -111,16 +111,16 @@ function CancelacionesAdmin() {
       <div className="bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden">
         {loading ? (
           <div className="flex justify-center items-center py-12">
-            <Loader size="md" text="Cargando cancelaciones..." />
+            <Loader size="md" text="Cargando anulaciones..." />
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center gap-3 py-16 text-center">
             <XCircle size={48} className="text-slate-300" aria-hidden="true" />
             <p className="text-lg font-bold text-slate-500">
-              {searchTerm || filterMotivo !== 'todos' ? 'Sin resultados' : 'No hay cancelaciones'}
+              {searchTerm || filterMotivo !== 'todos' ? 'Sin resultados' : 'No hay anulaciones'}
             </p>
             <p className="text-sm text-slate-400">
-              {searchTerm || filterMotivo !== 'todos' ? 'Intenta con otros filtros' : 'Las cancelaciones aparecerán aquí cuando los usuarios cancelen sus reservas'}
+              {searchTerm || filterMotivo !== 'todos' ? 'Intenta con otros filtros' : 'Las anulaciones aparecerán aquí cuando los usuarios cancelen sus reservas'}
             </p>
           </div>
         ) : (
@@ -132,7 +132,7 @@ function CancelacionesAdmin() {
                   <th scope="col" className="text-left px-4 py-3 font-bold text-slate-600">Usuario</th>
                   <th scope="col" className="text-left px-4 py-3 font-bold text-slate-600">Clase</th>
                   <th scope="col" className="text-left px-4 py-3 font-bold text-slate-600">Motivo</th>
-                  <th scope="col" className="text-left px-4 py-3 font-bold text-slate-600">Cancelado por</th>
+                  <th scope="col" className="text-left px-4 py-3 font-bold text-slate-600">Anulado por</th>
                   <th scope="col" className="text-left px-4 py-3 font-bold text-slate-600">Fecha</th>
                 </tr>
               </thead>
