@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { User, Calendar, Clock, Search, XCircle, CreditCard, Dumbbell, ChevronLeft, ChevronRight, AlertTriangle, CheckCircle } from 'lucide-react';
 import { reservationService } from '../../services/reservationService.js';
 import Loader from '../../components/admin/Loader.jsx';
+import { getSocket, disconnectSocket } from '../../services/socket.js';
+import toast from 'react-hot-toast';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
 const BACKEND_URL = API_BASE.replace('/api', '');
@@ -33,11 +35,7 @@ function ReservasAdmin() {
     { value: 'OTRO', label: 'Otro motivo' },
   ];
 
-  useEffect(() => {
-    loadReservations();
-  }, []);
-
-  const loadReservations = async () => {
+  const loadReservations = useCallback(async () => {
     try {
       setLoading(true);
       const data = await reservationService.getAllReservations();
@@ -47,7 +45,22 @@ function ReservasAdmin() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadReservations();
+
+    const socket = getSocket();
+    if (socket) {
+      socket.on('notification:new', () => {
+        loadReservations();
+      });
+    }
+
+    return () => {
+      disconnectSocket();
+    };
+  }, [loadReservations]);
 
   const handleCancel = async () => {
     if (!cancelTarget) return;
@@ -103,6 +116,7 @@ function ReservasAdmin() {
     );
 
     setRefundTarget(null);
+    toast.success('Reembolso procesado correctamente');
 
   } catch (error) {
 

@@ -4,7 +4,7 @@ import { authService } from '../services/authService.js';
 const AuthContext = createContext(null);
 
 function getFromStorage(key) {
-  return localStorage.getItem(key) || sessionStorage.getItem(key);
+  return sessionStorage.getItem(key) || localStorage.getItem(key);
 }
 
 export function AuthProvider({ children }) {
@@ -20,15 +20,26 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => getFromStorage('token'));
 
   function persist(key, value, remember) {
-    localStorage.removeItem(key);
-    sessionStorage.removeItem(key);
     if (value !== null && value !== undefined) {
-      const storage = remember ? localStorage : sessionStorage;
-      storage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+      sessionStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+      if (remember) {
+        localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+      }
+    } else {
+      sessionStorage.removeItem(key);
+      if (remember) localStorage.removeItem(key);
     }
   }
 
   function mapUser(backendUser) {
+    const stored = getFromStorage('user');
+    let existingYapeVinculado = false;
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        existingYapeVinculado = parsed.yapeVinculado === true;
+      } catch {}
+    }
     return {
       id: backendUser.id,
       name: backendUser.name ?? backendUser.nombre ?? '',
@@ -36,6 +47,7 @@ export function AuthProvider({ children }) {
       dni: backendUser.dni,
       role: backendUser.role ?? backendUser.rol ?? 'client',
       foto_perfil: backendUser.foto_perfil,
+      yapeVinculado: existingYapeVinculado,
     };
   }
 
@@ -49,7 +61,7 @@ export function AuthProvider({ children }) {
     return { ...data, user };
   }, []);
 
-  const register = useCallback(async ({ name, dni, email, password }) => {
+  const register = useCallback(async ({ name, dni, email, password }, remember = false) => {
     const data = await authService.register({
       nombre_completo: name,
       correo_personal: email,
@@ -59,12 +71,12 @@ export function AuthProvider({ children }) {
     const user = mapUser(data.user);
     setUser(user);
     setToken(data.token);
-    persist('token', data.token, true);
-    persist('user', user, true);
+    persist('token', data.token, remember);
+    persist('user', user, remember);
     return { ...data, user };
   }, []);
 
-  const adminLogin = useCallback(async ({ correo_institucional, password }) => {
+  const adminLogin = useCallback(async ({ correo_institucional, password }, remember = false) => {
     const data = await authService.adminLogin({ correo_institucional, password });
     const user = {
       id: data.user.id,
@@ -75,9 +87,41 @@ export function AuthProvider({ children }) {
     };
     setUser(user);
     setToken(data.token);
-    persist('token', data.token, true);
-    persist('user', user, true);
+    persist('token', data.token, remember);
+    persist('user', user, remember);
     return { ...data, user };
+  }, []);
+
+  const vincularYape = useCallback(() => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const updated = { ...prev, yapeVinculado: true };
+      sessionStorage.setItem('user', JSON.stringify(updated));
+      const localRaw = localStorage.getItem('user');
+      if (localRaw) {
+        const localUser = JSON.parse(localRaw);
+        if (localUser.id === updated.id) {
+          localStorage.setItem('user', JSON.stringify(updated));
+        }
+      }
+      return updated;
+    });
+  }, []);
+
+  const desvincularYape = useCallback(() => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const updated = { ...prev, yapeVinculado: false };
+      sessionStorage.setItem('user', JSON.stringify(updated));
+      const localRaw = localStorage.getItem('user');
+      if (localRaw) {
+        const localUser = JSON.parse(localRaw);
+        if (localUser.id === updated.id) {
+          localStorage.setItem('user', JSON.stringify(updated));
+        }
+      }
+      return updated;
+    });
   }, []);
 
   const logout = useCallback(() => {
@@ -97,8 +141,10 @@ export function AuthProvider({ children }) {
     register,
     adminLogin,
     logout,
+    vincularYape,
+    desvincularYape,
     isAuthenticated: Boolean(user),
-  }), [user, token, login, register, adminLogin, logout]);
+  }), [user, token, login, register, adminLogin, logout, vincularYape, desvincularYape]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -1,215 +1,216 @@
 # JMGym Frontend
 
-Aplicacion frontend de JMGym orientada a la reserva de clases y espacios deportivos. Este proyecto incluye el flujo completo para usuarios que desean reservar clases, asi como un panel administrativo para la gestion de clases, instructores, usuarios y reservas.
+Aplicación frontend de JMGym para la reserva de clases y espacios deportivos. Incluye flujo completo para clientes y panel administrativo.
 
-## Descripcion
+## Descripción
 
-JMGym Frontend es una interfaz web que permite a los clientes explorar, reservar y gestionar sus clases en el gimnasio, mientras que el area administrativa brinda herramientas para el control operativo del negocio. El frontend esta organizado por modulos reutilizables y utiliza:
+JMGym Frontend es una interfaz web que permite a los clientes explorar, reservar y gestionar sus clases, mientras que el área administrativa brinda herramientas para el control operativo del negocio.
 
+**Stack:**
 - **React** (latest)
 - **Vite**
 - **React Router DOM v7**
 - **Tailwind CSS v4**
-- **Lucide React** para iconos
+- **Lucide React** (iconos)
+- **Framer Motion** (animaciones)
+- **Socket.IO Client** (WebSocket en tiempo real)
 
 ## Funcionalidades
 
 ### Cliente
-- Pantalla de bienvenida y landing page.
-- Inicio de sesion y registro de usuarios.
-- Exploracion de clases disponibles con detalle e instructores.
-- Reserva de clases con seleccion de espacio y pago.
-- Historial de reservas y perfil de usuario.
-- Diseno responsivo con navegacion inferior y superior.
+- Landing page y bienvenida
+- Inicio de sesión y registro de usuarios
+- Exploración de clases disponibles con detalle e instructores
+- Reserva de clases con selección de espacio y pago (Yape / Efectivo)
+- **Programa de fidelización** con niveles Bronce, Plata y Oro
+- **Bono de horas:** el excedente (>30h/mes) se arrastra al siguiente mes
+- **Clases gratis:** nivel Oro tiene 2 clases gratis por mes
+- Historial de reservas y perfil de usuario
+- Vinculación de cuenta Yape (simulada)
+- Notificaciones en tiempo real vía WebSocket
 
 ### Administrador
-- Inicio de sesion exclusivo para administradores.
-- Dashboard con metricas operativas.
-- CRUD de clases (crear, editar, eliminar).
-- Gestion de instructores.
-- Administracion de usuarios.
-- Visualizacion y gestion de reservas.
-- Creacion de nuevos administradores.
-- Sidebar y navegacion adaptada para escritorio y movil.
+- Inicio de sesión exclusivo para administradores
+- Dashboard con métricas operativas
+- CRUD de clases (crear, editar, eliminar)
+- Gestión de instructores
+- Administración de usuarios
+- Visualización y gestión de reservas
+- Creación de nuevos administradores
 
 ## Requisitos
 
 - Node.js 18 o superior
 - npm 9 o superior
+- Backend de JMGym corriendo (ver README del backend)
 
-## Instalacion
-
-Clona el repositorio e instala las dependencias:
+## Instalación
 
 ```bash
+# 1. Clonar el repositorio
+git clone <repo-url>
+cd JMGym_Front
+
+# 2. Instalar dependencias
 npm install
+
+# 3. Configurar variables de entorno
+# Crear archivo .env en la raíz:
+#   VITE_API_URL=http://localhost:8000/api
+
+# 4. Iniciar en desarrollo
+npm run dev
 ```
 
 ## Scripts disponibles
 
-### Desarrollo
-
 ```bash
+# Desarrollo con recarga en caliente
 npm run dev
-```
 
-Inicia Vite en modo desarrollo con recarga en caliente.
-
-### Compilacion
-
-```bash
+# Compilación para producción
 npm run build
-```
 
-Genera la version de produccion dentro de `dist/`.
-
-### Vista previa
-
-```bash
+# Vista previa de la build de producción
 npm run preview
 ```
 
-Sirve la build de produccion de forma local.
+## Variables de entorno
+
+| Variable | Descripción | Valor por defecto |
+|----------|-------------|-------------------|
+| `VITE_API_URL` | URL base de la API del backend | `http://localhost:8000/api` |
 
 ## Estructura del proyecto
 
 ```
-JMGym_Front/
-├── src/
-│   ├── components/
-│   │   ├── admin/
-│   │   │   ├── AdminBottomNav.jsx
-│   │   │   ├── ClassForm.jsx
-│   │   │   ├── ClassTable.jsx
-│   │   │   ├── InstructorForm.jsx
-│   │   │   ├── Loader.jsx
-│   │   │   ├── MobileMenu.jsx
-│   │   │   ├── NavbarAdmin.jsx
-│   │   │   ├── ReservationTable.jsx
-│   │   │   ├── Sidebar.jsx
-│   │   │   ├── StatsCard.jsx
-│   │   │   └── UserForm.jsx
-│   │   └── user/
-│   │       ├── BottomNav.jsx
-│   │       ├── ClassCard.jsx
-│   │       ├── Footer.jsx
-│   │       ├── Loader.jsx
-│   │       ├── Navbar.jsx
-│   │       ├── ProfileOption.jsx
-│   │       └── ReservationCard.jsx
-│   ├── context/
-│   │   └── AuthContext.jsx
-│   ├── data/
-│   │   └── clientHomeData.js
-│   ├── layouts/
-│   │   ├── AdminLayout.jsx
-│   │   └── UserLayout.jsx
-│   ├── pages/
-│   │   ├── admin/
-│   │   │   ├── AdminLogin.jsx
-│   │   │   ├── ClasesAdmin.jsx
-│   │   │   ├── CrearAdmin.jsx
-│   │   │   ├── CrearClase.jsx
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── EditarClase.jsx
-│   │   │   ├── InstructoresAdmin.jsx
-│   │   │   ├── ReservasAdmin.jsx
-│   │   │   └── UsuariosAdmin.jsx
-│   │   ├── user/
-│   │   │   ├── DetalleClase.jsx
-│   │   │   ├── Home.jsx
-│   │   │   ├── InstructorDetalle.jsx
-│   │   │   ├── ListaClases.jsx
-│   │   │   ├── Login.jsx
-│   │   │   ├── MisReservas.jsx
-│   │   │   ├── PagoClase.jsx
-│   │   │   ├── Perfil.jsx
-│   │   │   ├── Register.jsx
-│   │   │   ├── SeleccionEspacio.jsx
-│   │   │   └── Welcome.jsx
-│   │   └── Landing.jsx
-│   ├── routes/
-│   │   └── AppRoutes.jsx
-│   ├── services/
-│   │   ├── adminService.js
-│   │   ├── api.js
-│   │   ├── authService.js
-│   │   ├── classService.js
-│   │   ├── genreService.js
-│   │   ├── instructorService.js
-│   │   ├── reservationService.js
-│   │   └── userService.js
-│   ├── assets/
-│   ├── App.jsx
-│   ├── index.css
-│   └── main.jsx
-├── .env
-├── .gitignore
-├── index.html
-├── package.json
-├── postcss.config.js
-├── tailwind.config.js
-└── vite.config.js
+src/
+├── components/
+│   ├── admin/
+│   │   ├── NavbarAdmin.jsx          # Barra superior admin
+│   │   ├── Sidebar.jsx              # Menú lateral admin
+│   │   ├── ClassForm.jsx            # Formulario de clases
+│   │   ├── ClassTable.jsx           # Tabla de clases
+│   │   ├── InstructorForm.jsx       # Formulario de instructores
+│   │   ├── UserForm.jsx             # Formulario de usuarios
+│   │   ├── ReservationTable.jsx     # Tabla de reservas
+│   │   ├── StatsCard.jsx            # Tarjetas de estadísticas
+│   │   ├── MobileMenu.jsx           # Menú móvil
+│   │   └── Loader.jsx               # Cargador
+│   └── user/
+│       ├── Navbar.jsx               # Barra superior usuario
+│       ├── BottomNav.jsx            # Navegación inferior
+│       ├── ClassCard.jsx            # Tarjeta de clase
+│       ├── FidelityCard.jsx         # Tarjeta de fidelización
+│       ├── ReservationCard.jsx      # Tarjeta de reserva
+│       ├── NotificationBell.jsx     # Campana de notificaciones
+│       ├── YapeVinculacionModal.jsx  # Modal de vinculación Yape
+│       └── Footer.jsx               # Pie de página
+├── context/
+│   └── AuthContext.jsx              # Contexto de autenticación
+├── pages/
+│   ├── admin/
+│   │   ├── AdminLogin.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── ClasesAdmin.jsx
+│   │   ├── CrearClase.jsx
+│   │   ├── EditarClase.jsx
+│   │   ├── InstructoresAdmin.jsx
+│   │   ├── ReservasAdmin.jsx
+│   │   ├── UsuariosAdmin.jsx
+│   │   ├── CrearAdmin.jsx
+│   │   └── NotificacionesAdmin.jsx
+│   └── user/
+│       ├── Home.jsx                 # Inicio con FidelityCard
+│       ├── Login.jsx
+│       ├── Register.jsx
+│       ├── ListaClases.jsx
+│       ├── DetalleClase.jsx
+│       ├── SeleccionEspacio.jsx
+│       ├── PagoClase.jsx            # Pago con opción de clase gratis
+│       ├── MisReservas.jsx
+│       ├── Perfil.jsx
+│       └── Welcome.jsx
+├── services/
+│   ├── api.js                       # Cliente HTTP con JWT
+│   ├── authService.js               # Autenticación
+│   ├── classService.js              # Clases
+│   ├── reservationService.js        # Reservas
+│   ├── paymentService.js            # Pagos Yape
+│   ├── fidelizacionService.js       # Fidelización
+│   ├── notificationService.js       # Notificaciones
+│   ├── socket.js                    # WebSocket (socket.io)
+│   └── ...
+├── routes/
+│   └── AppRoutes.jsx                # Configuración de rutas
+├── App.jsx
+├── main.jsx
+└── index.css
 ```
 
 ## Rutas principales
 
-### Publicas
-- `/` -> Landing page
+### Públicas
+- `/` → Landing page
 
 ### Cliente
-- `/cliente/bienvenida` -> Pantalla de bienvenida
-- `/cliente/login` -> Inicio de sesion
-- `/cliente/registro` -> Registro de usuario
-- `/cliente/home` -> Inicio del cliente
-- `/cliente/clases` -> Listado de clases
-- `/cliente/clases/:id` -> Detalle de clase
-- `/cliente/instructores/:id` -> Detalle de instructor
-- `/cliente/reservas` -> Mis reservas
-- `/cliente/perfil` -> Perfil de usuario
-- `/cliente/seleccion-espacio/:id` -> Seleccion de espacio para reserva
-- `/cliente/pago/:id` -> Pago de clase
+- `/cliente/bienvenida` → Pantalla de bienvenida
+- `/cliente/login` → Inicio de sesión
+- `/cliente/registro` → Registro de usuario
+- `/cliente/home` → Inicio (con tarjeta de fidelización)
+- `/cliente/clases` → Listado de clases
+- `/cliente/clases/:id` → Detalle de clase
+- `/cliente/seleccion-espacio/:id` → Selección de espacio
+- `/cliente/pago/:id` → Pago de clase (con opción "Clase gratis" para Oro)
+- `/cliente/reservas` → Mis reservas
+- `/cliente/perfil` → Perfil de usuario
 
 ### Administrador
-- `/admin/login` -> Inicio de sesion administrativo
-- `/admin` -> Dashboard principal
-- `/admin/clases` -> Gestion de clases
-- `/admin/clases/crear` -> Crear nueva clase
-- `/admin/clases/:id/editar` -> Editar clase
-- `/admin/reservas` -> Gestion de reservas
-- `/admin/instructores` -> Gestion de instructores
-- `/admin/usuarios` -> Gestion de usuarios
-- `/admin/crear-admin` -> Crear nuevo administrador
+- `/admin/login` → Inicio de sesión administrativo
+- `/admin` → Dashboard principal
+- `/admin/clases` → Gestión de clases
+- `/admin/clases/crear` → Crear clase
+- `/admin/clases/:id/editar` → Editar clase
+- `/admin/reservas` → Gestión de reservas
+- `/admin/instructores` → Gestión de instructores
+- `/admin/usuarios` → Gestión de usuarios
+- `/admin/crear-admin` → Crear administrador
+- `/admin/notificaciones` → Notificaciones
 
-## Estrategia de ramas
+## Sistema de fidelización
 
-Se usa una estrategia basada en ramas de trabajo y consolidacion:
+### Niveles y beneficios
 
-- `main`: reservada exclusivamente para produccion.
-- `develop`: linea base donde se integran las tareas del equipo.
-- `feature/nombre-tarea`: ramas para desarrollar hitos o funcionalidades.
-- `bugfix/nombre-error`: ramas para corregir fallos detectados en develop.
+| Nivel | Horas/mes | Descuento | Beneficios clave |
+|-------|-----------|-----------|------------------|
+| 🥉 **Bronce** | 0-7h | 0% | Sorteos mensuales |
+| 🥈 **Plata** | 8-20h | 10% | Regalo sorpresa |
+| 🥇 **Oro** | 21h+ | 20% | **2 clases gratis/mes**, regalo premium |
 
-### Flujo recomendado
+### Bono de horas
 
-1. Crear una rama `feature/...` desde `develop`.
-2. Desarrollar y probar la funcionalidad.
-3. Abrir pull request hacia `develop`.
-4. Validar y, cuando este estable, fusionar `develop` hacia `main`.
+Si acumulas más de 30h en un mes, las horas extra se suman al mes siguiente. Se muestra un badge "+Xh bono" en la tarjeta de fidelización.
 
-## Convenciones usadas
+### Clases gratis (nivel Oro)
 
-- Componentes de React organizados en `src/components/` con subcarpetas `admin/` y `user/`.
-- Paginas separadas en `src/pages/` con la misma subdivision.
-- Navegacion centralizada con `react-router-dom` y rutas protegidas por rol.
-- Contexto de autenticacion (`AuthContext`) para manejo de sesion y roles.
-- Servicios modulares en `src/services/` para la comunicacion con la API.
-- Estilos con **Tailwind CSS v4** sin archivos CSS personalizados.
-- Layouts reutilizables para cliente (`UserLayout`) y administrador (`AdminLayout`).
+Los usuarios Oro ven un botón "Clase gratis (100% dto)" en la pantalla de pago. Al activarlo, la reserva se crea con monto $0 sin necesidad de procesar pago.
 
-## Notas
+## Credenciales de prueba
 
-- El proyecto usa componentes reutilizables para facilitar nuevas vistas tanto en cliente como en administrador.
-- Las rutas protegidas verifican autenticacion y rol mediante `ProtectedRoute` y `AdminRoute`.
-- Se recomienda mantener la estructura modular para mejorar mantenimiento y escalabilidad.
-- Los cambios importantes deben validarse antes de integrarse a `develop`.
+| Rol | Email | Contraseña | Nivel |
+|-----|-------|------------|-------|
+| Administrador | admin@jmgym.com | admin123 | - |
+| Usuario | erick@gmail.com | 123456 | BRONCE |
+| **Test Bronce** | **bronce@test.com** | **test123** | **BRONCE** |
+| **Test Plata** | **plata@test.com** | **test123** | **PLATA** |
+| **Test Oro** | **oro@test.com** | **test123** | **ORO** |
+
+## Convenciones
+
+- Componentes en `src/components/` con subcarpetas `admin/` y `user/`
+- Páginas en `src/pages/` con la misma subdivisión
+- Navegación con `react-router-dom` y rutas protegidas por rol
+- Contexto de autenticación (`AuthContext`) para sesión y roles
+- Servicios modulares en `src/services/` para comunicación con la API
+- Estilos con Tailwind CSS v4 sin archivos CSS personalizados
+- Layouts reutilizables: `UserLayout` y `AdminLayout`

@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api';
 
 function clearSessionAndRedirect() {
-  const storedUser = localStorage.getItem('user');
+  const storedUser = sessionStorage.getItem('user') || localStorage.getItem('user');
   let user = null;
   try { user = storedUser ? JSON.parse(storedUser) : null; } catch {}
   const loginPath = user?.role === 'admin' ? '/admin/login' : '/cliente/login';
@@ -13,7 +13,7 @@ function clearSessionAndRedirect() {
 }
 
 export async function apiRequest(path, options = {}) {
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  const token = sessionStorage.getItem('token') || localStorage.getItem('token');
 
   const headers = {
     'Content-Type': 'application/json',

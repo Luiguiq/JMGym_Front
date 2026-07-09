@@ -37,7 +37,7 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      await adminLogin({ correo_institucional: correo, password });
+      await adminLogin({ correo_institucional: correo, password }, remember);
       navigate('/admin');
     } catch (err) {
       const msg = err.message || 'Error al iniciar sesión';

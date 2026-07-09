@@ -2,13 +2,14 @@ import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { Calendar, Clock, Users, ChevronRight, Zap, Sparkles } from 'lucide-react';
+import { Calendar, Clock, Users, ChevronRight, Zap, Sparkles, Smartphone } from 'lucide-react';
 import ClassCard from '../../components/user/ClassCard.jsx';
 import FidelityCard from '../../components/user/FidelityCard.jsx';
 import { classService } from '../../services/classService.js';
 import { reservationService } from '../../services/reservationService.js';
 import { fidelizacionService } from '../../services/fidelizacionService.js';
 import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
+import YapeVinculacionModal from '../../components/user/YapeVinculacionModal.jsx';
 
 function getNowHHMM() {
   const d = new Date();
@@ -61,6 +62,9 @@ function Home() {
   const [error, setError] = useState('');
   const [fidelityHoras, setFidelityHoras] = useState(0);
   const [fidelityLoading, setFidelityLoading] = useState(true);
+  const [horasBono, setHorasBono] = useState(0);
+  const [clasesGratisRestantes, setClasesGratisRestantes] = useState(0);
+  const [showYapeModal, setShowYapeModal] = useState(false);
 
   useEffect(() => {
     classService
@@ -77,11 +81,12 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    reservationService
-      .getMyReservations()
-      .then((reservas) => {
-        const horas = fidelizacionService.calcularHorasMes(reservas);
-        setFidelityHoras(horas);
+    fidelizacionService
+      .getMiFidelizacion()
+      .then((data) => {
+        setFidelityHoras(data.horas_mes);
+        setHorasBono(data.horas_bono || 0);
+        setClasesGratisRestantes(data.clases_gratis_restantes || 0);
       })
       .catch(() => {})
       .finally(() => setFidelityLoading(false));
@@ -120,8 +125,30 @@ function Home() {
           </p>
         </motion.div>
 
+        {user && !user.yapeVinculado && (
+          <motion.div variants={itemAnim} className="mb-6">
+            <button
+              onClick={() => setShowYapeModal(true)}
+              className="flex w-full items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left transition hover:bg-amber-100 dark:border-amber-500/20 dark:bg-amber-500/10 dark:hover:bg-amber-500/20"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-200 dark:bg-amber-500/20">
+                <Smartphone size={20} className="text-amber-700 dark:text-amber-300" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-bold text-amber-800 dark:text-amber-200">Vincula tu cuenta Yape</p>
+                <p className="text-xs text-amber-600 dark:text-amber-400">Paga tus clases al instante desde el app</p>
+              </div>
+              <ChevronRight size={18} className="shrink-0 text-amber-400" />
+            </button>
+          </motion.div>
+        )}
+
+        {showYapeModal && (
+          <YapeVinculacionModal onClose={() => setShowYapeModal(false)} />
+        )}
+
         <motion.div variants={itemAnim} className="mb-6">
-          <FidelityCard horas={fidelityHoras} loading={fidelityLoading} />
+          <FidelityCard horas={fidelityHoras} loading={fidelityLoading} horasBono={horasBono} clasesGratisRestantes={clasesGratisRestantes} />
         </motion.div>
 
         <motion.div
