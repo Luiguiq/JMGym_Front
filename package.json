@@ -10,14 +10,17 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
+    "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.42.0",
     "i18next": "^26.3.2",
     "lucide-react": "^1.17.0",
     "react": "latest",
     "react-dom": "latest",
+    "react-hot-toast": "^2.6.0",
     "react-i18next": "^17.0.8",
     "react-qr-code": "^2.2.0",
     "react-router-dom": "^7.15.1",
+    "swiper": "^14.0.2",
     "vaul": "^1.1.2",
     "vite": "latest"
   },

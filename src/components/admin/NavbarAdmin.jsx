@@ -150,9 +150,10 @@ const NavbarAdmin = ({ onMenuClick, sidebarOpen }) => {
               if (!notifOpen) {
                 const rect = notifBtnRef.current?.getBoundingClientRect();
                 if (rect) {
+                  const rawRight = window.innerWidth - rect.right;
                   setNotifPos({
                     top: rect.bottom + 8,
-                    right: window.innerWidth - rect.right,
+                    right: window.innerWidth < 640 ? Math.min(rawRight, 16) : rawRight,
                   });
                 }
               }
@@ -171,7 +172,7 @@ const NavbarAdmin = ({ onMenuClick, sidebarOpen }) => {
 
           {/* Notifications dropdown */}
           {notifOpen && (
-            <div style={{ position: 'fixed', top: notifPos.top, right: notifPos.right }} className="z-[9999] w-[380px] rounded-2xl border border-border-light bg-card shadow-xl dark:border-border dark:bg-card">
+            <div style={{ position: 'fixed', top: notifPos.top, right: notifPos.right }} className="z-[9999] sm:left-auto sm:w-[380px] w-[calc(100vw-32px)] left-4 rounded-2xl border border-border-light bg-card shadow-xl dark:border-border dark:bg-card">
               <div className="flex items-center justify-between border-b border-border-light px-4 py-3 dark:border-border">
                 <h3 className="text-sm font-bold text-foreground dark:text-foreground">Notificaciones</h3>
                 <div className="flex items-center gap-2">
@@ -186,7 +187,7 @@ const NavbarAdmin = ({ onMenuClick, sidebarOpen }) => {
                 </div>
               </div>
 
-              <div className="max-h-[360px] overflow-y-auto">
+              <div className="max-h-[50vh] sm:max-h-[360px] overflow-y-auto">
                 {items.length === 0 ? (
                   <div className="flex flex-col items-center py-10 text-muted-foreground dark:text-muted">
                     <Bell size={32} strokeWidth={1.5} />
@@ -241,7 +242,7 @@ const NavbarAdmin = ({ onMenuClick, sidebarOpen }) => {
 
           {/* Dropdown Menu */}
           {showDropdown && (
-            <div className="absolute top-full right-0 mt-2 bg-card rounded-lg shadow-lg border border-border min-w-48 z-50 dark:bg-card dark:border-border">
+            <div className="fixed left-4 right-4 top-1/2 -translate-y-1/2 sm:static sm:absolute sm:left-auto sm:right-0 sm:top-full sm:translate-y-0 sm:mt-2 bg-card rounded-lg shadow-lg border border-border min-w-44 sm:min-w-48 z-50 dark:bg-card dark:border-border">
               <div className="p-4 border-b border-border dark:border-border">
                 <p className="font-medium text-foreground dark:text-foreground">{user?.name}</p>
                 <p className="text-sm text-secondary dark:text-muted">{user?.email}</p>

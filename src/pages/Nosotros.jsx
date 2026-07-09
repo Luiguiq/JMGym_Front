@@ -22,7 +22,7 @@ const pillars = [
 
 function Nosotros() {
   return (
-    <main className="min-h-screen bg-surface text-foreground">
+    <main className="min-h-screen bg-[#07111f] text-white">
       <PublicHeader subtitle="Sobre nosotros" />
 
       <div className="animate-page-enter">
@@ -74,7 +74,7 @@ function Nosotros() {
               </p>
             </article>
 
-            <article className="rounded-[38px] bg-primary p-8 text-primary-foreground lg:p-10">
+            <article className="rounded-[38px] bg-[#3b82f6] p-8 text-white lg:p-10">
               <p className="text-sm font-black uppercase tracking-[0.24em]">Vision</p>
               <h2 className="mt-5 text-4xl font-black tracking-[-0.04em] lg:text-5xl">Ser una experiencia fitness cercana y digital</h2>
               <p className="mt-6 text-lg leading-8 text-primary-foreground/90">
