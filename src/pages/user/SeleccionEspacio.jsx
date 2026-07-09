@@ -6,6 +6,7 @@ import {
   ArrowLeft, Check, Clock, Dumbbell, Lock, MapPin, User, XCircle, ChevronRight
 } from 'lucide-react';
 import { classService } from '../../services/classService.js';
+import { fidelizacionService } from '../../services/fidelizacionService.js';
 
 const SEAT_STATUS = {
   DISPONIBLE: { label: 'Disponible', ring: 'ring-border-light', bg: 'bg-card', text: 'text-secondary', dot: 'bg-card ring-2 ring-border-light' },
@@ -27,6 +28,7 @@ function SeleccionEspacio() {
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [classInfo, setClassInfo] = useState(null);
   const [seats, setSeats] = useState([]);
+  const [fidelizacion, setFidelizacion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -34,11 +36,13 @@ function SeleccionEspacio() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const [dataClase, dataEspacios] = await Promise.all([
+        const [dataClase, dataEspacios, fid] = await Promise.all([
           classService.getClassById(id),
           classService.getClassSeats(id),
+          fidelizacionService.getMiFidelizacion().catch(() => null),
         ]);
         setClassInfo(dataClase);
+        setFidelizacion(fid);
         setSeats((dataEspacios || []).sort((a, b) => a.codigo_espacio.localeCompare(b.codigo_espacio)));
       } catch (error) {
         console.error('Error al cargar:', error);
@@ -232,10 +236,24 @@ function SeleccionEspacio() {
                       </div>
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between border-t border-border-light pt-4">
+                    <div className="mt-4">
+                      {fidelizacion?.descuento_porcentaje > 0 && (
+                        <div className="mb-3 rounded-xl bg-green-50 px-3 py-2 text-[12px] font-semibold text-green-700 dark:bg-green-500/10 dark:text-green-300">
+                          Descuento de {fidelizacion?.nivel || ''} ({fidelizacion?.descuento_porcentaje}%) aplicado
+                        </div>
+                      )}
+                    <div className="flex items-center justify-between border-t border-border-light pt-4">
                       <div>
                         <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Total</p>
-                        <p className="text-2xl font-black text-blue-600">S/ {Number(classInfo.price || 0).toFixed(2)}</p>
+                        <div className="flex items-baseline gap-1.5">
+                          <p className="text-2xl font-black text-blue-600">S/ {(fidelizacion?.descuento_porcentaje > 0
+                            ? Math.round(Number(classInfo.price || 0) * (100 - fidelizacion.descuento_porcentaje)) / 100
+                            : Number(classInfo.price || 0)
+                          ).toFixed(2)}</p>
+                          {fidelizacion?.descuento_porcentaje > 0 && (
+                            <p className="text-sm font-semibold text-muted-foreground line-through">S/ {Number(classInfo.price || 0).toFixed(2)}</p>
+                          )}
+                        </div>
                       </div>
                       <button
                         onClick={handleContinue}
@@ -243,6 +261,7 @@ function SeleccionEspacio() {
                       >
                         Confirmar reserva <ChevronRight size={16} />
                       </button>
+                    </div>
                     </div>
                   </motion.div>
                 )}

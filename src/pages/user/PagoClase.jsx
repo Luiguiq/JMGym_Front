@@ -10,6 +10,7 @@ import {
 import { classService } from '../../services/classService.js';
 import { reservationService } from '../../services/reservationService.js';
 import { paymentService } from '../../services/paymentService.js';
+import { fidelizacionService } from '../../services/fidelizacionService.js';
 import yapeLogo from '../../assets/images/yapelogo.png';
 
 const PAYMENT_METHODS = [
@@ -44,6 +45,7 @@ function PagoClase() {
   const seatId = location.state?.seatId;
 
   const [classInfo, setClassInfo] = useState(null);
+  const [fidelizacion, setFidelizacion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [method, setMethod] = useState(null);
   const [processing, setProcessing] = useState(false);
@@ -57,8 +59,14 @@ function PagoClase() {
 
   useEffect(() => {
     if (!seatId) { navigate(`/cliente/clases/${id}`); return; }
-    classService.getClassById(id)
-      .then(setClassInfo)
+    Promise.all([
+      classService.getClassById(id),
+      fidelizacionService.getMiFidelizacion().catch(() => null),
+    ])
+      .then(([cls, fid]) => {
+        setClassInfo(cls);
+        setFidelizacion(fid);
+      })
       .catch((err) => setError('Error al cargar la clase: ' + err.message))
       .finally(() => setLoading(false));
   }, [id, seatId, navigate]);
@@ -111,7 +119,7 @@ function PagoClase() {
         celular: clean,
         id_clase: Number(id),
         id_espacio: Number(seatId),
-        monto: Number(classInfo.price || 0),
+        monto: precioBase,
       });
       setYapeId(res.id_yape_pago);
       await new Promise((r) => setTimeout(r, 1500));
@@ -150,6 +158,10 @@ function PagoClase() {
       setYapeStep('code');
     }
   };
+
+  const descuentoPct = fidelizacion?.descuento_porcentaje || 0;
+  const precioBase = Number(classInfo.price || 0);
+  const precioFinal = descuentoPct > 0 ? Math.round(precioBase * (100 - descuentoPct)) / 100 : precioBase;
 
   const selectedMethod = PAYMENT_METHODS.find((pm) => pm.id === method);
   const isDisabled = !method || processing || yapeStep !== null;
@@ -330,7 +342,7 @@ function PagoClase() {
             <Check size={36} className="text-green-600 dark:text-green-300" strokeWidth={3} />
           </div>
           <h3 className="text-xl font-bold text-foreground">¡Pago exitoso!</h3>
-          <p className="mt-1 text-sm text-muted">S/{Number(classInfo.price || 0).toFixed(2)} pagado con Yape</p>
+          <p className="mt-1 text-sm text-muted">S/{precioFinal.toFixed(2)} pagado con Yape</p>
           <p className="mt-4 text-xs text-muted">Redirigiendo a tus reservas...</p>
           <div className="mt-4 h-1.5 w-48 overflow-hidden rounded-full bg-green-100 dark:bg-green-500/20">
             <motion.div
@@ -404,12 +416,27 @@ function PagoClase() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-300">Total a pagar</p>
-              <p className="text-3xl font-black text-foreground">S/ {Number(classInfo.price || 0).toFixed(2)}</p>
+              {descuentoPct > 0 ? (
+                <div className="flex items-baseline gap-2">
+                  <p className="text-3xl font-black text-foreground">S/ {precioFinal.toFixed(2)}</p>
+                  <p className="text-base font-semibold text-muted-foreground line-through">S/ {precioBase.toFixed(2)}</p>
+                  <span className="rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-bold text-green-700 dark:bg-green-500/20 dark:text-green-300">
+                    -{descuentoPct}%
+                  </span>
+                </div>
+              ) : (
+                <p className="text-3xl font-black text-foreground">S/ {precioBase.toFixed(2)}</p>
+              )}
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card shadow-sm">
               <Wallet size={22} className="text-blue-600 dark:text-blue-300" />
             </div>
           </div>
+          {descuentoPct > 0 && (
+            <p className="mt-1 text-[12px] font-semibold text-green-600 dark:text-green-400">
+              Descuento de {fidelizacion?.nivel || ''} ({descuentoPct}%) aplicado
+            </p>
+          )}
           <p className="mt-1 text-[12px] text-blue-500 dark:text-blue-300">Incluye registro, reserva y acceso a la clase</p>
         </motion.div>
 
@@ -496,7 +523,12 @@ function PagoClase() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Total</p>
-              <p className="text-xl font-black text-blue-600">S/ {Number(classInfo.price || 0).toFixed(2)}</p>
+              <div className="flex items-baseline gap-1.5">
+                <p className="text-xl font-black text-blue-600">S/ {precioFinal.toFixed(2)}</p>
+                {descuentoPct > 0 && (
+                  <p className="text-[13px] font-semibold text-muted-foreground line-through">S/ {precioBase.toFixed(2)}</p>
+                )}
+              </div>
             </div>
             <motion.button
               whileTap={isDisabled ? {} : { scale: 0.97 }}

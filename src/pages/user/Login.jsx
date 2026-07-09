@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { authService } from '../../services/authService.js';
+import { userService } from '../../services/userService.js';
 import { Zap, MapPin, Smartphone, ArrowLeft, Mail, Lock, X } from 'lucide-react';
 import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
@@ -26,7 +27,7 @@ const highlights = [
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, logout } = useAuth();
 
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -46,6 +47,12 @@ function Login() {
 
     try {
       await login({ identifier, password }, remember);
+      const profile = await userService.getMyProfileSafe();
+      if (profile.estado === 'BLOQUEADO') {
+        logout();
+        setError('Tu cuenta ha sido bloqueada. Contacta al administrador.');
+        return;
+      }
       navigate('/cliente/home');
     } catch (err) {
       setError(getFriendlyErrorMessage(err, 'No pudimos iniciar sesión. Revisa tus credenciales e intenta nuevamente.'));

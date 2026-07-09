@@ -6,6 +6,7 @@ import ClassForm from '../../components/admin/ClassForm';
 import Loader from '../../components/admin/Loader';
 import { classService } from '../../services/classService';
 import { reservationService } from '../../services/reservationService';
+import { notificationService } from '../../services/notificationService';
 
 const ClasesAdmin = () => {
   const navigate = useNavigate();
@@ -98,10 +99,42 @@ const ClasesAdmin = () => {
     }
   };
 
+  async function notifyUsersOnClassChange(classId, oldData, newData) {
+    const cambios = [];
+    if (oldData.instructor !== newData.instructor && newData.instructor) cambios.push('instructor');
+    if (oldData.hora_inicio !== newData.hora_inicio && newData.hora_inicio) cambios.push('horario');
+    if (oldData.fecha !== newData.fecha && newData.fecha) cambios.push('fecha');
+    if (cambios.length === 0) return;
+
+    try {
+      const reservations = await reservationService.getAllReservations();
+      const activeUsers = reservations
+        .filter((r) => r.id_clase === classId && r.estado_reserva === 'ACTIVA' && r.id_usuario);
+
+      if (activeUsers.length === 0) return;
+
+      const cambiosStr = cambios.join(', ');
+      for (const reservation of activeUsers) {
+        await notificationService.sendNotification({
+          titulo: `Cambio en tu clase "${oldData.name}"`,
+          mensaje: `La clase ha cambiado su ${cambiosStr}. Revisa los nuevos detalles y confirma si deseas continuar con la reserva o cancelarla.`,
+          tipo: 'CAMBIO_HORARIO',
+          all_users: false,
+          user_ids: [reservation.id_usuario],
+          class_id: classId,
+          requiere_respuesta: true,
+        });
+      }
+    } catch (err) {
+      console.error('Error enviando notificaciones de cambio:', err);
+    }
+  }
+
   const handleUpdateClass = async (formData) => {
     try {
       setLoading(true);
       await classService.updateClass(selectedClass.id, formData);
+      await notifyUsersOnClassChange(selectedClass.id, selectedClass, formData);
       await loadClasses();
       setSelectedClass(null);
       setShowForm(false);

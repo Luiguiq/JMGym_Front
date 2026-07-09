@@ -186,6 +186,9 @@ function ListaClases() {
   const visibleClasses = useMemo(() => {
     let filtered = classes;
 
+    // Filtrar clases con fecha pasada (no se muestran en disponibles)
+    filtered = filtered.filter((c) => c.date >= todayStr);
+
     if (search.trim()) {
       const q = search.toLowerCase();
       filtered = filtered.filter(

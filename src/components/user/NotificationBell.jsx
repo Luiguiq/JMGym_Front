@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { Bell, AlarmClock, CreditCard, CheckCircle, Clock, User, Target, XCircle, DollarSign, Lock, ClipboardList, Trash2, Armchair, Megaphone } from 'lucide-react';
+import { Bell, AlarmClock, CreditCard, CheckCircle, Clock, User, Target, XCircle, DollarSign, Lock, ClipboardList, Trash2, Armchair, Megaphone, Eye } from 'lucide-react';
 import { notificationService } from '../../services/notificationService.js';
 
 const typeIcons = {
@@ -44,6 +44,7 @@ function NotificationBell({ floating }) {
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   const fetchUnread = useCallback(async () => {
@@ -73,14 +74,17 @@ function NotificationBell({ floating }) {
   }, [open, fetchRecent]);
 
   useEffect(() => {
+    if (!open) return;
     function handleClick(e) {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
+      const isInsideMenu = menuRef.current?.contains(e.target);
+      const isInsideDropdown = dropdownRef.current?.contains(e.target);
+      if (!isInsideMenu && !isInsideDropdown) {
         setOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
+  }, [open]);
 
   async function handleMarkAllRead() {
     try {
@@ -99,7 +103,9 @@ function NotificationBell({ floating }) {
   }
 
   const dropdown = (
-    <div className={`${
+    <div
+      ref={dropdownRef}
+      className={`${
       floating
         ? 'fixed bottom-[5.5rem] right-5 sm:right-8'
         : ''
