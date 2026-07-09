@@ -5,12 +5,13 @@ import {
   ArrowLeft, Check, Clock, MapPin, User,
   Wallet, ShieldCheck, ChevronRight, Dumbbell,
   Smartphone, KeyRound, Loader2, AlertCircle,
-  Phone, CreditCard,
+  Phone, CreditCard, Gift,
 } from 'lucide-react';
 import { classService } from '../../services/classService.js';
 import { reservationService } from '../../services/reservationService.js';
 import { paymentService } from '../../services/paymentService.js';
 import { fidelizacionService } from '../../services/fidelizacionService.js';
+import { useAuth } from '../../context/AuthContext.jsx';
 import yapeLogo from '../../assets/images/yapelogo.png';
 
 const PAYMENT_METHODS = [
@@ -41,6 +42,8 @@ function PagoClase() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { user } = useAuth();
+
   const seatCode = location.state?.seatCode || 'Pendiente';
   const seatId = location.state?.seatId;
 
@@ -56,6 +59,7 @@ function PagoClase() {
   const [yapeCode, setYapeCode] = useState('');
   const [yapeId, setYapeId] = useState(null);
   const [yapeError, setYapeError] = useState('');
+  const [usarClaseGratis, setUsarClaseGratis] = useState(false);
 
   useEffect(() => {
     if (!seatId) { navigate(`/cliente/clases/${id}`); return; }
@@ -80,7 +84,7 @@ function PagoClase() {
   };
 
   const handleConfirm = async () => {
-    if (method === 'YAPE') {
+    if (method === 'YAPE' && !usarClaseGratis) {
       setYapeStep('phone');
       return;
     }
@@ -91,7 +95,8 @@ function PagoClase() {
       const reservation = await reservationService.createReservation({
         classId: Number(id),
         seatId: Number(seatId),
-        paymentMethod: method,
+        paymentMethod: usarClaseGratis ? 'EFECTIVO' : method,
+        aplicaClaseGratis: usarClaseGratis,
       });
       navigate(`/cliente/reservas/${reservation.id}`, { replace: true });
     } catch (err) {
@@ -159,11 +164,16 @@ function PagoClase() {
     }
   };
 
-  const descuentoPct = fidelizacion?.descuento_porcentaje || 0;
+  const availableMethods = PAYMENT_METHODS.filter(
+    (m) => m.id !== 'YAPE' || user?.yapeVinculado === true
+  );
+
+  const descuentoPct = usarClaseGratis ? 100 : (fidelizacion?.descuento_porcentaje || 0);
   const precioBase = Number(classInfo?.price || 0);
   const precioFinal = descuentoPct > 0 ? Math.round(precioBase * (100 - descuentoPct)) / 100 : precioBase;
+  const clasesGratisRestantes = fidelizacion?.clases_gratis_restantes || 0;
 
-  const selectedMethod = PAYMENT_METHODS.find((pm) => pm.id === method);
+  const selectedMethod = availableMethods.find((pm) => pm.id === method);
   const isDisabled = !method || processing || yapeStep !== null;
 
   if (loading) {
@@ -297,10 +307,6 @@ function PagoClase() {
                 />
               </div>
             </label>
-          </div>
-
-          <div className="mt-3 rounded-xl bg-amber-50 px-4 py-3 text-[12px] text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
-            <strong>Mock:</strong> Cualquier código de 6 dígitos funciona, excepto <strong>000000</strong>.
           </div>
 
           <button
@@ -451,7 +457,16 @@ function PagoClase() {
             >
               <p className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Selecciona un método</p>
               <div className="space-y-2">
-                {PAYMENT_METHODS.map((pm, i) => {
+                {!user?.yapeVinculado && (
+                  <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-left dark:border-amber-500/20 dark:bg-amber-500/10">
+                    <p className="text-sm font-bold text-amber-800 dark:text-amber-200">Yape no disponible</p>
+                    <p className="mt-0.5 text-xs text-amber-600 dark:text-amber-400">
+                      Vincula tu cuenta Yape desde tu perfil para pagar al instante. Por ahora solo puedes pagar en efectivo.
+                    </p>
+                  </div>
+                )}
+
+                {availableMethods.map((pm, i) => {
                   const selected = method === pm.id;
                   return (
                     <motion.button
@@ -497,6 +512,51 @@ function PagoClase() {
                 })}
               </div>
             </motion.div>
+
+            {clasesGratisRestantes > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="mt-4"
+              >
+                <button
+                  onClick={() => {
+                    setUsarClaseGratis(!usarClaseGratis);
+                    if (!usarClaseGratis) setMethod('EFECTIVO');
+                  }}
+                  className={`relative flex w-full items-center gap-4 rounded-2xl border-2 p-4 text-left transition-all ${
+                    usarClaseGratis
+                      ? 'border-yellow-500 bg-yellow-50 shadow-md dark:border-yellow-400 dark:bg-yellow-500/10'
+                      : 'border-border-light bg-card shadow-sm hover:border-border'
+                  }`}
+                >
+                  <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${
+                    usarClaseGratis
+                      ? 'bg-yellow-100 ring-1 ring-yellow-300 dark:bg-yellow-500/20 dark:ring-yellow-500/30'
+                      : 'bg-border-light'
+                  }`}>
+                    <Gift size={22} className={usarClaseGratis ? 'text-yellow-700 dark:text-yellow-300' : 'text-muted'} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className={`font-bold ${usarClaseGratis ? 'text-yellow-700 dark:text-yellow-300' : 'text-foreground'}`}>Clase gratis (100% dto)</p>
+                      <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-bold text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-300">
+                        {clasesGratisRestantes}/2
+                      </span>
+                    </div>
+                    <p className={`text-[13px] ${usarClaseGratis ? 'text-yellow-600 dark:text-yellow-400' : 'text-muted'}`}>
+                      Usa una de tus {clasesGratisRestantes} clases gratis de nivel Oro. No pagas nada.
+                    </p>
+                  </div>
+                  <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+                    usarClaseGratis ? 'scale-110 border-yellow-500 bg-yellow-500' : 'border-border'
+                  }`}>
+                    {usarClaseGratis && <Check size={14} className="text-primary-foreground" strokeWidth={3} />}
+                  </div>
+                </button>
+              </motion.div>
+            )}
 
             {/* Trust */}
             <motion.div

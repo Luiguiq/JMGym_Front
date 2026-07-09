@@ -11,7 +11,7 @@ const BENEFICIOS = {
     { icono: 'Package', texto: 'Regalo sorpresa de la academia (botella deportiva, llavero, pulsera, sticker pack o merchandising disponible)' },
   ],
   ORO: [
-    { icono: 'Users', texto: 'Un acompañante gratis semanal en una clase seleccionada' },
+    { icono: 'Gift', texto: '2 clases gratis al mes con 100% de descuento' },
     { icono: 'Percent', texto: '20% de descuento en tu próxima clase' },
     { icono: 'Gift', texto: 'Regalo mensual premium de la academia (polo, botella térmica, toalla deportiva, gorra o merchandising disponible)' },
     { icono: 'Trophy', texto: 'Participación en sorteos mensuales nivel oro' },

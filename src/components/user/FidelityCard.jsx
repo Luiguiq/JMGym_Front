@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Award, Gift, Percent, Users, Trophy, Package, Sparkles, ChevronDown, Clock } from 'lucide-react';
+import { Award, Gift, Percent, Package, Trophy, Sparkles, ChevronDown, Clock, Plus, Users } from 'lucide-react';
 import { fidelizacionService } from '../../services/fidelizacionService.js';
 
 const ICONOS = { Gift, Percent, Users, Package, Trophy, Award };
@@ -38,7 +38,7 @@ function SkeletonFidelity() {
   );
 }
 
-export default function FidelityCard({ horas, loading }) {
+export default function FidelityCard({ horas, loading, horasBono = 0, clasesGratisRestantes = 0 }) {
   const [beneficiosAbierto, setBeneficiosAbierto] = useState(false);
 
   if (loading) return <SkeletonFidelity />;
@@ -83,7 +83,17 @@ export default function FidelityCard({ horas, loading }) {
           <p className="mt-0.5 flex items-center gap-1 text-[13px] text-muted-foreground">
             <Clock size={13} />
             {Math.round(horas)} horas acumuladas este mes
+            {horasBono > 0 && (
+              <span className="ml-1 inline-flex items-center gap-0.5 rounded-full bg-green-50 px-1.5 py-0.5 text-[10px] font-semibold text-green-700 dark:bg-green-500/10 dark:text-green-300">
+                <Plus size={10} />{horasBono}h bono
+              </span>
+            )}
           </p>
+          {clasesGratisRestantes > 0 && nivel.nivel === 'ORO' && (
+            <p className="mt-0.5 text-[11px] font-semibold text-yellow-600 dark:text-yellow-400">
+              {clasesGratisRestantes}/2 clases gratis restantes este mes
+            </p>
+          )}
         </div>
       </div>
 

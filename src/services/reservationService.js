@@ -45,7 +45,7 @@ export const reservationService = {
     apiRequest('/reservations', {
       method: 'POST',
       body: JSON.stringify(data),
-    }),
+    }).then(mapReservation),
   getAllReservations: () =>
     apiRequest('/reservations').then((d) => (d ?? []).map(mapReservation)),
   markAsPaid: (id) =>
@@ -80,8 +80,4 @@ export const reservationService = {
       method: 'DELETE',
       body: JSON.stringify({ motivo, detalle }),
     }),
-  markAsPaid: (id) =>
-    apiRequest(`/reservations/${id}/mark-paid`, {
-      method: 'PATCH',
-    }).then(mapReservation),
 };
