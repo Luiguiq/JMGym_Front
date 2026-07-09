@@ -35,6 +35,13 @@ function getDaysUntil(dateStr) {
   return diff;
 }
 
+function isPastClass(fecha_clase, hora_inicio) {
+  if (!fecha_clase) return false;
+  const now = new Date();
+  const classEnd = new Date(fecha_clase + 'T' + (hora_inicio?.slice(0, 5) || '00:00'));
+  return now > classEnd;
+}
+
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr + 'T00:00:00');
@@ -312,12 +319,12 @@ function MisReservas() {
   }, []);
 
   const activeReservations = useMemo(
-    () => reservations.filter((r) => r.estado_reserva === 'ACTIVA'),
+    () => reservations.filter((r) => r.estado_reserva === 'ACTIVA' && !isPastClass(r.fecha_clase, r.hora_inicio)),
     [reservations]
   );
 
   const rawHistory = useMemo(
-    () => reservations.filter((r) => ['CANCELADA', 'FINALIZADA', 'COMPLETADA'].includes(r.estado_reserva)),
+    () => reservations.filter((r) => ['CANCELADA', 'FINALIZADA', 'COMPLETADA'].includes(r.estado_reserva) || (r.estado_reserva === 'ACTIVA' && isPastClass(r.fecha_clase, r.hora_inicio))),
     [reservations]
   );
 

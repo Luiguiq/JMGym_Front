@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Bell, Send, Users, Calendar, AlarmClock, CreditCard, CheckCircle, Clock, User, Target, XCircle, DollarSign, Lock, ClipboardList, Trash2, Armchair, Megaphone, Check } from 'lucide-react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Bell, Send, Users, Calendar, AlarmClock, CreditCard, CheckCircle, Clock, User, Target, XCircle, DollarSign, Lock, ClipboardList, Trash2, Armchair, Megaphone, Check, Eye } from 'lucide-react';
 import { notificationService } from '../../services/notificationService.js';
 import { classService } from '../../services/classService.js';
 import { userService } from '../../services/userService.js';
@@ -52,6 +52,13 @@ function NotificacionesAdmin() {
       setLoading(false);
     }
   }
+
+  const handleMarkRead = useCallback(async (id) => {
+    try {
+      await notificationService.markAsRead(id);
+      setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+    } catch {}
+  }, []);
 
   async function handleSend() {
     if (!titulo.trim() || !mensaje.trim()) return;
@@ -257,9 +264,21 @@ function NotificacionesAdmin() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <p className="text-sm font-bold text-secondary">{n.title}</p>
-                      <span className="text-[10px] text-muted-foreground">
-                        {formatDate(n.sentAt)}
-                      </span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {!n.read && (
+                          <button
+                            onClick={() => handleMarkRead(n.id)}
+                            className="flex items-center gap-1 rounded-md bg-blue-50 px-2 py-1 text-[10px] font-bold text-blue-600 transition hover:bg-blue-100 dark:bg-blue-500/10 dark:text-blue-300 dark:hover:bg-blue-500/20"
+                            title="Marcar como leído"
+                          >
+                            <Eye size={12} />
+                            Marcar leído
+                          </button>
+                        )}
+                        <span className="text-[10px] text-muted-foreground">
+                          {formatDate(n.sentAt)}
+                        </span>
+                      </div>
                     </div>
                     <p className="mt-0.5 line-clamp-2 text-xs text-muted">
                       {n.message}

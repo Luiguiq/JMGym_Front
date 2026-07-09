@@ -9,6 +9,7 @@ export const userService = {
   getReservations: (id) => apiRequest(`/users/${id}/reservations`),
   getStats: () => apiRequest('/users/stats/totals'),
   getMyProfile: () => apiRequest('/users/me'),
+  getMyProfileSafe: () => apiRequest('/users/me', { skipAuthRedirect: true }),
   updateMyProfile: (data) => apiRequest('/users/me', { method: 'PUT', body: JSON.stringify(data) }),
   uploadPhoto: async (file) => {
     const formData = new FormData();

@@ -68,6 +68,13 @@ const NavbarAdmin = ({ onMenuClick, sidebarOpen }) => {
     } catch {}
   }, []);
 
+  const fetchUnreadCount = useCallback(async () => {
+    try {
+      const res = await notificationService.getUnreadCount();
+      setUnread(res.count ?? 0);
+    } catch {}
+  }, []);
+
   useEffect(() => {
     fetchAll();
     const interval = setInterval(fetchAll, 30000);
@@ -91,16 +98,16 @@ const NavbarAdmin = ({ onMenuClick, sidebarOpen }) => {
   async function handleMarkAllRead() {
     try {
       await notificationService.markAllAsRead();
-      setUnread(0);
       setItems((prev) => prev.map((n) => ({ ...n, read: true })));
+      await fetchUnreadCount();
     } catch {}
   }
 
   async function handleMarkRead(id) {
     try {
       await notificationService.markAsRead(id);
-      setUnread((prev) => Math.max(0, prev - 1));
       setItems((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+      await fetchUnreadCount();
     } catch {}
   }
 

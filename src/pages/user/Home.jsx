@@ -4,12 +4,22 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { Calendar, Clock, Users, ChevronRight, Zap, Sparkles } from 'lucide-react';
 import ClassCard from '../../components/user/ClassCard.jsx';
+import FidelityCard from '../../components/user/FidelityCard.jsx';
 import { classService } from '../../services/classService.js';
+import { reservationService } from '../../services/reservationService.js';
+import { fidelizacionService } from '../../services/fidelizacionService.js';
 import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 
 function getNowHHMM() {
   const d = new Date();
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+function toDateStr(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
 }
 
 function isClassActive(classItem) {
@@ -49,6 +59,8 @@ function Home() {
   const [allClasses, setAllClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [fidelityHoras, setFidelityHoras] = useState(0);
+  const [fidelityLoading, setFidelityLoading] = useState(true);
 
   useEffect(() => {
     classService
@@ -64,7 +76,20 @@ function Home() {
       .finally(() => setLoading(false));
   }, []);
 
-  const displayClasses = todayClasses.length > 0 ? todayClasses : allClasses;
+  useEffect(() => {
+    reservationService
+      .getMyReservations()
+      .then((reservas) => {
+        const horas = fidelizacionService.calcularHorasMes(reservas);
+        setFidelityHoras(horas);
+      })
+      .catch(() => {})
+      .finally(() => setFidelityLoading(false));
+  }, []);
+
+  const todayStr = useMemo(() => toDateStr(new Date()), []);
+
+  const displayClasses = (todayClasses.length > 0 ? todayClasses : allClasses).filter((c) => c.date >= todayStr);
 
   const activeClasses = useMemo(() => displayClasses.filter(isClassActive), [displayClasses]);
   const nextClass = displayClasses[0];
@@ -93,6 +118,10 @@ function Home() {
           <p className="text-lg font-semibold text-foreground">
             {user?.name ? `${greeting}, ${user.name.split(' ')[0]}` : greeting}
           </p>
+        </motion.div>
+
+        <motion.div variants={itemAnim} className="mb-6">
+          <FidelityCard horas={fidelityHoras} loading={fidelityLoading} />
         </motion.div>
 
         <motion.div

@@ -127,8 +127,12 @@ function DetalleClase() {
 
   const availabilityInfo = getAvailabilityInfo(classItem?.availableSpots ?? 0);
 
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  const isPastClass = classItem?.date < todayStr;
+
   const spots = classItem?.availableSpots ?? 0;
-  const isDisabled = spots === 0 || hasActiveReservation || hasDateConflict || checkingReservation;
+  const isDisabled = spots === 0 || hasActiveReservation || hasDateConflict || checkingReservation || isPastClass;
 
   const clothingRules = classItem?.clothingRules
     ? classItem.clothingRules.split(/[\n;]/).map((r) => r.trim()).filter(Boolean)
@@ -344,15 +348,17 @@ function DetalleClase() {
                 : 'bg-blue-600 text-primary-foreground shadow-[0_16px_36px_rgba(37,99,235,0.22)] hover:bg-blue-700'
             }`}
           >
-            {checkingReservation
-              ? 'Verificando...'
-              : hasActiveReservation
-                ? 'Ya reservada'
-                : hasDateConflict
-                  ? 'Conflicto de horario'
-                  : spots === 0
-                    ? 'Clase completa'
-                    : 'Reservar ahora'}
+            {isPastClass
+              ? 'Clase finalizada'
+              : checkingReservation
+                ? 'Verificando...'
+                : hasActiveReservation
+                  ? 'Ya reservada'
+                  : hasDateConflict
+                    ? 'Conflicto de horario'
+                    : spots === 0
+                      ? 'Clase completa'
+                      : 'Reservar ahora'}
           </motion.button>
         </div>
         <div className="mt-2 flex items-center gap-2">
