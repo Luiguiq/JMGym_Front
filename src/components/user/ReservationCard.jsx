@@ -53,7 +53,7 @@ function ReservationCard({ reservation, onRefresh }) {
     reservation.estado_reserva === 'ACTIVA'
       ? 'Activa'
       : reservation.estado_reserva === 'CANCELADA'
-        ? 'Cancelada'
+        ? 'Anulada'
         : reservation.estado_reserva === 'FINALIZADA'
           ? 'Finalizada'
           : reservation.estado_reserva === 'COMPLETADA'
@@ -123,7 +123,7 @@ function ReservationCard({ reservation, onRefresh }) {
       await reservationService.cancelReservation(reservation.id, cancelMotivo, cancelDetalle || null);
 
       setShowCancelModal(false);
-      setFeedback('Reserva cancelada. El espacio quedó disponible nuevamente.');
+      setFeedback('Reserva anulada. El espacio quedó disponible nuevamente.');
 
       if (onRefresh) {
         setTimeout(() => onRefresh(), 700);
@@ -131,8 +131,8 @@ function ReservationCard({ reservation, onRefresh }) {
     } catch (error) {
       const rawMessage = error?.message || '';
       const friendlyMessage = rawMessage.includes('Error al cancelar')
-        ? 'No se pudo cancelar la reserva en este momento. Intenta nuevamente en unos segundos.'
-        : rawMessage || 'No se pudo cancelar la reserva.';
+        ? 'No se pudo anular la reserva en este momento. Intenta nuevamente en unos segundos.'
+        : rawMessage || 'No se pudo anular la reserva.';
 
       setFeedback(friendlyMessage);
       setShowCancelModal(false);
@@ -162,10 +162,10 @@ function ReservationCard({ reservation, onRefresh }) {
     setFeedback('');
     try {
       await reservationService.cancelRefundRequest(reservation.id);
-      setFeedback('Solicitud cancelada. Tu reserva continúa activa.');
+      setFeedback('Solicitud anulada. Tu reserva continúa activa.');
       onRefresh?.();
     } catch (error) {
-      setFeedback(error?.message || 'No pudimos cancelar la solicitud de reembolso.');
+      setFeedback(error?.message || 'No pudimos anular la solicitud de reembolso.');
     } finally {
       setProcessingAction(false);
     }
@@ -227,7 +227,7 @@ function ReservationCard({ reservation, onRefresh }) {
             {/* Cancel reason for history */}
             {reservation.estado_reserva === 'CANCELADA' && reservation.motivo_cancelacion && (
               <div className="mt-3 rounded-xl bg-red-50 border border-red-100 px-3 py-2 dark:bg-red-500/10 dark:border-red-500/30">
-                <p className="text-[10px] uppercase font-bold tracking-wider text-red-400">Motivo de cancelación</p>
+                <p className="text-[10px] uppercase font-bold tracking-wider text-red-400">Motivo de anulación</p>
                 <p className="text-xs font-semibold text-red-700 dark:text-red-200">
                   {MOTIVOS_LABEL[reservation.motivo_cancelacion] || reservation.motivo_cancelacion}
                   {reservation.detalle_cancelacion && `: ${reservation.detalle_cancelacion}`}
@@ -261,7 +261,7 @@ function ReservationCard({ reservation, onRefresh }) {
           <div
             role="alert"
             className={`mt-4 rounded-2xl border px-4 py-3 text-sm font-medium ${
-              feedback.toLowerCase().includes('cancelada')
+              feedback.toLowerCase().includes('anulada')
                 ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200'
                 : 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200'
             }`}
@@ -284,10 +284,10 @@ function ReservationCard({ reservation, onRefresh }) {
             <button
               type="button"
               onClick={handleOpenCancel}
-              aria-label={`Cancelar la reserva ${reservation.codigo_reserva || ''}`}
+              aria-label={`Anular la reserva ${reservation.codigo_reserva || ''}`}
               className="flex-1 rounded-xl bg-red-50 py-2.5 text-xs font-bold text-red-600 transition hover:bg-red-100 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
             >
-              <XCircle className="inline-block w-3.5 h-3.5 mr-1" /> Cancelar reserva
+              <XCircle className="inline-block w-3.5 h-3.5 mr-1" /> Anular reserva
             </button>
           )}
 
@@ -311,7 +311,7 @@ function ReservationCard({ reservation, onRefresh }) {
               className="flex-1 rounded-xl bg-amber-50 py-2.5 text-xs font-bold text-amber-700 transition hover:bg-amber-100 disabled:opacity-60 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20"
             >
               <Clock className="inline-block w-3.5 h-3.5 mr-1" />
-              {processingAction ? 'Cancelando...' : 'Cancelar solicitud'}
+              {processingAction ? 'Anulando...' : 'Anular solicitud'}
             </button>
           )}
         </div>
@@ -334,9 +334,9 @@ function ReservationCard({ reservation, onRefresh }) {
                 <div className="mx-auto mb-2 sm:mb-3 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner dark:from-red-500/10 dark:to-red-500/20">
                   <XCircle className="w-6 h-6 sm:w-7 sm:h-7 text-red-500" aria-hidden="true" />
                 </div>
-                <h3 id="cancel-reserva-title" className="text-lg sm:text-2xl font-black text-foreground">Cancelar reserva</h3>
+                <h3 id="cancel-reserva-title" className="text-lg sm:text-2xl font-black text-foreground">Anular reserva</h3>
                 <p className="mt-1 text-xs sm:text-sm text-muted leading-relaxed px-1">
-                  ¿Estás seguro? Esta acción no se puede deshacer. Al cancelar, el espacio{' '}
+                  ¿Estás seguro? Esta acción no se puede deshacer. Al anular, el espacio{' '}
                   <span className="font-bold text-secondary">{reservation.codigo_espacio}</span> quedará disponible.
                 </p>
               </div>
@@ -377,7 +377,7 @@ function ReservationCard({ reservation, onRefresh }) {
               </div>
 
               <div className="mt-3 sm:mt-5">
-                <label className="text-xs sm:text-sm font-bold text-secondary block mb-2 sm:mb-2.5">Motivo de cancelación</label>
+                <label className="text-xs sm:text-sm font-bold text-secondary block mb-2 sm:mb-2.5">Motivo de anulación</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
                   {motivosCancelacion.map((m) => (
                     <label
@@ -444,11 +444,11 @@ function ReservationCard({ reservation, onRefresh }) {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
-                      Cancelando...
+                      Anulando...
                     </span>
                   ) : (
                     <span className="inline-flex items-center justify-center gap-1.5">
-                      <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" /> Cancelar reserva
+                      <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" /> Anular reserva
                     </span>
                   )}
                 </button>

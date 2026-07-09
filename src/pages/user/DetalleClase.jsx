@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import { classService } from '../../services/classService.js';
 import { instructorService } from '../../services/instructorService.js';
 import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
+import { resolveImageUrl } from '../../utils/imageUrl.js';
 import { reservationService } from '../../services/reservationService.js';
 import cardioImage from '../../assets/images/cardio.jpg';
 import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
@@ -14,8 +15,6 @@ import {
   Music, AlertTriangle, User, ChevronRight, Sparkles,
   Calendar, Clock, Timer, Users
 } from 'lucide-react';
-
-const BACKEND_URL = (import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api').replace('/api', '');
 
 const classImages = [
   { match: 'zumba', image: zumbaImage },
@@ -116,7 +115,7 @@ function DetalleClase() {
     navigate(`/cliente/seleccion-espacio/${id}`);
   }
 
-  const classImage = classItem?.imagen_clase || getClassImage(classItem?.name || '');
+  const classImage = resolveImageUrl(classItem?.imagen_clase) || getClassImage(classItem?.name || '');
 
   const normalizedName = classItem?.name?.toLowerCase().trim() || '';
   const benefits = BENEFITS_MAP[normalizedName] || [
@@ -297,7 +296,7 @@ function DetalleClase() {
               <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-primary-foreground shadow-sm">
                 {instructorData?.foto ? (
                   <img
-                    src={instructorData.foto.startsWith('http') ? instructorData.foto : `${BACKEND_URL}${instructorData.foto}`}
+                    src={resolveImageUrl(instructorData.foto)}
                     alt=""
                     className="h-full w-full object-cover"
                   />

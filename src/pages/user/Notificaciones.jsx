@@ -28,8 +28,8 @@ const typeIcons = {
 const typeLabels = {
   RECORDATORIO: 'Recordatorio', PAGO: 'Pago', PAGO_CONFIRMADO: 'Pago confirmado',
   CAMBIO_HORARIO: 'Cambio de horario', CAMBIO_INSTRUCTOR: 'Cambio de instructor',
-  NUEVA_CLASE: 'Nueva clase', CANCELACION: 'Cancelación', REEMBOLSO: 'Reembolso',
-  BLOQUEO_CUENTA: 'Cuenta', RESERVA_CONFIRMADA: 'Reserva', RESERVA_CANCELADA: 'Reserva cancelada',
+  NUEVA_CLASE: 'Nueva clase', CANCELACION: 'Anulación', REEMBOLSO: 'Reembolso',
+  BLOQUEO_CUENTA: 'Cuenta', RESERVA_CONFIRMADA: 'Reserva', RESERVA_CANCELADA: 'Reserva anulada',
   CAMBIO_ESPACIO: 'Cambio de espacio', NOTIFICACION_GENERAL: 'Información',
 };
 
@@ -249,7 +249,7 @@ function Notificaciones() {
                                 onClick={() => setConfirmOverlay({ id: n.id, respuesta: 'CANCELADO', title: n.title, message: n.message })}
                                 className="rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold text-red-700 transition hover:bg-red-100 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
                               >
-                                Cancelar
+                                Anular
                               </button>
                             </div>
                           )}
@@ -259,7 +259,7 @@ function Notificaciones() {
                               n.userResponse === 'ACEPTADO' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' : 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-300'
                             }`}>
                               {n.userResponse === 'ACEPTADO' ? <Check size={12} /> : <X size={12} />}
-                              {n.userResponse === 'ACEPTADO' ? 'Aceptado' : 'Cancelado'}
+                              {n.userResponse === 'ACEPTADO' ? 'Aceptado' : 'Anulado'}
                             </span>
                           )}
                         </div>
@@ -309,7 +309,7 @@ function Notificaciones() {
                     : <AlertTriangle size={28} className="text-amber-600" />}
                 </div>
                 <h3 className="text-lg font-bold text-foreground">
-                  {confirmOverlay.respuesta === 'ACEPTADO' ? '¿Aceptar el cambio?' : '¿Cancelar la reserva?'}
+                  {confirmOverlay.respuesta === 'ACEPTADO' ? '¿Aceptar el cambio?' : '¿Anular la reserva?'}
                 </h3>
                 <p className="mt-2 text-sm text-muted">
                   {confirmOverlay.respuesta === 'ACEPTADO'
@@ -341,7 +341,7 @@ function Notificaciones() {
                     confirmOverlay.respuesta === 'ACEPTADO' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-red-600 hover:bg-red-700'
                   }`}
                 >
-                  {responding ? 'Procesando...' : confirmOverlay.respuesta === 'ACEPTADO' ? 'Sí, aceptar' : 'Sí, cancelar'}
+                  {responding ? 'Procesando...' : confirmOverlay.respuesta === 'ACEPTADO' ? 'Sí, aceptar' : 'Sí, anular'}
                 </button>
               </div>
             </motion.div>

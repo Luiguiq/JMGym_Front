@@ -207,10 +207,10 @@ function DetalleReserva() {
         detalle_cancelacion: cancelDetalle || null,
         fecha_cancelacion: new Date().toISOString(),
       }));
-      toast.success('Reserva cancelada');
+      toast.success('Reserva anulada');
     } catch (err) {
       setShowCancelModal(false);
-      toast.error(err?.message || 'Error al cancelar la reserva');
+      toast.error(err?.message || 'Error al anular la reserva');
     } finally {
       setCanceling(false);
     }
@@ -242,11 +242,11 @@ function DetalleReserva() {
     try {
       const updated = await reservationService.cancelRefundRequest(id);
       setReservation(updated);
-      setRefundSuccess('Solicitud cancelada. Tu reserva continúa activa.');
+      setRefundSuccess('Solicitud anulada. Tu reserva continúa activa.');
       setShowCancelRefundModal(false);
-      toast.success('Solicitud de reembolso cancelada');
+      toast.success('Solicitud de reembolso anulada');
     } catch (err) {
-      setCancelRefundError(err?.message || 'No pudimos cancelar la solicitud de reembolso. Inténtalo nuevamente.');
+      setCancelRefundError(err?.message || 'No pudimos anular la solicitud de reembolso. Inténtalo nuevamente.');
     } finally {
       setCancelingRefundRequest(false);
     }
@@ -342,7 +342,7 @@ function DetalleReserva() {
           {/* Status messages */}
           {isCanceled && reservation.motivo_cancelacion && (
             <motion.div variants={itemVariants} className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4">
-              <p className="text-xs font-bold uppercase tracking-wider text-red-500">Motivo de cancelación</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-red-500">Motivo de anulación</p>
               <p className="mt-1 font-bold text-red-700">{MOTIVOS_LABEL[reservation.motivo_cancelacion] || reservation.motivo_cancelacion}</p>
               {reservation.detalle_cancelacion && <p className="mt-1 text-sm text-red-600">{reservation.detalle_cancelacion}</p>}
             </motion.div>
@@ -460,7 +460,7 @@ function DetalleReserva() {
             {canCancel && (
               <button onClick={() => { setCancelMotivo('OTRO'); setCancelDetalle(''); setShowCancelModal(true); }} className="flex items-center gap-2 rounded-2xl border-2 border-red-200 bg-red-50 px-6 py-3 font-bold text-sm text-red-500 transition hover:bg-red-100 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20">
                 <XCircle size={18} />
-                Cancelar reserva
+                Anular reserva
               </button>
             )}
             {canRequestRefund && (
@@ -472,7 +472,7 @@ function DetalleReserva() {
             {canCancelRefundRequest && (
               <button onClick={() => { setCancelRefundError(''); setRefundSuccess(''); setShowCancelRefundModal(true); }} className="flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-6 py-3 font-bold text-sm text-amber-700 transition hover:bg-amber-100 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20">
                 <Clock size={18} />
-                Cancelar solicitud de reembolso
+                Anular solicitud de reembolso
               </button>
             )}
           </div>
@@ -500,7 +500,7 @@ function DetalleReserva() {
                 {canCancelRefundRequest && (
                   <button onClick={() => { setCancelRefundError(''); setRefundSuccess(''); setShowCancelRefundModal(true); }} className="flex w-full items-center justify-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 py-3 text-sm font-bold text-amber-700 transition hover:bg-amber-100 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20">
                     <Clock size={16} />
-                    Cancelar reembolso
+                    Anular reembolso
                   </button>
                 )}
               </div>
@@ -508,7 +508,7 @@ function DetalleReserva() {
             {canCancel && (
               <button onClick={() => { setCancelMotivo('OTRO'); setCancelDetalle(''); setShowCancelModal(true); }} className="flex min-w-[120px] items-center justify-center gap-2 rounded-2xl border-2 border-red-200 bg-red-50 py-3 text-sm font-bold text-red-500 transition hover:bg-red-100 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20">
                 <XCircle size={16} />
-                Cancelar
+                Anular
               </button>
             )}
           </div>
@@ -524,8 +524,8 @@ function DetalleReserva() {
                 <div className="mx-auto mb-2 sm:mb-3 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner dark:from-red-500/10 dark:to-red-500/20">
                   <XCircle className="w-6 h-6 sm:w-7 sm:h-7 text-red-500" aria-hidden="true" />
                 </div>
-                <h3 id="cancelar-reserva-title" className="text-lg sm:text-2xl font-black text-foreground">Cancelar reserva</h3>
-                <p className="mt-1 text-xs sm:text-sm text-secondary leading-relaxed px-1">Esta acción liberará tu espacio. Selecciona el motivo de cancelación.</p>
+                <h3 id="cancelar-reserva-title" className="text-lg sm:text-2xl font-black text-foreground">Anular reserva</h3>
+                <p className="mt-1 text-xs sm:text-sm text-secondary leading-relaxed px-1">Esta acción liberará tu espacio. Selecciona el motivo de anulación.</p>
               </div>
               <div className={`mt-3 sm:mt-5 rounded-2xl border p-3 sm:p-4 ${cancelMotivo === 'CAMBIO_INSTRUCTOR' ? 'border-amber-200 bg-amber-50/80 dark:border-amber-500/30 dark:bg-amber-500/10' : 'border-border-light bg-surface/80'}`}>
                 <div className="space-y-2 text-xs sm:text-sm">
@@ -564,7 +564,7 @@ function DetalleReserva() {
                 </div>
               </div>
               <div className="mt-3 sm:mt-5">
-                <label className="text-xs sm:text-sm font-bold text-foreground block mb-2 sm:mb-2.5">Motivo de cancelación</label>
+                <label className="text-xs sm:text-sm font-bold text-foreground block mb-2 sm:mb-2.5">Motivo de anulación</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
                   {motivosCancelacion.map((m) => (
                     <label key={m.value} className={`flex items-center gap-2 sm:gap-2.5 rounded-xl border-2 px-3 py-2 sm:px-3.5 sm:py-3 cursor-pointer transition-all duration-200 ${cancelMotivo === m.value ? 'border-brand-600 bg-primary/10 shadow-sm' : 'border-border-light bg-card hover:border-border hover:bg-surface'}`}>
@@ -588,10 +588,10 @@ function DetalleReserva() {
                   {canceling ? (
                     <span className="inline-flex items-center justify-center gap-2">
                       <svg className="animate-spin h-3.5 w-3.5 sm:h-4 sm:w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-                      Cancelando...
+                      Anulando...
                     </span>
                   ) : (
-                    <span className="inline-flex items-center justify-center gap-1.5"><XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Cancelar</span>
+                    <span className="inline-flex items-center justify-center gap-1.5"><XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Anular</span>
                   )}
                 </button>
               </div>
@@ -649,8 +649,8 @@ function DetalleReserva() {
             <div className="p-5 sm:p-6">
               <div className="text-center">
                 <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300"><Clock className="h-7 w-7" aria-hidden="true" /></div>
-                <h3 id="cancel-refund-title" className="text-xl font-black text-foreground">Cancelar solicitud de reembolso</h3>
-                <p className="mt-2 text-sm leading-relaxed text-secondary">¿Deseas cancelar la solicitud de reembolso? Tu reserva continuará activa y conservarás tu espacio.</p>
+                <h3 id="cancel-refund-title" className="text-xl font-black text-foreground">Anular solicitud de reembolso</h3>
+                <p className="mt-2 text-sm leading-relaxed text-secondary">¿Deseas anular la solicitud de reembolso? Tu reserva continuará activa y conservarás tu espacio.</p>
               </div>
               <div className="mt-4 rounded-2xl border border-border-light bg-surface p-4 text-sm">
                 <div className="flex justify-between gap-3"><span className="shrink-0 text-muted">Reserva</span><span className="font-bold text-foreground">#{reservation.codigo_reserva}</span></div>
@@ -660,7 +660,7 @@ function DetalleReserva() {
               {cancelRefundError && <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300" role="alert">{cancelRefundError}</div>}
               <div className="mt-5 flex gap-3">
                 <button type="button" onClick={() => setShowCancelRefundModal(false)} disabled={cancelingRefundRequest} className="flex-1 rounded-2xl border border-border py-3 text-sm font-bold text-secondary transition hover:bg-surface disabled:opacity-60">Mantener solicitud</button>
-                <button type="button" onClick={handleConfirmCancelRefundRequest} disabled={cancelingRefundRequest} className="flex-1 rounded-2xl bg-amber-600 py-3 text-sm font-bold text-primary-foreground transition hover:bg-amber-700 disabled:opacity-60">{cancelingRefundRequest ? 'Cancelando...' : 'Cancelar solicitud'}</button>
+                <button type="button" onClick={handleConfirmCancelRefundRequest} disabled={cancelingRefundRequest} className="flex-1 rounded-2xl bg-amber-600 py-3 text-sm font-bold text-primary-foreground transition hover:bg-amber-700 disabled:opacity-60">{cancelingRefundRequest ? 'Anulando...' : 'Anular solicitud'}</button>
               </div>
             </div>
           </div>

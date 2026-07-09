@@ -47,7 +47,7 @@ const EditarClase = () => {
       for (const reservation of activeUsers) {
         await notificationService.sendNotification({
           titulo: `Cambio en tu clase "${oldData.name || oldData.nombre_clase}"`,
-          mensaje: `La clase ha cambiado su ${cambiosStr}. Revisa los nuevos detalles y confirma si deseas continuar con la reserva o cancelarla.`,
+          mensaje: `La clase ha cambiado su ${cambiosStr}. Revisa los nuevos detalles y confirma si deseas continuar con la reserva o anularla.`,
           tipo: 'CAMBIO_HORARIO',
           all_users: false,
           user_ids: [reservation.id_usuario],

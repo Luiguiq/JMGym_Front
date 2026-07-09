@@ -1,6 +1,6 @@
 const RESERVATION_STATUS_LABELS = {
   ACTIVA: 'Activa',
-  CANCELADA: 'Cancelada',
+  CANCELADA: 'Anulada',
   FINALIZADA: 'Finalizada',
   COMPLETADA: 'Completada',
 };
@@ -39,7 +39,7 @@ export function getTemporalReservationLabel(reservation) {
   const state = normalize(reservation?.estado_reserva ?? reservation?.status);
   const paymentState = normalize(reservation?.estado_pago ?? reservation?.paymentStatus);
 
-  if (state === 'CANCELADA') return 'Cancelada';
+  if (state === 'CANCELADA') return 'Anulada';
   if (state === 'FINALIZADA' || state === 'COMPLETADA') return 'Clase finalizada';
   if (paymentState === 'REEMBOLSO_PENDIENTE') return 'Reembolso en revisión';
   if (paymentState === 'REEMBOLSADO') return 'Reembolsada';

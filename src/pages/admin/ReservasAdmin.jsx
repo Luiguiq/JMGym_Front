@@ -28,7 +28,7 @@ function ReservasAdmin() {
   const [refundError, setRefundError] = useState('');
 
   const adminMotivos = [
-    { value: 'CLASE_CANCELADA', label: 'Clase cancelada' },
+    { value: 'CLASE_CANCELADA', label: 'Clase anulada' },
     { value: 'CAMBIO_HORARIO', label: 'Cambio de horario' },
     { value: 'CAMBIO_INSTRUCTOR', label: 'Cambio de instructor' },
     { value: 'VENCIMIENTO_PAGO', label: 'Vencimiento de pago' },
@@ -71,7 +71,7 @@ function ReservasAdmin() {
       setReservations((prev) => prev.filter((r) => r.id !== cancelTarget.id));
       setCancelTarget(null);
     } catch (error) {
-      setCancelError(error?.message || 'No se pudo cancelar la reserva. Intenta nuevamente.');
+      setCancelError(error?.message || 'No se pudo anular la reserva. Intenta nuevamente.');
     } finally {
       setCanceling(false);
     }
@@ -286,11 +286,11 @@ function ReservasAdmin() {
             <button
               type="button"
               onClick={() => { setCancelTarget(r); setCancelError(''); setCancelMotivo('CLASE_CANCELADA'); setCancelDetalle(''); }}
-              aria-label={`Cancelar reserva de ${r.userName || 'usuario'}`}
+              aria-label={`Anular reserva de ${r.userName || 'usuario'}`}
               className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-bold text-red-700 transition hover:bg-red-100 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-red-500/40 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
             >
               <XCircle size={16} aria-hidden="true" />
-              Cancelar reserva
+              Anular reserva
             </button>
           </div>
         )}
@@ -676,9 +676,9 @@ function ReservasAdmin() {
                 <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner dark:from-red-500/10 dark:to-red-500/20">
                   <AlertTriangle className="w-7 h-7 text-red-500" aria-hidden="true" />
                 </div>
-                <h3 id="admin-cancel-title" className="text-lg sm:text-2xl font-black text-foreground">Cancelar reserva</h3>
+                <h3 id="admin-cancel-title" className="text-lg sm:text-2xl font-black text-foreground">Anular reserva</h3>
                 <p className="mt-1.5 text-xs sm:text-sm text-muted leading-relaxed">
-                  Estás a punto de cancelar la reserva de{' '}
+                  Estás a punto de anular la reserva de{' '}
                   <span className="font-bold text-secondary">{cancelTarget.userName}</span>.
                   Esta acción no se puede deshacer.
                 </p>
@@ -717,7 +717,7 @@ function ReservasAdmin() {
               </div>
 
               <div className="mt-4 sm:mt-5">
-                <label className="text-xs sm:text-sm font-bold text-secondary block mb-2 sm:mb-2.5">Motivo de cancelación</label>
+                <label className="text-xs sm:text-sm font-bold text-secondary block mb-2 sm:mb-2.5">Motivo de anulación</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
                   {adminMotivos.map((m) => (
                     <label
@@ -788,11 +788,11 @@ function ReservasAdmin() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
-                      Cancelando...
+                      Anulando...
                     </span>
                   ) : (
                     <span className="inline-flex items-center justify-center gap-1.5">
-                      <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Sí, cancelar
+                      <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Sí, anular
                     </span>
                   )}
                 </button>
