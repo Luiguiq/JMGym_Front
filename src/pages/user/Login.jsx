@@ -1,28 +1,34 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { authService } from '../../services/authService.js';
 import { userService } from '../../services/userService.js';
-import { Zap, MapPin, Smartphone, ArrowLeft, Mail, Lock, X } from 'lucide-react';
+import {
+  ArrowLeft, Mail, Lock, Eye, EyeOff, X, Zap, CalendarCheck, Bell, Loader2, ChevronRight
+} from 'lucide-react';
 import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
 import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
+import heroImage from '../../assets/images/jmworkoutport2.jpg';
 
-const highlights = [
-  {
-    icon: <Zap size={24} />,
-    title: 'Reserva rápida',
-    text: 'Encuentra y reserva clases en pocos pasos.',
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08 },
   },
-  {
-    icon: <MapPin size={24} />,
-    title: 'Control claro',
-    text: 'Selecciona tu espacio y continúa sin confusión.',
-  },
-  {
-    icon: <Smartphone size={24} />,
-    title: 'Acceso flexible',
-    text: 'Funciona bien en móvil, tablet y escritorio.',
-  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+};
+
+const benefits = [
+  { icon: <Zap size={22} />, title: 'Reserva en segundos', text: 'Encuentra y aparta tu clase al instante' },
+  { icon: <CalendarCheck size={22} />, title: 'Horarios en tiempo real', text: 'Disponibilidad actualizada al minuto' },
+  { icon: <Bell size={22} />, title: 'Recibe recordatorios', text: 'Nunca pierdas una clase' },
 ];
 
 function Login() {
@@ -34,6 +40,7 @@ function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [showForgot, setShowForgot] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
@@ -50,12 +57,14 @@ function Login() {
       const profile = await userService.getMyProfileSafe();
       if (profile.estado === 'BLOQUEADO') {
         logout();
-        setError('Tu cuenta ha sido bloqueada. Contacta al administrador.');
+        toast.error('Tu cuenta ha sido bloqueada. Contacta al administrador.');
         return;
       }
       navigate('/cliente/home');
     } catch (err) {
-      setError(getFriendlyErrorMessage(err, 'No pudimos iniciar sesión. Revisa tus credenciales e intenta nuevamente.'));
+      const msg = getFriendlyErrorMessage(err, 'No pudimos iniciar sesión. Revisa tus credenciales e intenta nuevamente.');
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -68,263 +77,233 @@ function Login() {
 
     try {
       const res = await authService.forgotPassword({ correo: forgotEmail });
-      setForgotMessage(res.mensaje || 'Revisa tu correo para continuar.');
+      const msg = res.mensaje || 'Revisa tu correo para continuar.';
+      setForgotMessage(msg);
+      toast.success(msg);
     } catch (err) {
-      setForgotMessage(err.message);
+      const msg = err.message;
+      setForgotMessage(msg);
+      toast.error(msg);
     } finally {
       setForgotLoading(false);
     }
   }
 
-  return (
-    <main className="min-h-dvh overflow-x-hidden bg-surface p-3 sm:p-4 lg:p-5 landscape:p-2 sm:landscape:p-3">
-      <section
-        className="
-          mx-auto
-          grid
-          min-h-[calc(100dvh-1.5rem)]
-          landscape:min-h-0
-          max-w-7xl
-          overflow-hidden
-          rounded-[32px]
-          bg-card
-          shadow-[0_24px_70px_rgba(15,23,42,.08)]
-          lg:grid-cols-[0.92fr_1.08fr]
-        "
+  const formContent = (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="flex flex-col px-5 py-5 md:min-h-dvh md:py-8 md:pl-10 md:pr-16"
+    >
+      <motion.div variants={itemVariants} className="flex items-center gap-3">
+        <Link
+          className="grid h-10 w-10 place-items-center rounded-xl bg-white/15 text-white transition hover:bg-white/25"
+          to="/"
+          aria-label="Volver al inicio"
+        >
+          <ArrowLeft size={20} />
+        </Link>
+        <motion.img
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="h-14 w-14 rounded-2xl bg-white object-contain p-2 shadow md:h-16 md:w-16"
+          src={logoJmGym}
+          alt="JMGym"
+        />
+        <span className="font-serif text-xl font-bold text-white md:text-2xl">JMGym</span>
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="mt-8 md:mt-12">
+        <h1 className="text-4xl font-black leading-[0.9] text-white md:text-5xl">
+          Entrena sin
+          <br />
+          <span className="text-cyan-200">límites</span>
+        </h1>
+        <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/70 md:text-base">
+          Reserva clases, elige tu espacio y controla tus entrenamientos.
+        </p>
+      </motion.div>
+
+      <motion.form
+        variants={itemVariants}
+        className="mt-6 grid gap-4 md:mt-8"
+        onSubmit={handleSubmit}
       >
-        <aside
-          className="
-            flex
-            flex-col
-            justify-between
-            gap-6
-            bg-gradient-to-br
-            from-brand-600
-              via-[#0a58ca]
-              to-[#1576ff]
-            p-6
-            text-primary-foreground
-            landscape:p-4
-            sm:p-8
-            lg:p-10
-          "
-        >
-          <Link
-            className="
-              grid
-              h-12
-              w-12
-              place-items-center
-              rounded-2xl
-              bg-primary-foreground/15
-              text-2xl
-              font-black
-              text-primary-foreground
-              transition
-              hover:bg-primary-foreground/20
-            "
-            to="/"
-            aria-label="Volver al inicio"
-          >
-            <ArrowLeft size={24} />
-          </Link>
-
-          <div className="grid gap-6">
-            <div className="flex items-center gap-4">
-              <img
-                className="
-                  h-20
-                  w-20
-                  rounded-3xl
-                  bg-card
-                  object-contain
-                  shadow-[0_12px_28px_rgba(0,0,0,.12)]
-                  sm:h-24
-                  sm:w-24
-                "
-                src={logoJmGym}
-                alt="Logo de JMGym"
-              />
-
-              <div>
-                <h1 className="font-display text-4xl font-bold leading-none sm:text-5xl lg:text-6xl">
-                  JMGym
-                </h1>
-                <p className="mt-2 text-sm text-primary-foreground/85 sm:text-base">
-                  Tu espacio de reservas de baile, simple y claro.
-                </p>
-              </div>
-            </div>
-
-            <div className="max-w-xl">
-              <p className="text-xs font-black uppercase tracking-[0.28em] text-primary-foreground/75">
-                Bienvenido
-              </p>
-              <h2 className="mt-4 max-w-[12ch] font-display text-4xl font-bold leading-[0.95] sm:text-5xl lg:text-6xl">
-                Inicia sesión y reserva
-              </h2>
-              <p className="mt-4 max-w-lg text-sm leading-relaxed text-primary-foreground/85 sm:text-base lg:text-lg">
-                Encuentra clases, selecciona espacios y administra tus reservas
-                desde una sola plataforma.
-              </p>
-            </div>
+        {error && (
+          <div className="rounded-2xl bg-red-500/20 px-4 py-3 text-sm font-bold text-white backdrop-blur-sm">
+            {error}
           </div>
+        )}
 
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-            {highlights.map((item) => (
-              <article
-                key={item.title}
-                className="
-                  rounded-[24px]
-                  bg-primary-foreground/10
-                  p-4
-                  ring-1
-                  ring-white/10
-                  backdrop-blur-sm
-                  sm:p-5
-                "
-              >
-                <div className="mb-3 text-2xl">
-                  {item.icon}
-                </div>
-                <h3 className="font-bold text-primary-foreground">
-                  {item.title}
-                </h3>
-                <p className="mt-1 text-sm leading-relaxed text-primary-foreground/80">
-                  {item.text}
-                </p>
-              </article>
-            ))}
+        <label className="grid gap-1.5 font-semibold text-white/90">
+          Correo electrónico
+          <div className="flex h-14 items-center gap-3 rounded-2xl bg-white/15 px-4 ring-1 ring-white/20 backdrop-blur-sm transition-all duration-300 focus-within:ring-2 focus-within:ring-cyan-300 focus-within:shadow-[0_0_20px_rgba(34,211,238,0.25)]">
+            <Mail size={20} className="text-white/60" />
+            <input
+              className="h-full w-full bg-transparent text-[16px] text-white outline-none placeholder:text-white/40"
+              type="text"
+              placeholder="tu@correo.com"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              required
+            />
           </div>
-        </aside>
+        </label>
 
-        <form
-          className="
-            flex
-            flex-col
-            justify-center
-            gap-5
-            p-6
-            landscape:gap-4
-            landscape:p-4
-            sm:p-8
-            lg:p-10
-          "
-          onSubmit={handleSubmit}
-        >
-          <div>
-            <h2 className="font-display text-4xl font-bold text-foreground sm:text-5xl">
-              Acceder
-            </h2>
-            <p className="mt-2 text-secondary">
-              Continúa con tu cuenta.
-            </p>
-          </div>
-
-          {error && (
-            <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">
-              {error}
-            </div>
-          )}
-
-          <label className="grid gap-2 font-semibold text-foreground">
-            Correo electrónico
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
-              <span aria-hidden="true"><Mail size={20} /></span>
-              <input
-                className="w-full bg-transparent outline-none text-foreground placeholder:text-muted"
-                type="text"
-                placeholder="tu@correo.com"
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                required
-              />
-            </div>
-          </label>
-
-          <label className="grid gap-2 font-semibold text-foreground">
-            Contraseña
-            <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)] sm:min-h-16">
-              <span aria-hidden="true"><Lock size={20} /></span>
-              <input
-                className="w-full bg-transparent outline-none text-foreground placeholder:text-muted"
-                type="password"
-                placeholder="Tu contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </label>
-
-          <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-secondary">
-            <label className="flex items-center gap-2">
-              <input
-                className="h-5 w-5 accent-brand-600"
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-              />
-              Recordar sesión
-            </label>
-
+        <label className="grid gap-1.5 font-semibold text-white/90">
+          Contraseña
+          <div className="flex h-14 items-center gap-3 rounded-2xl bg-white/15 px-4 ring-1 ring-white/20 backdrop-blur-sm transition-all duration-300 focus-within:ring-2 focus-within:ring-cyan-300 focus-within:shadow-[0_0_20px_rgba(34,211,238,0.25)]">
+            <Lock size={20} className="text-white/60" />
+            <input
+              className="h-full w-full bg-transparent text-[16px] text-white outline-none placeholder:text-white/40"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Tu contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
             <button
-              className="font-bold text-brand-600 transition hover:text-brand-700"
               type="button"
-              onClick={() => setShowForgot(true)}
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="text-white/50 transition hover:text-white/80"
+              aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
             >
-              ¿Olvidaste tu contraseña?
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
+        </label>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-white/80">
+          <label className="flex cursor-pointer items-center gap-2">
+            <input
+              className="h-4 w-4 accent-cyan-300"
+              type="checkbox"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+            />
+            Recordar sesión
+          </label>
 
           <button
-            className="
-              min-h-14
-              rounded-2xl
-              bg-brand-600
-              font-bold
-              text-primary-foreground
-              shadow-soft
-              transition
-              hover:bg-brand-700
-              disabled:cursor-not-allowed
-              disabled:opacity-70
-              sm:min-h-16
-            "
-            type="submit"
-            disabled={loading}
+            className="font-bold text-white/90 transition hover:text-white"
+            type="button"
+            onClick={() => setShowForgot(true)}
           >
-            {loading ? 'Ingresando...' : 'Ingresar'}
+            ¿Olvidaste tu contraseña?
           </button>
+        </div>
 
-          <Link
-            className="
-              grid
-              min-h-14
-              place-items-center
-              rounded-2xl
-              border-2
-              border-brand-600
-              font-bold
-              text-brand-600
-              transition
-              hover:bg-brand-50
-              sm:min-h-16
-            "
-            to="/cliente/registro"
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-white font-bold text-brand-700 shadow-lg transition-all hover:bg-white/90 hover:shadow-[0_8px_30px_rgba(255,255,255,0.2)] disabled:cursor-not-allowed disabled:opacity-60"
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Loader2 size={20} className="animate-spin" />
+              Ingresando...
+            </>
+          ) : (
+            <>
+              Ingresar <ChevronRight size={20} />
+            </>
+          )}
+        </motion.button>
+      </motion.form>
+
+      <motion.p variants={itemVariants} className="mt-5 text-center text-sm text-white/70">
+        ¿No tienes cuenta?{' '}
+        <Link to="/cliente/registro" className="font-bold text-white underline underline-offset-2 transition hover:text-cyan-200">
+          Crear cuenta
+        </Link>
+      </motion.p>
+
+      <motion.div variants={itemVariants} className="mt-6 grid gap-3 md:grid-cols-3">
+        {benefits.map((item) => (
+          <motion.article
+            key={item.title}
+            whileHover={{ y: -4 }}
+            className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10 backdrop-blur-sm transition hover:bg-white/15"
           >
-            Crear cuenta nueva
-          </Link>
-        </form>
-      </section>
+            <div className="mb-2 text-cyan-200">{item.icon}</div>
+            <h3 className="text-sm font-bold text-white">{item.title}</h3>
+            <p className="mt-0.5 text-xs text-white/60">{item.text}</p>
+          </motion.article>
+        ))}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="mt-5 flex items-center justify-center gap-4 text-xs text-white/40">
+        <span>v1.0</span>
+        <span className="h-3 w-px bg-white/20" />
+        <Link to="/" className="transition hover:text-white/60">Políticas de privacidad</Link>
+        <span className="h-3 w-px bg-white/20" />
+        <Link to="/" className="transition hover:text-white/60">Términos</Link>
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="mt-4 text-center">
+        <Link
+          to="/admin/login"
+          className="text-xs text-white/40 transition hover:text-white/70"
+        >
+          ¿Eres administrador? <span className="font-semibold">Ingresa aquí →</span>
+        </Link>
+      </motion.div>
+    </motion.div>
+  );
+
+  return (
+    <>
+    <div className="fixed inset-0 bg-gradient-to-br from-brand-600 via-[#0a58ca] to-[#1576ff]">
+      <div className="pointer-events-none absolute -left-32 -top-32 h-80 w-80 rounded-full bg-cyan-300/15 blur-[100px]" />
+      <div className="pointer-events-none absolute -bottom-40 -right-32 h-96 w-96 rounded-full from-blue-400/10 to-transparent blur-[120px]" />
+    </div>
+
+    <main className="relative z-10 min-h-dvh md:overflow-hidden">
+      <div className="grid min-h-dvh md:grid-cols-[1fr_1fr]">
+        <div className="flex flex-col md:overflow-y-auto">
+          {formContent}
+        </div>
+
+        <aside className="relative hidden overflow-hidden md:block">
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-600/60 via-brand-600/20 to-transparent" />
+          <img
+            className="h-full w-full object-cover"
+            src={heroImage}
+            alt="Personas entrenando en JMGym"
+          />
+          <div className="absolute bottom-8 left-8 right-8">
+            <div className="rounded-3xl bg-white/10 p-6 backdrop-blur-md ring-1 ring-white/20">
+              <p className="text-lg font-bold text-white">
+                Únete a +500 personas que ya entrenan con nosotros
+              </p>
+              <div className="mt-3 flex items-center gap-4 text-sm text-white/70">
+                <span className="flex items-center gap-1">⭐ 4.9</span>
+                <span className="h-4 w-px bg-white/20" />
+                <span>15 clases diarias</span>
+                <span className="h-4 w-px bg-white/20" />
+                <span>98% asistencia</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
 
       {showForgot && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-[32px] bg-card p-6 shadow-soft sm:p-8">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.25 }}
+            className="w-full max-w-md rounded-[32px] bg-white p-6 shadow-lg sm:p-8"
+          >
             <div className="mb-6 flex items-center justify-between">
-              <h3 className="font-display text-2xl font-bold text-foreground">Restablecer contraseña</h3>
+              <h3 className="font-serif text-2xl font-bold text-slate-900">Restablecer contraseña</h3>
               <button
-                className="grid h-10 w-10 place-items-center rounded-xl text-secondary transition hover:bg-surface"
+                className="grid h-10 w-10 place-items-center rounded-xl text-slate-500 transition hover:bg-slate-50"
                 type="button"
                 onClick={() => { setShowForgot(false); setForgotMessage(''); setForgotEmail(''); }}
               >
@@ -333,12 +312,12 @@ function Login() {
             </div>
 
             <form onSubmit={handleForgotSubmit} className="grid gap-5">
-              <label className="grid gap-2 font-semibold text-foreground">
-            Correo
-                <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-card px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)]">
+              <label className="grid gap-2 font-semibold text-slate-900">
+                Correo
+                <div className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-brand-100 bg-white px-4 shadow-[0_10px_24px_rgba(9,105,163,0.06)]">
                   <span aria-hidden="true"><Mail size={20} /></span>
                   <input
-                    className="w-full bg-transparent outline-none text-foreground placeholder:text-muted"
+                    className="w-full bg-transparent outline-none text-slate-900 placeholder:text-slate-400"
                     type="email"
                     placeholder="tu@correo.com"
                     value={forgotEmail}
@@ -349,7 +328,8 @@ function Login() {
               </label>
 
               {forgotMessage && (
-                <div className="rounded-2xl border px-4 py-3 text-sm font-bold"
+                <div
+                  className="rounded-2xl border px-4 py-3 text-sm font-bold"
                   style={{
                     borderColor: forgotMessage.includes('Revisa') || forgotMessage.includes('Si el correo') ? '#bbf7d0' : '#fecaca',
                     backgroundColor: forgotMessage.includes('Revisa') || forgotMessage.includes('Si el correo') ? '#f0fdf4' : '#fef2f2',
@@ -361,17 +341,18 @@ function Login() {
               )}
 
               <button
-                className="min-h-12 rounded-2xl bg-brand-600 font-bold text-primary-foreground shadow-soft transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70"
+                className="min-h-14 rounded-2xl bg-brand-600 font-bold text-primary-foreground shadow-lg transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-70"
                 type="submit"
                 disabled={forgotLoading}
               >
                 {forgotLoading ? 'Enviando...' : 'Enviar enlace'}
               </button>
             </form>
-          </div>
+          </motion.div>
         </div>
       )}
     </main>
+    </>
   );
 }
 

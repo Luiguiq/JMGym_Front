@@ -177,7 +177,7 @@ export default function UsuariosAdmin() {
             aria-label="Filtrar por estado de usuario"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+            className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           >
             <option value="todos">Todos</option>
             <option value="activos">Activos</option>

@@ -160,7 +160,7 @@ function PagoClase() {
   };
 
   const descuentoPct = fidelizacion?.descuento_porcentaje || 0;
-  const precioBase = Number(classInfo.price || 0);
+  const precioBase = Number(classInfo?.price || 0);
   const precioFinal = descuentoPct > 0 ? Math.round(precioBase * (100 - descuentoPct)) / 100 : precioBase;
 
   const selectedMethod = PAYMENT_METHODS.find((pm) => pm.id === method);

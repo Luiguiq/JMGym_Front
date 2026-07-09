@@ -187,7 +187,7 @@ export default function InstructoresAdmin() {
           {filterOpen && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setFilterOpen(false)} />
-              <div className="absolute right-0 top-full mt-2 z-20 w-44 rounded-2xl border border-border-light bg-card py-2 shadow-xl">
+              <div className="fixed left-4 right-4 top-1/2 -translate-y-1/2 sm:static sm:absolute sm:left-auto sm:right-0 sm:top-full sm:translate-y-0 sm:mt-2 z-20 w-auto sm:w-44 rounded-2xl border border-border-light bg-card py-2 shadow-xl">
                 {FILTER_OPTIONS.map((opt) => (
                   <button
                     key={opt.value}

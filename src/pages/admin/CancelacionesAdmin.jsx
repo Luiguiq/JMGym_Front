@@ -79,7 +79,7 @@ function CancelacionesAdmin() {
             aria-label="Filtrar por motivo de cancelación"
             value={filterMotivo}
             onChange={(e) => setFilterMotivo(e.target.value)}
-            className="pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none bg-card min-w-[180px]"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none bg-card min-w-[180px]"
           >
             <option value="todos">Todos los motivos</option>
             {Object.entries(MOTIVOS_LABEL).map(([value, label]) => (

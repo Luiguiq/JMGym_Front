@@ -275,7 +275,7 @@ const ClasesAdmin = () => {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
         >
           <option value="todas">Todas las clases</option>
           <option value="activa">Activas</option>

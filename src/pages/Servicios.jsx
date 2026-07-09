@@ -41,7 +41,7 @@ const services = [
 
 function Servicios() {
   return (
-    <main className="min-h-screen bg-surface text-foreground">
+    <main className="min-h-screen bg-[#07111f] text-white">
       <PublicHeader subtitle="Servicios" />
 
       <div className="animate-page-enter">
@@ -89,7 +89,7 @@ function Servicios() {
                       key={service.title}
                       className="group relative overflow-hidden rounded-[34px] bg-card p-7 shadow-[0_18px_55px_rgba(7,17,31,.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_75px_rgba(7,17,31,.14)] md:ml-16 lg:p-8"
                     >
-                      <div className="absolute inset-y-0 left-0 w-1 bg-primary opacity-0 transition group-hover:opacity-100" />
+                      <div className="absolute inset-y-0 left-0 w-1 bg-[#3b82f6] opacity-0 transition group-hover:opacity-100" />
                       <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
                         <div className="grid h-16 w-16 shrink-0 place-items-center rounded-3xl bg-[#07111f] text-cyan-200 shadow-[0_18px_40px_rgba(7,17,31,.18)] transition duration-300 group-hover:rotate-3 group-hover:scale-105">
                           <Icon className="h-8 w-8" aria-hidden="true" />
@@ -129,7 +129,7 @@ function Servicios() {
                 <p className="mt-5 text-xl font-black">Reserva</p>
                 <p className="mt-3 text-sm leading-6 text-primary-foreground/64">Organiza tu asistencia desde el sistema.</p>
               </div>
-              <div className="rounded-[30px] bg-primary p-6 text-primary-foreground">
+              <div className="rounded-[30px] bg-[#3b82f6] p-6 text-white">
                 <Dumbbell className="h-8 w-8" aria-hidden="true" />
                 <p className="mt-5 text-xl font-black">Entrena</p>
                 <p className="mt-3 text-sm leading-6 text-primary-foreground/90">Sigue un plan y participa en clases activas.</p>
