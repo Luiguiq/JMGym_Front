@@ -7,6 +7,16 @@ function getFromStorage(key) {
   return sessionStorage.getItem(key) || localStorage.getItem(key);
 }
 
+function getYapeStorageKey(user) {
+  const identifier = user?.email || user?.correo;
+  return identifier ? `yape:vinculado:${identifier.toLowerCase()}` : null;
+}
+
+function getStoredYapeVinculado(user) {
+  const key = getYapeStorageKey(user);
+  return key ? localStorage.getItem(key) === 'true' : false;
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
@@ -40,14 +50,18 @@ export function AuthProvider({ children }) {
         existingYapeVinculado = parsed.yapeVinculado === true;
       } catch {}
     }
-    return {
+    const mappedUser = {
       id: backendUser.id,
       name: backendUser.name ?? backendUser.nombre ?? '',
       email: backendUser.email ?? backendUser.correo ?? '',
       dni: backendUser.dni,
       role: backendUser.role ?? backendUser.rol ?? 'client',
       foto_perfil: backendUser.foto_perfil,
-      yapeVinculado: existingYapeVinculado,
+    };
+
+    return {
+      ...mappedUser,
+      yapeVinculado: existingYapeVinculado || getStoredYapeVinculado(mappedUser),
     };
   }
 
@@ -96,6 +110,8 @@ export function AuthProvider({ children }) {
     setUser((prev) => {
       if (!prev) return prev;
       const updated = { ...prev, yapeVinculado: true };
+      const yapeKey = getYapeStorageKey(updated);
+      if (yapeKey) localStorage.setItem(yapeKey, 'true');
       sessionStorage.setItem('user', JSON.stringify(updated));
       const localRaw = localStorage.getItem('user');
       if (localRaw) {
@@ -112,6 +128,8 @@ export function AuthProvider({ children }) {
     setUser((prev) => {
       if (!prev) return prev;
       const updated = { ...prev, yapeVinculado: false };
+      const yapeKey = getYapeStorageKey(updated);
+      if (yapeKey) localStorage.removeItem(yapeKey);
       sessionStorage.setItem('user', JSON.stringify(updated));
       const localRaw = localStorage.getItem('user');
       if (localRaw) {

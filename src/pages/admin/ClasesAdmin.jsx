@@ -31,6 +31,37 @@ const ClasesAdmin = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
+  function getClassDateTime(clase) {
+    if (!clase?.fecha) return null;
+    const time = clase.hora_inicio || clase.schedule || '00:00';
+    const normalizedTime = time.length === 5 ? `${time}:00` : time;
+    const date = new Date(`${clase.fecha}T${normalizedTime}`);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  function sortClassesByProximity(classList) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return [...classList].sort((a, b) => {
+      const dateA = getClassDateTime(a);
+      const dateB = getClassDateTime(b);
+
+      if (!dateA && !dateB) return 0;
+      if (!dateA) return 1;
+      if (!dateB) return -1;
+
+      const aIsPast = dateA < today;
+      const bIsPast = dateB < today;
+
+      if (aIsPast !== bIsPast) return aIsPast ? 1 : -1;
+
+      return aIsPast
+        ? dateB.getTime() - dateA.getTime()
+        : dateA.getTime() - dateB.getTime();
+    });
+  }
+
   useEffect(() => {
     loadClasses();
   }, []);
@@ -82,7 +113,7 @@ const ClasesAdmin = () => {
       filtered = filtered.filter((clase) => clase.status === statusFilter);
     }
 
-    setFilteredClasses(filtered);
+    setFilteredClasses(sortClassesByProximity(filtered));
     setCurrentPage(1);
   };
 
