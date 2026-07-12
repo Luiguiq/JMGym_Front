@@ -69,6 +69,7 @@ function SkeletonCard() {
 function ReservationCard({ reservation, onRefresh }) {
   const navigate = useNavigate();
   const [showCancel, setShowCancel] = useState(false);
+  const [cancelError, setCancelError] = useState(false);
   const [canceling, setCanceling] = useState(false);
   const [processingAction, setProcessingAction] = useState(false);
 
@@ -89,6 +90,7 @@ function ReservationCard({ reservation, onRefresh }) {
       onRefresh?.();
     } catch (e) {
       console.error(e);
+      setCancelError(true);
     } finally {
       setCanceling(false);
       setShowCancel(false);
@@ -267,6 +269,44 @@ function ReservationCard({ reservation, onRefresh }) {
                   {canceling ? 'Anulando...' : 'Sí, anular'}
                 </button>
               </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {cancelError && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/40"
+              onClick={() => setCancelError(false)}
+            />
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-x-6 top-1/2 z-50 -translate-y-1/2 rounded-3xl bg-card p-6 shadow-xl"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="cancel-error-title"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-500/10">
+                <CreditCard size={22} className="text-amber-600 dark:text-amber-300" />
+              </div>
+              <h3 id="cancel-error-title" className="mt-4 text-lg font-bold text-foreground">No se puede anular esta reserva</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                Esta reserva tiene un pago confirmado en efectivo, por lo que no puede anularse directamente desde la app. Acércate al gimnasio o comunícate con soporte mediante el correo o teléfono indicados en la sección de Ayuda/Soporte para revisar tu situación.
+              </p>
+              <button
+                onClick={() => setCancelError(false)}
+                className="mt-5 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-bold text-primary-foreground transition hover:bg-blue-700"
+              >
+                Ok, entendido
+              </button>
             </motion.div>
           </>
         )}
