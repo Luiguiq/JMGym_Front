@@ -117,8 +117,24 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
     setShowImagePicker(true);
   };
 
-  const handleSelectImage = (url) => {
-    setFormData((prev) => ({ ...prev, imagen_clase: url }));
+  const handleSelectImage = async (url) => {
+    const isViteAsset = url.startsWith('/assets/') || url.startsWith('/src/');
+    if (isViteAsset) {
+      setUploadingImage(true);
+      try {
+        const resp = await fetch(url);
+        const blob = await resp.blob();
+        const file = new File([blob], 'default-image.jpg', { type: blob.type });
+        const result = await userService.uploadPhoto(file);
+        setFormData((prev) => ({ ...prev, imagen_clase: result.url }));
+      } catch {
+        setErrors((prev) => ({ ...prev, imagen_clase: 'Error al subir la imagen predeterminada' }));
+      } finally {
+        setUploadingImage(false);
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, imagen_clase: url }));
+    }
     setShowImagePicker(false);
   };
 
@@ -163,12 +179,8 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      const imagen_clase = formData.imagen_clase.startsWith('/assets/') || formData.imagen_clase.startsWith('/src/')
-        ? ''
-        : formData.imagen_clase;
       await onSubmit?.({
         ...formData,
-        imagen_clase,
         duracion_minutos: Number(formData.duracion_minutos),
         cupos_totales: Number(formData.cupos_totales),
         alumnos_minimos: Number(formData.alumnos_minimos),
