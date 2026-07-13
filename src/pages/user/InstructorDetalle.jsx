@@ -4,6 +4,10 @@ import { motion } from 'framer-motion';
 import { instructorService } from '../../services/instructorService.js';
 import { classService } from '../../services/classService.js';
 import { getFriendlyErrorMessage } from '../../utils/userMessages.js';
+import { resolveImageUrl } from '../../utils/imageUrl.js';
+import cardioImage from '../../assets/images/cardio.jpg';
+import trenSuperiorImage from '../../assets/images/trensuperior.jpg';
+import zumbaImage from '../../assets/images/zumba.jpg';
 import {
   ArrowLeft, Star, User, Dumbbell, Zap, Music,
   Clock, MapPin
@@ -44,6 +48,18 @@ function fotoUrl(path) {
   return `${BACKEND_URL}${path}`;
 }
 
+function isYouTubeUrl(url) {
+  if (!url) return false;
+  return /youtube\.com|youtu\.be/i.test(url);
+}
+
+function resolveVideoUrl(url) {
+  if (!url) return '';
+  if (/^(https?:|blob:|data:)/i.test(url)) return url;
+  if (url.startsWith('/uploads/')) return `${BACKEND_URL}${url}`;
+  return url;
+}
+
 function getYouTubeEmbedUrl(url) {
   if (!url) return '';
   const trimmed = url.trim();
@@ -55,6 +71,39 @@ function getYouTubeEmbedUrl(url) {
   if (!videoId) { const sh = trimmed.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/); if (sh) videoId = sh[1]; }
   if (videoId) return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
   return trimmed;
+}
+
+function getClassImage(className = '') {
+  const n = className.toLowerCase().replace(/\s+/g, ' ').trim();
+  const classImages = [
+    { match: 'zumba', image: zumbaImage },
+    { match: 'baile', image: zumbaImage },
+    { match: 'dance', image: zumbaImage },
+    { match: 'latino', image: zumbaImage },
+    { match: 'ritmo', image: zumbaImage },
+    { match: 'party', image: zumbaImage },
+    { match: 'night', image: zumbaImage },
+    { match: 'gold', image: zumbaImage },
+    { match: 'tonificacion', image: zumbaImage },
+    { match: 'cardio', image: cardioImage },
+    { match: 'hiit', image: cardioImage },
+    { match: 'core', image: cardioImage },
+    { match: 'box', image: cardioImage },
+    { match: 'metabolico', image: cardioImage },
+    { match: 'resistencia', image: cardioImage },
+    { match: 'quemagrasa', image: cardioImage },
+    { match: 'power', image: cardioImage },
+    { match: 'full body', image: cardioImage },
+    { match: 'tren superior', image: trenSuperiorImage },
+    { match: 'trensuperior', image: trenSuperiorImage },
+    { match: 'tren', image: trenSuperiorImage },
+    { match: 'fuerza', image: trenSuperiorImage },
+    { match: 'funcional', image: trenSuperiorImage },
+    { match: 'pesas', image: trenSuperiorImage },
+    { match: 'express', image: trenSuperiorImage },
+    { match: 'total', image: trenSuperiorImage },
+  ];
+  return classImages.find(({ match }) => n.includes(match))?.image;
 }
 
 function calcYears(dateStr) {
@@ -176,13 +225,26 @@ export default function InstructorDetalle() {
       {/* ─── Hero ─── */}
       <div className="relative h-[300px] w-full overflow-hidden sm:h-[380px]">
         {instructor.video_presentacion && !videoError ? (
-          <iframe
-            src={getYouTubeEmbedUrl(instructor.video_presentacion)}
-            title="Video de presentación"
-            className="absolute inset-0 h-full w-full"
-            allow="autoplay; encrypted-media"
-            onError={() => setVideoError(true)}
-          />
+          isYouTubeUrl(instructor.video_presentacion) ? (
+            <iframe
+              src={getYouTubeEmbedUrl(instructor.video_presentacion)}
+              title="Video de presentación"
+              className="absolute inset-0 h-full w-full"
+              allow="autoplay; encrypted-media"
+              onError={() => setVideoError(true)}
+            />
+          ) : (
+            <video
+              src={resolveVideoUrl(instructor.video_presentacion)}
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls
+              className="absolute inset-0 h-full w-full object-cover"
+              onError={() => setVideoError(true)}
+            />
+          )
         ) : instructor.foto ? (
           <img
             src={fotoUrl(instructor.foto)}
@@ -303,8 +365,19 @@ export default function InstructorDetalle() {
                       className="w-full overflow-hidden rounded-2xl bg-card text-left shadow-sm transition hover:shadow-md"
                     >
                       <div className="flex">
-                        <div className={`flex w-20 shrink-0 items-center justify-center ${gc.bg}`}>
-                          {genreIcons[cls.icon] || <Dumbbell size={20} className="text-muted-foreground" />}
+                        <div className="relative h-20 w-20 shrink-0 overflow-hidden">
+                          {resolveImageUrl(cls.imagen_clase) || getClassImage(cls.name) ? (
+                            <img
+                              src={resolveImageUrl(cls.imagen_clase) || getClassImage(cls.name)}
+                              alt=""
+                              className="h-full w-full object-cover"
+                              onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                            />
+                          ) : null}
+                          <div className={`absolute inset-0 flex items-center justify-center ${gc.bg}`}
+                            style={resolveImageUrl(cls.imagen_clase) || getClassImage(cls.name) ? { display: 'none' } : {}}>
+                            {genreIcons[cls.icon] || <Dumbbell size={20} className="text-muted-foreground" />}
+                          </div>
                         </div>
                         <div className="flex min-w-0 flex-1 items-center gap-3 p-3">
                           <div className="min-w-0 flex-1">

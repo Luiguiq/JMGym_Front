@@ -18,9 +18,31 @@ import {
 
 const classImages = [
   { match: 'zumba', image: zumbaImage },
+  { match: 'baile', image: zumbaImage },
+  { match: 'dance', image: zumbaImage },
+  { match: 'latino', image: zumbaImage },
+  { match: 'ritmo', image: zumbaImage },
+  { match: 'party', image: zumbaImage },
+  { match: 'night', image: zumbaImage },
+  { match: 'gold', image: zumbaImage },
+  { match: 'tonificacion', image: zumbaImage },
   { match: 'cardio', image: cardioImage },
+  { match: 'hiit', image: cardioImage },
+  { match: 'core', image: cardioImage },
+  { match: 'box', image: cardioImage },
+  { match: 'metabolico', image: cardioImage },
+  { match: 'resistencia', image: cardioImage },
+  { match: 'quemagrasa', image: cardioImage },
+  { match: 'power', image: cardioImage },
+  { match: 'full body', image: cardioImage },
   { match: 'tren superior', image: trenSuperiorImage },
   { match: 'trensuperior', image: trenSuperiorImage },
+  { match: 'tren', image: trenSuperiorImage },
+  { match: 'fuerza', image: trenSuperiorImage },
+  { match: 'funcional', image: trenSuperiorImage },
+  { match: 'pesas', image: trenSuperiorImage },
+  { match: 'express', image: trenSuperiorImage },
+  { match: 'total', image: trenSuperiorImage },
 ];
 
 function getClassImage(className = '') {
