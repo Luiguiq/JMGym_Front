@@ -163,8 +163,12 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
+      const imagen_clase = formData.imagen_clase.startsWith('/assets/') || formData.imagen_clase.startsWith('/src/')
+        ? ''
+        : formData.imagen_clase;
       await onSubmit?.({
         ...formData,
+        imagen_clase,
         duracion_minutos: Number(formData.duracion_minutos),
         cupos_totales: Number(formData.cupos_totales),
         alumnos_minimos: Number(formData.alumnos_minimos),

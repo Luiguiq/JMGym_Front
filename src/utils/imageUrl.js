@@ -4,5 +4,6 @@ export function resolveImageUrl(url) {
   if (!url) return '';
   if (/^(https?:|blob:|data:)/i.test(url)) return url;
   if (url.startsWith('/uploads/')) return `${API_BASE}${url}`;
+  if (url.startsWith('/src/')) return '';
   return url;
 }
