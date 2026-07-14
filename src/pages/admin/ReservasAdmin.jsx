@@ -3,10 +3,9 @@ import { User, Calendar, Clock, Search, XCircle, CreditCard, Dumbbell, ChevronLe
 import { reservationService } from '../../services/reservationService.js';
 import Loader from '../../components/admin/Loader.jsx';
 import { getSocket, disconnectSocket } from '../../services/socket.js';
+import { resolveImageUrl } from '../../utils/imageUrl.js';
 import toast from 'react-hot-toast';
 
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api';
-const BACKEND_URL = API_BASE.replace('/api', '');
 const PAGE_SIZE = 5;
 
 function ReservasAdmin() {
@@ -182,9 +181,7 @@ function ReservasAdmin() {
     const isRefundPending =
       r.estado_pago === 'REEMBOLSO_PENDIENTE';
 
-    const fotoUrl = r.userPhoto
-      ? `${BACKEND_URL}${r.userPhoto}`
-      : null;
+    const fotoUrl = r.userPhoto ? resolveImageUrl(r.userPhoto) : null;
 
     return (
       <div
