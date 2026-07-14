@@ -210,7 +210,7 @@ function ListaClases() {
   const visibleClasses = useMemo(() => {
     let filtered = classes;
 
-    filtered = filtered.filter((c) => c.date >= todayStr);
+    filtered = filtered.filter((c) => c.date >= todayStr && c.status === 'ACTIVA');
 
     if (search.trim()) {
       const q = search.toLowerCase();
