@@ -402,8 +402,8 @@ function MisReservas() {
   }, [rawHistory]);
 
   return (
-    <main className="min-h-screen bg-surface pb-28">
-      <section className="mx-auto max-w-lg px-5 py-5 sm:px-6 sm:py-6">
+    <main className="min-h-screen bg-surface pb-28 lg:pb-12">
+      <section className="mx-auto max-w-lg px-5 py-5 sm:px-6 sm:py-6 lg:max-w-5xl">
 
         <div className="mb-5">
           <h1 className="text-xl font-bold text-foreground">Mis reservas</h1>
@@ -453,17 +453,19 @@ function MisReservas() {
           </motion.div>
         )}
 
-        <div className="space-y-3">
+        <div className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
           {loading ? (
             <>
               <SkeletonCard />
               {activeTab === 'historial' && <SkeletonCard />}
             </>
           ) : error ? (
-            <div className="rounded-2xl bg-red-50 p-4 text-center text-sm font-medium text-red-600 dark:bg-red-500/10 dark:text-red-300">{error}</div>
+            <div className="rounded-2xl bg-red-50 p-4 text-center text-sm font-medium text-red-600 dark:bg-red-500/10 dark:text-red-300 lg:col-span-2">{error}</div>
           ) : activeTab === 'activas' ? (
             activeReservations.length === 0 ? (
-              <EmptyState onViewClasses={() => navigate('/cliente/clases')} />
+              <div className="lg:col-span-2">
+                <EmptyState onViewClasses={() => navigate('/cliente/clases')} />
+              </div>
             ) : (
               <AnimatePresence>
                 {activeReservations.map((res) => (
@@ -473,7 +475,7 @@ function MisReservas() {
             )
           ) : (
             rawHistory.length === 0 ? (
-              <div className="flex flex-col items-center gap-3 py-16 text-center">
+              <div className="flex flex-col items-center gap-3 py-16 text-center lg:col-span-2">
                 <p className="text-lg font-bold text-muted">Sin historial</p>
                 <p className="text-sm text-muted-foreground">Las reservas finalizadas o anuladas aparecerán aquí.</p>
               </div>

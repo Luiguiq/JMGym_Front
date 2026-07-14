@@ -166,8 +166,8 @@ function CodigoQR() {
   }
 
   return (
-    <main className="min-h-dvh bg-surface px-5 py-6 pb-36">
-      <section className="mx-auto max-w-lg">
+    <main className="min-h-dvh bg-surface px-5 py-6 pb-36 lg:pb-12">
+      <section className="mx-auto max-w-lg lg:max-w-4xl">
         <header className="rounded-[28px] bg-gradient-to-br from-blue-700 via-blue-600 to-cyan-500 p-6 text-primary-foreground shadow-md">
           <p className="text-xs font-bold uppercase tracking-[3px] text-primary-foreground/75">
             Asistencia
@@ -216,8 +216,32 @@ function CodigoQR() {
             )}
 
             {selectedReservation && (
-              <article className="mt-6 overflow-hidden rounded-[28px] border border-border-light bg-card shadow-sm">
-                <div className="border-b border-border-light bg-surface p-5">
+              <article className="mt-6 overflow-hidden rounded-[28px] border border-border-light bg-card shadow-sm lg:flex lg:flex-row-reverse">
+                <div className="p-5 text-center lg:flex lg:w-80 lg:flex-col lg:items-center lg:justify-center lg:border-l lg:border-border-light lg:p-8">
+                  <div className="mx-auto w-full max-w-[280px] rounded-3xl bg-white p-5 shadow-sm">
+                    <QRCode
+                      value={qrValue}
+                      size={240}
+                      className="h-auto w-full"
+                      fgColor="#111827"
+                      bgColor="#ffffff"
+                      aria-label={`Código QR de la reserva ${selectedReservation.codigo_reserva}`}
+                    />
+                  </div>
+                  <p className="mt-4 text-sm font-semibold text-foreground">
+                    Reserva #{selectedReservation.codigo_reserva}
+                  </p>
+                  <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-left dark:border-blue-500/30 dark:bg-blue-500/10">
+                    <p className="flex items-start gap-2 text-sm leading-relaxed text-blue-800 dark:text-blue-200">
+                      <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                      <span>
+                        Presenta este código al personal autorizado antes de ingresar a la clase.
+                        El código identifica únicamente esta reserva. No lo compartas con otras personas.
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <div className="flex-1 border-b border-border-light bg-surface p-5 lg:border-b-0 lg:border-r lg:border-border-light">
                   <div className="flex items-start gap-4">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-brand-600">
                       <CheckCircle className="h-6 w-6" aria-hidden="true" />
@@ -233,7 +257,6 @@ function CodigoQR() {
                       )}
                     </div>
                   </div>
-
                   <dl className="mt-5 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
                     <div className="rounded-2xl bg-card p-3">
                       <dt className="flex items-center gap-2 text-xs font-bold uppercase text-muted">
@@ -272,31 +295,6 @@ function CodigoQR() {
                       </dd>
                     </div>
                   </dl>
-                </div>
-
-                <div className="p-5 text-center">
-                  <div className="mx-auto w-full max-w-[280px] rounded-3xl bg-white p-5 shadow-sm">
-                    <QRCode
-                      value={qrValue}
-                      size={240}
-                      className="h-auto w-full"
-                      fgColor="#111827"
-                      bgColor="#ffffff"
-                      aria-label={`Código QR de la reserva ${selectedReservation.codigo_reserva}`}
-                    />
-                  </div>
-                  <p className="mt-4 text-sm font-semibold text-foreground">
-                    Reserva #{selectedReservation.codigo_reserva}
-                  </p>
-                  <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-left dark:border-blue-500/30 dark:bg-blue-500/10">
-                    <p className="flex items-start gap-2 text-sm leading-relaxed text-blue-800 dark:text-blue-200">
-                      <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-                      <span>
-                        Presenta este código al personal autorizado antes de ingresar a la clase.
-                        El código identifica únicamente esta reserva. No lo compartas con otras personas.
-                      </span>
-                    </p>
-                  </div>
                 </div>
               </article>
             )}

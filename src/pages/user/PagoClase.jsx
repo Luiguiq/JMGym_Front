@@ -85,6 +85,27 @@ function PagoClase() {
 
   const handleConfirm = async () => {
     if (method === 'YAPE' && !usarClaseGratis) {
+      const yapePhoneKey = `yape:phone:${(user?.email || user?.correo || '').toLowerCase()}`;
+      const storedPhone = user?.yapeTelefono || user?.telefono || localStorage.getItem(yapePhoneKey);
+      if (storedPhone) {
+        setYapePhone(storedPhone);
+        setYapeStep('connecting');
+        try {
+          const res = await paymentService.initiateYape({
+            celular: storedPhone,
+            id_clase: Number(id),
+            id_espacio: Number(seatId),
+            monto: precioBase,
+          });
+          setYapeId(res.id_yape_pago);
+          await new Promise((r) => setTimeout(r, 1500));
+          setYapeStep('code');
+        } catch (err) {
+          setYapeError(err.message || 'Error al conectar con Yape');
+          setYapeStep('phone');
+        }
+        return;
+      }
       setYapeStep('phone');
       return;
     }
@@ -127,6 +148,8 @@ function PagoClase() {
         monto: precioBase,
       });
       setYapeId(res.id_yape_pago);
+      const identifier = user?.email || user?.correo;
+      if (identifier) localStorage.setItem(`yape:phone:${identifier.toLowerCase()}`, clean);
       await new Promise((r) => setTimeout(r, 1500));
       setYapeStep('code');
     } catch (err) {
@@ -194,7 +217,7 @@ function PagoClase() {
       key={yapeStep}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mt-5 space-y-5"
+      className="mt-5 space-y-5 lg:mx-auto lg:max-w-md"
     >
       {/* Step indicator */}
       <div className="flex items-center justify-center gap-2">
@@ -365,86 +388,87 @@ function PagoClase() {
 
   return (
     <main className="min-h-dvh bg-surface pb-40 max-md:landscape:pb-6">
-      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5 max-md:landscape:pt-3">
+      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5 lg:max-w-5xl lg:grid lg:grid-cols-[1fr_300px] lg:gap-6 max-md:landscape:pt-3">
 
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}>
-          <button
-            onClick={() => yapeStep ? resetYape() : navigate(-1)}
-            className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-muted transition hover:text-secondary"
-          >
-            <ArrowLeft size={16} /> {yapeStep ? 'Volver a métodos' : 'Método de pago'}
-          </button>
-        </motion.div>
-
-        {/* Error */}
-        <AnimatePresence>
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600 dark:bg-red-500/10 dark:text-red-300"
+        <div>
+          {/* Header */}
+          <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}>
+            <button
+              onClick={() => yapeStep ? resetYape() : navigate(-1)}
+              className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-muted transition hover:text-secondary"
             >
-              {error}
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <ArrowLeft size={16} /> {yapeStep ? 'Volver a métodos' : 'Método de pago'}
+            </button>
+          </motion.div>
 
-        {/* Reservation summary */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl bg-card p-4 shadow-sm"
-        >
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-primary-foreground shadow-sm">
-              <Dumbbell size={18} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-bold text-foreground">{classInfo.name}</p>
-              <div className="flex flex-wrap items-center gap-x-3 text-[12px] text-muted">
-                <span className="inline-flex items-center gap-1"><User size={12} /> Prof. {classInfo.trainer}</span>
-                <span className="inline-flex items-center gap-1"><Clock size={12} /> {classInfo.time}</span>
-                <span className="inline-flex items-center gap-1"><MapPin size={12} /> {seatCode}</span>
+          {/* Error */}
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600 dark:bg-red-500/10 dark:text-red-300"
+              >
+                {error}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Reservation summary - mobile only */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-2xl bg-card p-4 shadow-sm lg:hidden"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-primary-foreground shadow-sm">
+                <Dumbbell size={18} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold text-foreground">{classInfo.name}</p>
+                <div className="flex flex-wrap items-center gap-x-3 text-[12px] text-muted">
+                  <span className="inline-flex items-center gap-1"><User size={12} /> Prof. {classInfo.trainer}</span>
+                  <span className="inline-flex items-center gap-1"><Clock size={12} /> {classInfo.time}</span>
+                  <span className="inline-flex items-center gap-1"><MapPin size={12} /> {seatCode}</span>
+                </div>
               </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* Total */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="mt-3 rounded-2xl bg-primary/10 p-4 shadow-sm dark:border dark:border-primary/20 dark:bg-card"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-300">Total a pagar</p>
-              {descuentoPct > 0 ? (
-                <div className="flex items-baseline gap-2">
-                  <p className="text-3xl font-black text-foreground">S/ {precioFinal.toFixed(2)}</p>
-                  <p className="text-base font-semibold text-muted-foreground line-through">S/ {precioBase.toFixed(2)}</p>
-                  <span className="rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-bold text-green-700 dark:bg-green-500/20 dark:text-green-300">
-                    -{descuentoPct}%
-                  </span>
-                </div>
-              ) : (
-                <p className="text-3xl font-black text-foreground">S/ {precioBase.toFixed(2)}</p>
-              )}
+          {/* Total - mobile only */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="mt-3 rounded-2xl bg-primary/10 p-4 shadow-sm dark:border dark:border-primary/20 dark:bg-card lg:hidden"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-300">Total a pagar</p>
+                {descuentoPct > 0 ? (
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-3xl font-black text-foreground">S/ {precioFinal.toFixed(2)}</p>
+                    <p className="text-base font-semibold text-muted-foreground line-through">S/ {precioBase.toFixed(2)}</p>
+                    <span className="rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-bold text-green-700 dark:bg-green-500/20 dark:text-green-300">
+                      -{descuentoPct}%
+                    </span>
+                  </div>
+                ) : (
+                  <p className="text-3xl font-black text-foreground">S/ {precioBase.toFixed(2)}</p>
+                )}
+              </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card shadow-sm">
+                <Wallet size={22} className="text-blue-600 dark:text-blue-300" />
+              </div>
             </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card shadow-sm">
-              <Wallet size={22} className="text-blue-600 dark:text-blue-300" />
-            </div>
-          </div>
-          {descuentoPct > 0 && (
-            <p className="mt-1 text-[12px] font-semibold text-green-600 dark:text-green-400">
-              Descuento de {fidelizacion?.nivel || ''} ({descuentoPct}%) aplicado
-            </p>
-          )}
-          <p className="mt-1 text-[12px] text-blue-500 dark:text-blue-300">Incluye registro, reserva y acceso a la clase</p>
-        </motion.div>
+            {descuentoPct > 0 && (
+              <p className="mt-1 text-[12px] font-semibold text-green-600 dark:text-green-400">
+                Descuento de {fidelizacion?.nivel || ''} ({descuentoPct}%) aplicado
+              </p>
+            )}
+            <p className="mt-1 text-[12px] text-blue-500 dark:text-blue-300">Incluye registro, reserva y acceso a la clase</p>
+          </motion.div>
 
         {/* Payment methods - only show when not in yape flow */}
         {!yapeStep && (
@@ -456,7 +480,7 @@ function PagoClase() {
               className="mt-5"
             >
               <p className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Selecciona un método</p>
-              <div className="space-y-2">
+              <div className="space-y-2 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
                 {!user?.yapeVinculado && (
                   <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-left dark:border-amber-500/20 dark:bg-amber-500/10">
                     <p className="text-sm font-bold text-amber-800 dark:text-amber-200">Yape no disponible</p>
@@ -570,6 +594,63 @@ function PagoClase() {
             </motion.div>
           </>
         )}
+        </div>
+
+        {/* Right column - desktop summary */}
+        <aside className="hidden space-y-3 lg:block lg:sticky lg:top-6 lg:self-start">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-2xl bg-card p-4 shadow-sm"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-primary-foreground shadow-sm">
+                <Dumbbell size={18} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold text-foreground">{classInfo.name}</p>
+                <div className="flex flex-wrap items-center gap-x-3 text-[12px] text-muted">
+                  <span className="inline-flex items-center gap-1"><User size={12} /> Prof. {classInfo.trainer}</span>
+                  <span className="inline-flex items-center gap-1"><Clock size={12} /> {classInfo.time}</span>
+                  <span className="inline-flex items-center gap-1"><MapPin size={12} /> {seatCode}</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="rounded-2xl bg-primary/10 p-4 shadow-sm dark:border dark:border-primary/20 dark:bg-card"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-300">Total a pagar</p>
+                {descuentoPct > 0 ? (
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-3xl font-black text-foreground">S/ {precioFinal.toFixed(2)}</p>
+                    <p className="text-base font-semibold text-muted-foreground line-through">S/ {precioBase.toFixed(2)}</p>
+                    <span className="rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-bold text-green-700 dark:bg-green-500/20 dark:text-green-300">
+                      -{descuentoPct}%
+                    </span>
+                  </div>
+                ) : (
+                  <p className="text-3xl font-black text-foreground">S/ {precioBase.toFixed(2)}</p>
+                )}
+              </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card shadow-sm">
+                <Wallet size={22} className="text-blue-600 dark:text-blue-300" />
+              </div>
+            </div>
+            {descuentoPct > 0 && (
+              <p className="mt-1 text-[12px] font-semibold text-green-600 dark:text-green-400">
+                Descuento de {fidelizacion?.nivel || ''} ({descuentoPct}%) aplicado
+              </p>
+            )}
+            <p className="mt-1 text-[12px] text-blue-500 dark:text-blue-300">Incluye registro, reserva y acceso a la clase</p>
+          </motion.div>
+        </aside>
 
         {/* Yape flow */}
         {yapeStep && yapeFlowContent}
@@ -579,7 +660,7 @@ function PagoClase() {
 
       {/* Fixed bottom bar - only show when not in yape flow */}
       {!yapeStep && (
-        <div className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-3xl border-t border-border-light bg-card/95 px-5 pb-[max(env(safe-area-inset-bottom),1.5rem)] pt-4 shadow-xl backdrop-blur-md sm:px-6 max-md:landscape:static max-md:landscape:mt-5 max-md:landscape:rounded-3xl max-md:landscape:border max-md:landscape:pb-4">
+        <div className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-3xl border-t border-border-light bg-card/95 px-5 pb-[max(env(safe-area-inset-bottom),1.5rem)] pt-4 shadow-xl backdrop-blur-md sm:px-6 lg:max-w-5xl lg:rounded-2xl lg:left-1/2 lg:-translate-x-1/2 max-md:landscape:static max-md:landscape:mt-5 max-md:landscape:rounded-3xl max-md:landscape:border max-md:landscape:pb-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Total</p>

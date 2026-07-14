@@ -17,6 +17,11 @@ function getStoredYapeVinculado(user) {
   return key ? localStorage.getItem(key) === 'true' : false;
 }
 
+function getStoredYapeTelefono(user) {
+  const identifier = user?.email || user?.correo;
+  return identifier ? localStorage.getItem(`yape:phone:${identifier.toLowerCase()}`) : null;
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
@@ -44,10 +49,12 @@ export function AuthProvider({ children }) {
   function mapUser(backendUser) {
     const stored = getFromStorage('user');
     let existingYapeVinculado = false;
+    let existingYapeTelefono = null;
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
         existingYapeVinculado = parsed.yapeVinculado === true;
+        existingYapeTelefono = parsed.yapeTelefono || null;
       } catch {}
     }
     const mappedUser = {
@@ -57,11 +64,13 @@ export function AuthProvider({ children }) {
       dni: backendUser.dni,
       role: backendUser.role ?? backendUser.rol ?? 'client',
       foto_perfil: backendUser.foto_perfil,
+      telefono: backendUser.telefono || '',
     };
 
     return {
       ...mappedUser,
       yapeVinculado: existingYapeVinculado || getStoredYapeVinculado(mappedUser),
+      yapeTelefono: existingYapeTelefono || getStoredYapeTelefono(mappedUser),
     };
   }
 
@@ -106,12 +115,18 @@ export function AuthProvider({ children }) {
     return { ...data, user };
   }, []);
 
-  const vincularYape = useCallback(() => {
+  const vincularYape = useCallback((phone) => {
     setUser((prev) => {
       if (!prev) return prev;
-      const updated = { ...prev, yapeVinculado: true };
+      const updated = { ...prev, yapeVinculado: true, yapeTelefono: phone || prev.yapeTelefono || null };
       const yapeKey = getYapeStorageKey(updated);
-      if (yapeKey) localStorage.setItem(yapeKey, 'true');
+      if (yapeKey) {
+        localStorage.setItem(yapeKey, 'true');
+        if (updated.yapeTelefono) {
+          const identifier = updated.email || updated.correo;
+          if (identifier) localStorage.setItem(`yape:phone:${identifier.toLowerCase()}`, updated.yapeTelefono);
+        }
+      }
       sessionStorage.setItem('user', JSON.stringify(updated));
       const localRaw = localStorage.getItem('user');
       if (localRaw) {
@@ -127,9 +142,13 @@ export function AuthProvider({ children }) {
   const desvincularYape = useCallback(() => {
     setUser((prev) => {
       if (!prev) return prev;
-      const updated = { ...prev, yapeVinculado: false };
+      const updated = { ...prev, yapeVinculado: false, yapeTelefono: null };
       const yapeKey = getYapeStorageKey(updated);
-      if (yapeKey) localStorage.removeItem(yapeKey);
+      if (yapeKey) {
+        localStorage.removeItem(yapeKey);
+        const identifier = updated.email || updated.correo;
+        if (identifier) localStorage.removeItem(`yape:phone:${identifier.toLowerCase()}`);
+      }
       sessionStorage.setItem('user', JSON.stringify(updated));
       const localRaw = localStorage.getItem('user');
       if (localRaw) {

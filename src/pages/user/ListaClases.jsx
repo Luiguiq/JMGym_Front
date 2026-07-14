@@ -91,6 +91,30 @@ function FilterDrawer({ open, onClose, filters, setFilters, onClear }) {
               </div>
 
               <div>
+                <p className="mb-2 text-[13px] font-bold text-secondary">Estado</p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { val: 'todos', label: 'Todas' },
+                    { val: 'ACTIVA', label: 'Activas' },
+                    { val: 'COMPLETA', label: 'Completadas' },
+                    { val: 'CANCELADA', label: 'Canceladas' },
+                  ].map(({ val, label }) => (
+                    <button
+                      key={val}
+                      onClick={() => setFilters((p) => ({ ...p, estado: val }))}
+                      className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition ${
+                        filters.estado === val
+                          ? 'bg-blue-600 text-primary-foreground shadow-md'
+                          : 'bg-border-light text-secondary hover:bg-border'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
                 <p className="mb-2 text-[13px] font-bold text-secondary">Fecha</p>
                 <div className="flex flex-wrap gap-2">
                   {[
@@ -171,7 +195,7 @@ function ListaClases() {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [filters, setFilters] = useState({ cat: 'todos', time: '', hour: '' });
+  const [filters, setFilters] = useState({ cat: 'todos', time: '', hour: '', estado: 'todos' });
 
   useEffect(() => {
     classService
@@ -186,14 +210,15 @@ function ListaClases() {
   const visibleClasses = useMemo(() => {
     let filtered = classes;
 
-    // Filtrar clases con fecha pasada (no se muestran en disponibles)
-    filtered = filtered.filter((c) => c.date >= todayStr);
-
     if (search.trim()) {
       const q = search.toLowerCase();
       filtered = filtered.filter(
         (c) => c.name.toLowerCase().includes(q) || (c.trainer && c.trainer.toLowerCase().includes(q))
       );
+    }
+
+    if (filters.estado !== 'todos') {
+      filtered = filtered.filter((c) => c.status === filters.estado);
     }
 
     if (filters.time === 'hoy') {
@@ -225,18 +250,18 @@ function ListaClases() {
     return filtered;
   }, [classes, search, filters]);
 
-  const hasActiveFilters = search || filters.cat !== 'todos' || filters.time !== '' || filters.hour !== '';
+  const hasActiveFilters = search || filters.cat !== 'todos' || filters.time !== '' || filters.hour !== '' || filters.estado !== 'todos';
 
   function clearFilters() {
     setSearch('');
-    setFilters({ cat: 'todos', time: '', hour: '' });
+    setFilters({ cat: 'todos', time: '', hour: '', estado: 'todos' });
   }
 
   return (
-    <main className="min-h-screen bg-surface pb-28">
-      <section className="mx-auto max-w-lg px-5 py-5 sm:px-6 sm:py-6">
+    <main className="min-h-screen bg-surface pb-28 lg:pb-12">
+      <section className="mx-auto max-w-lg px-5 py-5 sm:px-6 sm:py-6 lg:max-w-7xl">
 
-        <div className="mb-6 flex items-center gap-3">
+        <div className="mb-6 flex items-center gap-3 lg:gap-4">
           <button
             onClick={() => navigate(-1)}
             className="flex h-10 w-10 items-center justify-center rounded-xl bg-card text-secondary shadow-sm transition hover:bg-border-light"
@@ -290,9 +315,9 @@ function ListaClases() {
           >
             <SlidersHorizontal size={14} />
             Filtros
-            {(filters.time || filters.hour) && (
+            {(filters.time || filters.hour || filters.estado !== 'todos') && (
               <span className="ml-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[9px] font-bold text-primary-foreground">
-                {(filters.time ? 1 : 0) + (filters.hour ? 1 : 0)}
+                {(filters.time ? 1 : 0) + (filters.hour ? 1 : 0) + (filters.estado !== 'todos' ? 1 : 0)}
               </span>
             )}
           </button>
@@ -321,7 +346,7 @@ function ListaClases() {
           )}
         </div>
 
-        <div className="mt-3 space-y-3">
+        <div className="mt-3 space-y-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
           {loading ? (
             <>
               <SkeletonCard />
@@ -329,14 +354,14 @@ function ListaClases() {
               <SkeletonCard />
             </>
           ) : error ? (
-            <div className="rounded-2xl border border-red-200 bg-red-50 py-10 text-center dark:border-red-500/30 dark:bg-red-500/10">
+            <div className="rounded-2xl border border-red-200 bg-red-50 py-10 text-center dark:border-red-500/30 dark:bg-red-500/10 lg:col-span-2">
               <p className="text-sm font-bold text-red-600 dark:text-red-300">{error}</p>
               <button onClick={() => window.location.reload()} className="mt-4 rounded-full bg-red-600 px-5 py-2 text-xs font-bold text-primary-foreground transition hover:bg-red-700">
                 Reintentar
               </button>
             </div>
           ) : visibleClasses.length === 0 ? (
-            <div className="py-16 text-center">
+            <div className="py-16 text-center lg:col-span-2">
               <p className="text-lg font-bold text-muted">Sin resultados</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 {hasActiveFilters ? 'No hay clases con los filtros seleccionados' : 'No hay clases disponibles'}

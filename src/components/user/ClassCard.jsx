@@ -67,7 +67,12 @@ function ClassCard({ classItem }) {
   const formattedDate = classItem.date
     ? new Date(classItem.date + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })
     : 'Próximamente';
-  const isActive = classItem._isActive;
+  const statusStyles = {
+    ACTIVA: { label: 'Activa', bg: 'bg-emerald-100 dark:bg-emerald-500/20', text: 'text-emerald-700 dark:text-emerald-300' },
+    COMPLETA: { label: 'Completada', bg: 'bg-blue-100 dark:bg-blue-500/20', text: 'text-blue-700 dark:text-blue-300' },
+    CANCELADA: { label: 'Cancelada', bg: 'bg-red-100 dark:bg-red-500/20', text: 'text-red-700 dark:text-red-300' },
+  };
+  const statusInfo = statusStyles[classItem.status] || statusStyles.ACTIVA;
 
   return (
     <motion.button
@@ -88,8 +93,8 @@ function ClassCard({ classItem }) {
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <h3 className="truncate text-base font-bold text-foreground">{classItem.name}</h3>
-            <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${availability.bg} ${availability.text}`}>
-              {availability.label}
+            <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${statusInfo.bg} ${statusInfo.text}`}>
+              {statusInfo.label}
             </span>
           </div>
           <div className="mt-2 flex flex-wrap items-center gap-3 text-[12px] text-muted">

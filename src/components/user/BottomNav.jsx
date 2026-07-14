@@ -11,7 +11,7 @@ const items = [
 function BottomNav() {
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] sm:pb-[max(env(safe-area-inset-bottom),1rem)]"
+      className="fixed inset-x-0 bottom-0 z-50 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] sm:pb-[max(env(safe-area-inset-bottom),1rem)] lg:hidden"
       aria-label="Navegacion cliente"
     >
       <div className="mx-auto flex max-w-[480px] items-center justify-around rounded-[28px] bg-card/90 px-2 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] backdrop-blur-xl">

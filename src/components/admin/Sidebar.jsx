@@ -14,6 +14,7 @@ import {
   Settings,
   Smartphone,
 } from 'lucide-react';
+import logoJmGym from '../../assets/logos/logo-jmgym.jpeg';
 
 const Sidebar = ({ onClose }) => {
   const navigate = useNavigate();
@@ -109,8 +110,8 @@ const Sidebar = ({ onClose }) => {
       {/* Logo */}
       <div className="p-6 border-b border-border dark:border-border">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-lg">JM</span>
+          <div className="w-10 h-10 shrink-0 rounded-xl overflow-hidden ring-1 ring-border shadow-sm flex items-center justify-center">
+            <img src={logoJmGym} alt="Logo JMGym" className="h-full w-full object-contain" />
           </div>
           <div className="flex-1">
             <h1 className="font-bold text-foreground dark:text-foreground">JM Gym</h1>

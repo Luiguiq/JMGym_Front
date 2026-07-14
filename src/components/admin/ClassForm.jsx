@@ -533,6 +533,7 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
                           }`}
                         >
                           <div className="aspect-[4/3] bg-border-light">
+                          {img.url ? (
                             <img
                               src={resolveImageUrl(img.url)}
                               alt={img.label}
@@ -542,6 +543,9 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
                                 e.target.parentElement.innerHTML = '<div class="flex h-full items-center justify-center text-muted-foreground text-sm font-medium">Sin vista</div>';
                               }}
                             />
+                          ) : (
+                            <div className="flex h-full items-center justify-center text-muted-foreground text-sm font-medium">Sin imagen</div>
+                          )}
                           </div>
                           <div className="px-2 py-1.5 text-left">
                             <p className="text-[11px] font-semibold text-secondary truncate">{img.label}</p>

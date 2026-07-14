@@ -9,6 +9,7 @@ import {
 import { useAuth } from '../../context/AuthContext.jsx';
 import { userService } from '../../services/userService.js';
 import { reservationService } from '../../services/reservationService.js';
+import { resolveImageUrl } from '../../utils/imageUrl.js';
 import ProfileOption from '../../components/user/ProfileOption.jsx';
 
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'];
@@ -105,7 +106,7 @@ function Perfil() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-surface pb-28">
+      <main className="min-h-screen bg-surface pb-28 lg:pb-12">
         <section className="mx-auto max-w-lg px-5 py-6 space-y-6">
           <div className="rounded-[28px] bg-gradient-to-br from-blue-700 via-blue-600 to-cyan-500 p-6 text-center shadow-md">
             <SkeletonLine className="mx-auto h-20 w-20 rounded-full" />
@@ -123,8 +124,8 @@ function Perfil() {
   }
 
   return (
-    <main className="min-h-screen bg-surface pb-28">
-      <section className="mx-auto max-w-lg px-5 py-6">
+    <main className="min-h-screen bg-surface pb-28 lg:pb-12">
+      <section className="mx-auto max-w-lg px-5 py-6 lg:max-w-5xl">
 
         {/* ─── Header compacto ─── */}
         <motion.header
@@ -139,7 +140,7 @@ function Perfil() {
               <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-[3px] border-primary-foreground/70 bg-primary-foreground/20 shadow-lg backdrop-blur-sm sm:h-18 sm:w-18">
                 {displayFoto ? (
                   <img
-                    src={`${(import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api').replace('/api', '')}${displayFoto}`}
+                    src={resolveImageUrl(displayFoto)}
                     alt=""
                     className="h-full w-full object-cover"
                   />
@@ -184,80 +185,79 @@ function Perfil() {
           className="mt-6"
         >
           <p className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Actividad</p>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
             {[
               { label: 'Reservas', value: stats.total, color: 'text-blue-600', icon: Calendar, bg: 'bg-primary/10' },
               { label: 'Completadas', value: stats.completed, color: 'text-emerald-600', icon: Trophy, bg: 'bg-emerald-50' },
               { label: 'Anuladas', value: stats.cancelled, color: 'text-red-500', icon: XCircle, bg: 'bg-red-50' },
               { label: 'Consumido', value: `S/${stats.totalSpent.toFixed(0)}`, color: 'text-amber-600', icon: DollarSign, bg: 'bg-amber-50' },
             ].map(({ label, value, color, icon: Icon, bg }) => (
-              <div key={label} className="relative overflow-hidden rounded-2xl bg-card p-4 shadow-sm">
-                <Icon size={48} className="absolute -bottom-2 -right-2 text-muted/20" />
-                <p className={`text-2xl font-black ${color}`}>{value}</p>
-                <p className="mt-0.5 text-[12px] font-semibold text-muted-foreground">{label}</p>
+              <div key={label} className="relative overflow-hidden rounded-2xl bg-card p-4 shadow-sm lg:rounded-2xl lg:p-5">
+                <Icon size={48} className="absolute -bottom-2 -right-2 text-muted/20 lg:size-14" />
+                <p className={`text-2xl font-black lg:text-3xl ${color}`}>{value}</p>
+                <p className="mt-0.5 text-[12px] font-semibold text-muted-foreground lg:text-sm">{label}</p>
               </div>
             ))}
           </div>
         </motion.div>
 
-        {/* ─── Progreso mensual ─── */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.15 }}
-          className="mt-6"
-        >
-          <p className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Progreso mensual</p>
-          <div className="rounded-2xl bg-card p-4 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[13px] font-bold text-secondary">Clases asistidas este mes</p>
-                <p className="text-[12px] text-muted-foreground">{MONTHS[new Date().getMonth()]} {new Date().getFullYear()}</p>
-              </div>
-              <p className="text-2xl font-black text-blue-600">{monthlyClasses}</p>
-            </div>
-            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-border-light">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min((monthlyClasses / 12) * 100, 100)}%` }}
-                transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
-                className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400"
-              />
-            </div>
-            <p className="mt-1.5 text-[11px] text-muted-foreground">
-              {monthlyClasses >= 12 ? 'Meta alcanzada 🎉' : `${12 - monthlyClasses} clases restantes para tu meta`}
-            </p>
-          </div>
-        </motion.div>
-
-        {/* ─── Próxima clase ─── */}
-        {nextClass && (
+        {/* ─── Progreso mensual + Próxima clase ─── */}
+        <div className="mt-6 lg:grid lg:grid-cols-2 lg:gap-6">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.2 }}
-            className="mt-6"
+            transition={{ duration: 0.35, delay: 0.15 }}
           >
-            <p className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Próxima clase</p>
-            <button
-              onClick={() => navigate(`/cliente/reservas/${nextClass.id}`)}
-              className="group w-full rounded-2xl bg-card p-4 text-left shadow-sm transition hover:shadow-md"
-            >
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-primary-foreground shadow-sm">
-                  <Dumbbell size={22} />
+            <p className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Progreso mensual</p>
+            <div className="rounded-2xl bg-card p-4 shadow-sm lg:p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[13px] font-bold text-secondary lg:text-sm">Clases asistidas este mes</p>
+                  <p className="text-[12px] text-muted-foreground">{MONTHS[new Date().getMonth()]} {new Date().getFullYear()}</p>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="font-bold text-foreground">{nextClass.className || 'Clase'}</p>
-                  <p className="text-[13px] text-muted">
-                    {formatClassDate(nextClass.fecha_clase)} &middot; {nextClass.hora_inicio?.slice(0, 5)}
-                  </p>
-                </div>
-                <ChevronRight size={18} className="shrink-0 text-muted transition group-hover:translate-x-0.5" />
+                <p className="text-2xl font-black text-blue-600 lg:text-3xl">{monthlyClasses}</p>
               </div>
-            </button>
+              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-border-light">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min((monthlyClasses / 12) * 100, 100)}%` }}
+                  transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
+                  className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400"
+                />
+              </div>
+              <p className="mt-1.5 text-[11px] text-muted-foreground">
+                {monthlyClasses >= 12 ? 'Meta alcanzada 🎉' : `${12 - monthlyClasses} clases restantes para tu meta`}
+              </p>
+            </div>
           </motion.div>
-        )}
+
+          {nextClass && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.2 }}
+            >
+              <p className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Próxima clase</p>
+              <button
+                onClick={() => navigate(`/cliente/reservas/${nextClass.id}`)}
+                className="group w-full rounded-2xl bg-card p-4 text-left shadow-sm transition hover:shadow-md lg:p-5 lg:rounded-2xl"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-primary-foreground shadow-sm">
+                    <Dumbbell size={22} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold text-foreground">{nextClass.className || 'Clase'}</p>
+                    <p className="text-[13px] text-muted">
+                      {formatClassDate(nextClass.fecha_clase)} &middot; {nextClass.hora_inicio?.slice(0, 5)}
+                    </p>
+                  </div>
+                  <ChevronRight size={18} className="shrink-0 text-muted transition group-hover:translate-x-0.5" />
+                </div>
+              </button>
+            </motion.div>
+          )}
+        </div>
 
 
 
@@ -269,7 +269,7 @@ function Perfil() {
           className="mt-6"
         >
           <p className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Mi cuenta</p>
-          <div className="space-y-2">
+          <div className="space-y-2 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
             {[
               { icon: <Pencil size={20} />, label: 'Editar perfil', to: '/cliente/perfil/editar' },
               { icon: <CreditCard size={20} />, label: 'Historial de pagos', to: '/cliente/pagos' },
@@ -278,7 +278,7 @@ function Perfil() {
               { icon: <Shield size={20} />, label: 'Contraseña y seguridad', to: '/cliente/configuraciones' },
               { icon: <HelpCircle size={20} />, label: 'Ayuda y soporte', to: '/cliente/ayuda' },
             ].map(({ icon, label, to }) => (
-              <div key={label} className="overflow-hidden rounded-2xl bg-card shadow-sm">
+              <div key={label} className={`overflow-hidden rounded-2xl bg-card shadow-sm ${label === 'Ayuda y soporte' ? 'lg:hidden' : ''}`}>
                 <ProfileOption icon={icon} label={label} onClick={() => navigate(to)} />
               </div>
             ))}

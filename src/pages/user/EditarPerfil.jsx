@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, User, Mail, IdCard, Phone, Camera, CheckCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { userService } from '../../services/userService.js';
+import { resolveImageUrl } from '../../utils/imageUrl.js';
 import Field from '../../components/user/Field.jsx';
 import { DNI_ERROR_MESSAGE, DNI_REGEX, sanitizeDni } from '../../utils/dni.js';
 
@@ -151,7 +152,7 @@ function EditarPerfil() {
     );
   }
 
-  const fotoSrc = fotoPreview || (fotoPerfil ? `${BACKEND_URL}${fotoPerfil}` : null);
+  const fotoSrc = fotoPreview || (fotoPerfil ? resolveImageUrl(fotoPerfil) : null);
 
   return (
     <main className="min-h-dvh overflow-x-hidden bg-surface p-3 pb-32 sm:p-4 sm:pb-32 lg:p-5 lg:pb-5 landscape:p-2 landscape:pb-28 sm:landscape:p-3 lg:landscape:p-5">

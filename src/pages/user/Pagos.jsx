@@ -65,8 +65,8 @@ function Pagos() {
     .reduce((sum, p) => sum + p.monto, 0);
 
   return (
-    <main className="min-h-screen bg-surface pb-32">
-      <section className="mx-auto max-w-2xl px-4 pt-8 sm:px-6 sm:pt-12">
+    <main className="min-h-screen bg-surface pb-32 lg:pb-16">
+      <section className="mx-auto max-w-2xl px-4 pt-8 sm:px-6 sm:pt-12 lg:max-w-4xl lg:px-8">
         <div className="mb-6 flex items-center gap-4">
           <button
             type="button"

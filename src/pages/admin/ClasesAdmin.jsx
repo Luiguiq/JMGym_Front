@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertTriangle, Plus, Search, Trash2, X } from 'lucide-react';
 import ClassTable from '../../components/admin/ClassTable';
@@ -7,6 +7,7 @@ import Loader from '../../components/admin/Loader';
 import { classService } from '../../services/classService';
 import { reservationService } from '../../services/reservationService';
 import { notificationService } from '../../services/notificationService';
+import { instructorService } from '../../services/instructorService';
 
 const ClasesAdmin = () => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ const ClasesAdmin = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('todas');
+  const [instructors, setInstructors] = useState([]);
+  const [instructorFilter, setInstructorFilter] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
   const [usersModalClass, setUsersModalClass] = useState(null);
@@ -28,8 +31,6 @@ const ClasesAdmin = () => {
   const [cancelClassTarget, setCancelClassTarget] = useState(null);
   const [cancelingClass, setCancelingClass] = useState(false);
   const [cancelClassError, setCancelClassError] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
 
   function getClassDateTime(clase) {
     if (!clase?.fecha) return null;
@@ -64,11 +65,12 @@ const ClasesAdmin = () => {
 
   useEffect(() => {
     loadClasses();
+    instructorService.getAll().then(setInstructors).catch(() => {});
   }, []);
 
   useEffect(() => {
     filterClasses();
-  }, [searchTerm, statusFilter, classes]);
+  }, [searchTerm, statusFilter, instructorFilter, classes]);
 
   const loadClasses = async () => {
     try {
@@ -113,8 +115,12 @@ const ClasesAdmin = () => {
       filtered = filtered.filter((clase) => clase.status === statusFilter);
     }
 
+    if (instructorFilter) {
+      const id = parseInt(instructorFilter, 10);
+      filtered = filtered.filter((clase) => clase.id_instructor === id);
+    }
+
     setFilteredClasses(sortClassesByProximity(filtered));
-    setCurrentPage(1);
   };
 
   const handleCreateClass = async (formData) => {
@@ -268,10 +274,22 @@ const ClasesAdmin = () => {
     setClassUsersError('');
   };
 
-  const paginatedClasses = filteredClasses.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
+
+  const { upcoming, past } = useMemo(() => {
+    const idx = filteredClasses.findIndex((c) => {
+      const dt = getClassDateTime(c);
+      return dt && dt < today;
+    });
+    return {
+      upcoming: idx === -1 ? filteredClasses : filteredClasses.slice(0, idx),
+      past: idx === -1 ? [] : filteredClasses.slice(idx),
+    };
+  }, [filteredClasses, today]);
 
   return (
     <div className="space-y-6">
@@ -292,7 +310,7 @@ const ClasesAdmin = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
         <div className="relative">
           <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -309,9 +327,21 @@ const ClasesAdmin = () => {
           className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
         >
           <option value="todas">Todas las clases</option>
-          <option value="activa">Activas</option>
-          <option value="pausada">Pausadas</option>
-          <option value="inactiva">Inactivas</option>
+          <option value="ACTIVA">Activas</option>
+          <option value="COMPLETA">Completadas</option>
+          <option value="CANCELADA">Canceladas</option>
+        </select>
+        <select
+          value={instructorFilter}
+          onChange={(e) => setInstructorFilter(e.target.value)}
+          className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+        >
+          <option value="">Todos los instructores</option>
+          {instructors.map((inst) => (
+            <option key={inst.id_instructor} value={inst.id_instructor}>
+              {inst.nombre_completo}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -321,18 +351,35 @@ const ClasesAdmin = () => {
             <Loader size="md" text="Cargando clases..." />
           </div>
         ) : (
-          <ClassTable
-            data={paginatedClasses}
-            onEdit={handleEditClass}
-            onViewUsers={handleViewClassUsers}
-            onDelete={handleDeleteClass}
-            pagination={{
-              page: currentPage,
-              total: filteredClasses.length,
-              pageSize,
-            }}
-            onPageChange={setCurrentPage}
-          />
+          <div className="space-y-8">
+            {upcoming.length > 0 && (
+              <div>
+                <h2 className="text-lg font-bold text-foreground mb-3">Próximas clases</h2>
+                <ClassTable
+                  data={upcoming}
+                  onEdit={handleEditClass}
+                  onViewUsers={handleViewClassUsers}
+                  onDelete={handleDeleteClass}
+                />
+              </div>
+            )}
+            {past.length > 0 && (
+              <div>
+                <h2 className="text-lg font-bold text-foreground mb-3">Clases anteriores</h2>
+                <ClassTable
+                  data={past}
+                  onEdit={handleEditClass}
+                  onViewUsers={handleViewClassUsers}
+                  onDelete={handleDeleteClass}
+                />
+              </div>
+            )}
+            {upcoming.length === 0 && past.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-secondary">No se encontraron clases</p>
+              </div>
+            )}
+          </div>
         )}
       </div>
 

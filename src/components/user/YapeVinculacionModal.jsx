@@ -31,7 +31,7 @@ function YapeVinculacionModal({ onClose }) {
     }
     setError('');
     setStep('result');
-    vincularYape();
+    vincularYape(phone.replace(/\s/g, ''));
   };
 
   return (

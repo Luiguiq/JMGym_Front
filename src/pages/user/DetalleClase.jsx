@@ -208,7 +208,7 @@ function DetalleClase() {
   return (
     <main className="min-h-screen bg-card">
       {/* ─── Hero image edge-to-edge ─── */}
-      <div className="relative h-[280px] w-full overflow-hidden sm:h-[360px]">
+      <div className="relative h-[280px] w-full overflow-hidden sm:h-[360px] lg:h-[450px]">
         {classImage ? (
           <img src={classImage} alt="" className="h-full w-full object-cover" />
         ) : (
@@ -231,129 +231,136 @@ function DetalleClase() {
 
       {/* ─── Content ─── */}
       <div className="relative -mt-6 rounded-t-3xl bg-card px-5 pt-6 pb-32 sm:px-6">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+        <div className="lg:mx-auto lg:max-w-4xl">
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
 
-          {/* Title + Intensity */}
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="font-sans text-3xl font-black tracking-tight text-foreground sm:text-4xl">
-              {classItem.name}
-            </h1>
-            <span className="inline-flex items-center gap-1 rounded-full bg-border-light px-3 py-1 text-[12px] font-semibold text-secondary">
-              {intensityDots.map((active, i) => (
-                <span key={i} className={`inline-block h-2.5 w-2.5 rounded-full ${active ? 'bg-orange-400' : 'bg-border'}`} />
-              ))}
-              {classItem.level || 'Moderada'}
-            </span>
-          </div>
-
-          {/* Info line */}
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] text-muted">
-            <span className="inline-flex items-center gap-1">
-              <Calendar size={14} className="text-muted-foreground" /> {formatDate(classItem.date)}
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <Clock size={14} className="text-muted-foreground" /> {classItem.time || '00:00'}
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <Timer size={14} className="text-muted-foreground" /> {classItem.duration || '—'}
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <Users size={14} className="text-muted-foreground" /> {spots} cupo{spots !== 1 ? 's' : ''}
-            </span>
-          </div>
-
-          {/* Price */}
-          <p className="mt-3 text-2xl font-black text-blue-600">
-            S/ {Number(classItem.price || 0).toFixed(2)}
-          </p>
-
-          <hr className="my-5 border-border-light" />
-
-          {/* Benefits chips */}
-          <section>
-            <h2 className="mb-2 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Beneficios</h2>
-            <div className="flex flex-wrap gap-2">
-              {benefits.map((b, i) => {
-                const Icon = ICON_MAP[b.icon];
-                return (
-                  <span key={i} className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-3.5 py-1.5 text-[13px] font-semibold text-sky-700">
-                    {Icon && <Icon size={14} />}
-                    {b.text}
-                  </span>
-                );
-              })}
+            {/* Title + Intensity */}
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="font-sans text-3xl font-black tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                {classItem.name}
+              </h1>
+              <span className="inline-flex items-center gap-1 rounded-full bg-border-light px-3 py-1 text-[12px] font-semibold text-secondary lg:text-sm lg:px-4 lg:py-1.5">
+                {intensityDots.map((active, i) => (
+                  <span key={i} className={`inline-block h-2.5 w-2.5 rounded-full ${active ? 'bg-orange-400' : 'bg-border'}`} />
+                ))}
+                {classItem.level || 'Moderada'}
+              </span>
             </div>
-          </section>
 
-          {/* Description */}
-          {classItem.description && (
+            {/* Info line */}
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] text-muted lg:text-[15px]">
+              <span className="inline-flex items-center gap-1">
+                <Calendar size={14} className="text-muted-foreground" /> {formatDate(classItem.date)}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <Clock size={14} className="text-muted-foreground" /> {classItem.time || '00:00'}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <Timer size={14} className="text-muted-foreground" /> {classItem.duration || '—'}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <Users size={14} className="text-muted-foreground" /> {spots} cupo{spots !== 1 ? 's' : ''}
+              </span>
+            </div>
+
+            {/* Price */}
+            <p className="mt-3 text-2xl font-black text-blue-600 lg:text-3xl">
+              S/ {Number(classItem.price || 0).toFixed(2)}
+            </p>
+
+            <hr className="my-5 border-border-light" />
+
+            {/* Benefits + Details grid */}
+            <div className="lg:grid lg:grid-cols-2 lg:gap-8">
+              <section>
+                <h2 className="mb-2 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Beneficios</h2>
+                <div className="flex flex-wrap gap-2">
+                  {benefits.map((b, i) => {
+                    const Icon = ICON_MAP[b.icon];
+                    return (
+                      <span key={i} className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-3.5 py-1.5 text-[13px] font-semibold text-sky-700">
+                        {Icon && <Icon size={14} />}
+                        {b.text}
+                      </span>
+                    );
+                  })}
+                </div>
+              </section>
+
+              {/* Description */}
+              {classItem.description && (
+                <section className="mt-5 lg:mt-0">
+                  <h2 className="mb-1 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Detalles</h2>
+                  <p className="text-sm leading-relaxed text-secondary">
+                    {classItem.description}
+                  </p>
+                </section>
+              )}
+            </div>
+
+            <div className="lg:grid lg:grid-cols-2 lg:gap-6">
+            {/* Rules */}
             <section className="mt-5">
-              <h2 className="mb-1 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Detalles</h2>
-              <p className="text-sm leading-relaxed text-secondary">
-                {classItem.description}
-              </p>
+              <h2 className="mb-2 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Reglas</h2>
+              <div className="flex flex-wrap gap-2">
+                {clothingRules.map((rule) => (
+                  <span key={rule} className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3.5 py-1.5 text-[13px] font-medium text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
+                    <AlertTriangle size={14} />
+                    {rule}
+                  </span>
+                ))}
+              </div>
             </section>
+
+            {/* Instructor */}
+            <section className="mt-5 lg:mt-5">
+              <h2 className="mb-2 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Instructor</h2>
+              <button
+                onClick={() => navigate(`/cliente/instructores/${classItem.trainerId}`)}
+                className="flex w-full items-center gap-4 rounded-2xl border border-border-light bg-card p-4 text-left shadow-sm transition hover:shadow-md lg:p-5"
+              >
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-primary-foreground shadow-sm">
+                  {instructorData?.foto ? (
+                    <img
+                      src={resolveImageUrl(instructorData.foto)}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <User size={22} />
           )}
-
-          {/* Rules */}
-          <section className="mt-5">
-            <h2 className="mb-2 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Reglas</h2>
-            <div className="flex flex-wrap gap-2">
-              {clothingRules.map((rule) => (
-                <span key={rule} className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3.5 py-1.5 text-[13px] font-medium text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
-                  <AlertTriangle size={14} />
-                  {rule}
-                </span>
-              ))}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold text-foreground">Prof. {classItem.trainer}</p>
+                  <p className="flex items-center gap-1 text-[13px] text-muted">
+                    <Sparkles size={13} className="text-amber-400" />
+                    Staff certificado
+                  </p>
+                </div>
+                <ChevronRight size={18} className="shrink-0 text-muted" />
+              </button>
+            </section>
             </div>
-          </section>
 
-          {/* Instructor */}
-          <section className="mt-5">
-            <h2 className="mb-2 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Instructor</h2>
-            <button
-              onClick={() => navigate(`/cliente/instructores/${classItem.trainerId}`)}
-              className="flex w-full items-center gap-4 rounded-2xl border border-border-light bg-card p-4 text-left shadow-sm transition hover:shadow-md"
-            >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-primary-foreground shadow-sm">
-                {instructorData?.foto ? (
-                  <img
-                    src={resolveImageUrl(instructorData.foto)}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <User size={22} />
-                )}
+            {/* Warnings */}
+            {hasActiveReservation && (
+              <div className="mt-5 rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
+                Ya reservaste esta clase
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="font-bold text-foreground">Prof. {classItem.trainer}</p>
-                <p className="flex items-center gap-1 text-[13px] text-muted">
-                  <Sparkles size={13} className="text-amber-400" />
-                  Staff certificado
-                </p>
+            )}
+            {hasDateConflict && (
+              <div className="mt-3 rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
+                Ya tienes otra reserva activa ese día
               </div>
-              <ChevronRight size={18} className="shrink-0 text-muted" />
-            </button>
-          </section>
+            )}
 
-          {/* Warnings */}
-          {hasActiveReservation && (
-            <div className="mt-5 rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
-              Ya reservaste esta clase
-            </div>
-          )}
-          {hasDateConflict && (
-            <div className="mt-3 rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
-              Ya tienes otra reserva activa ese día
-            </div>
-          )}
-
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
 
       {/* ─── Fixed bottom bar ─── */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border-light bg-card/95 px-5 pb-6 pt-3 shadow-lg backdrop-blur-md sm:px-6">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border-light bg-card/95 px-5 pb-6 pt-3 shadow-lg backdrop-blur-md sm:px-6 lg:left-64">
+        <div className="lg:mx-auto lg:max-w-4xl lg:px-0">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Precio</p>
@@ -391,6 +398,7 @@ function DetalleClase() {
           ) : (
             <span className="text-[12px] font-medium text-red-500">No hay espacios disponibles</span>
           )}
+        </div>
         </div>
       </div>
     </main>

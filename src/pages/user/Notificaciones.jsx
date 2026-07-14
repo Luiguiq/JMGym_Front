@@ -124,8 +124,8 @@ function Notificaciones() {
   }
 
   return (
-    <main className="min-h-screen bg-surface pb-28">
-      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5">
+    <main className="min-h-screen bg-surface pb-28 lg:pb-12">
+      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5 lg:max-w-3xl lg:pt-8">
 
         {/* Header */}
         <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} className="mb-5 flex items-center justify-between">
@@ -183,14 +183,14 @@ function Notificaciones() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-10 flex flex-col items-center gap-3 py-16 text-center"
+            className="mt-10 flex flex-col items-center gap-3 py-16 text-center lg:col-span-2"
           >
             <Bell size={48} className="text-muted" />
             <p className="font-bold text-muted">No hay notificaciones</p>
             <p className="text-sm text-muted-foreground">Aquí aparecerán tus notificaciones</p>
           </motion.div>
         ) : (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2.5">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2.5 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
             <AnimatePresence>
               {filtered.map((n, i) => {
                 const Icon = typeIcons[n.type] || Mail;
@@ -201,7 +201,7 @@ function Notificaciones() {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.03 }}
-                    className={`rounded-2xl border p-4 transition ${
+                    className={`rounded-2xl border p-4 transition lg:p-5 ${
                       !n.read ? 'border-blue-100 bg-card shadow-sm' : 'border-border-light bg-card/60'
                     }`}
                   >

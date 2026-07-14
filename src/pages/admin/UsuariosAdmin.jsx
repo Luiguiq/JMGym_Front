@@ -12,6 +12,8 @@ export default function UsuariosAdmin() {
   const [showHistory, setShowHistory] = useState(null);
   const [history, setHistory] = useState([]);
   const [alert, setAlert] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 15;
 
   const loadUsers = async () => {
     try {
@@ -26,12 +28,17 @@ export default function UsuariosAdmin() {
 
   useEffect(() => { loadUsers(); }, []);
 
+  useEffect(() => { setCurrentPage(1); }, [search, filter]);
+
   const filtered = users.filter((u) => {
     const term = search.toLowerCase();
     const matchesSearch = u.nombre_completo.toLowerCase().includes(term) || u.correo.toLowerCase().includes(term) || u.dni.includes(term);
     const matchesFilter = filter === 'todos' || (filter === 'activos' && u.estado === 'ACTIVO') || (filter === 'bloqueados' && u.estado === 'BLOQUEADO');
     return matchesSearch && matchesFilter;
   });
+
+  const paginatedUsers = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const totalPages = Math.ceil(filtered.length / pageSize);
 
   const handleSave = async (formData) => {
     try {
@@ -193,17 +200,19 @@ export default function UsuariosAdmin() {
                 <th scope="col" className="text-left px-4 py-3">DNI</th>
                 <th scope="col" className="text-left px-4 py-3">Correo</th>
                 <th scope="col" className="text-left px-4 py-3">Teléfono</th>
+                <th scope="col" className="text-left px-4 py-3">Fecha registro</th>
                 <th scope="col" className="text-center px-4 py-3">Estado</th>
                 <th scope="col" className="text-center px-4 py-3">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border-light">
-              {filtered.map((u) => (
+              {paginatedUsers.map((u) => (
                 <tr key={u.id_usuario} className="hover:bg-surface">
                   <td className="px-4 py-3 font-medium text-foreground whitespace-nowrap">{u.nombre_completo}</td>
                   <td className="px-4 py-3 text-secondary whitespace-nowrap">{u.dni}</td>
                   <td className="px-4 py-3 text-secondary">{u.correo}</td>
                   <td className="px-4 py-3 text-secondary">{u.telefono || '—'}</td>
+                  <td className="px-4 py-3 text-secondary whitespace-nowrap text-xs">{formatDateTime(u.fecha_registro)}</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${u.estado === 'ACTIVO' ? 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-300'}`}>
                       {u.estado}
@@ -236,7 +245,7 @@ export default function UsuariosAdmin() {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                    <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
                     No se encontraron usuarios
                   </td>
                 </tr>
@@ -244,6 +253,29 @@ export default function UsuariosAdmin() {
             </tbody>
           </table>
         </div>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between border-t border-border-light px-4 py-3">
+            <p className="text-sm text-secondary">
+              Página {currentPage} de {totalPages}
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-secondary transition hover:bg-surface disabled:opacity-40"
+              >
+                Anterior
+              </button>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-secondary transition hover:bg-surface disabled:opacity-40"
+              >
+                Siguiente
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

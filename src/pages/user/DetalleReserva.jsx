@@ -280,7 +280,7 @@ function DetalleReserva() {
 
   return (
     <main className="min-h-dvh bg-surface pb-40 md:pb-8">
-      <div className="mx-auto max-w-3xl px-4 py-5">
+      <div className="mx-auto max-w-3xl px-4 py-5 lg:max-w-5xl lg:px-6 lg:py-8">
         <button onClick={() => navigate('/cliente/reservas')} className="mb-4 flex items-center gap-2 text-sm font-bold text-secondary transition hover:text-foreground">
           <ArrowLeft size={18} />
           Mis reservas
@@ -289,7 +289,7 @@ function DetalleReserva() {
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-5">
           {/* Hero Card */}
           <motion.div variants={itemVariants}>
-            <div className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${getHeroGradient(reservation.estado_reserva)} p-6 text-white shadow-lg`}>
+            <div className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${getHeroGradient(reservation.estado_reserva)} p-6 text-white shadow-lg lg:p-8 lg:rounded-[32px]`}>
               <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/10" />
               <div className="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-white/5" />
 
@@ -320,7 +320,7 @@ function DetalleReserva() {
 
           {/* Info Card */}
           <motion.div variants={itemVariants}>
-            <div className="divide-y divide-border-light rounded-3xl border border-border-light bg-card">
+            <div className="divide-y divide-border-light rounded-3xl border border-border-light bg-card lg:rounded-[32px]">
               <InfoRow icon={Calendar} label="Fecha" value={formatDate(reservation.fecha_clase)} />
               <InfoRow icon={Clock} label="Hora" value={reservation.hora_inicio?.slice(0, 5)} />
               <InfoRow icon={MapPin} label="Espacio" value={reservation.codigo_espacio} highlight />
@@ -518,7 +518,7 @@ function DetalleReserva() {
       {/* Cancel Modal */}
       {showCancelModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 sm:p-6" onClick={(e) => { if (e.target === e.currentTarget) setShowCancelModal(false); }}>
-          <div className="w-full sm:max-w-md rounded-[28px] bg-card shadow-2xl flex flex-col max-h-[90vh]" role="dialog" aria-modal="true" aria-labelledby="cancelar-reserva-title" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full sm:max-w-md lg:max-w-lg rounded-[28px] bg-card shadow-2xl flex flex-col max-h-[90vh]" role="dialog" aria-modal="true" aria-labelledby="cancelar-reserva-title" onClick={(e) => e.stopPropagation()}>
             <div className="overflow-y-auto px-4 sm:px-6 py-4 sm:p-6">
               <div className="text-center">
                 <div className="mx-auto mb-2 sm:mb-3 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-50 to-red-100 shadow-inner dark:from-red-500/10 dark:to-red-500/20">
@@ -603,7 +603,7 @@ function DetalleReserva() {
       {/* Refund Modal */}
       {showRefundModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md sm:p-6" onClick={(e) => { if (e.target === e.currentTarget && !refunding) setShowRefundModal(false); }}>
-          <div className="w-full max-w-md rounded-[28px] bg-card shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="refund-title" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-md lg:max-w-lg rounded-[28px] bg-card shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="refund-title" onClick={(e) => e.stopPropagation()}>
             <div className="max-h-[90vh] overflow-y-auto p-5 sm:p-6">
               <div className="text-center">
                 <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-orange-50 text-orange-500 dark:bg-orange-500/10 dark:text-orange-300"><Undo2 className="h-7 w-7" aria-hidden="true" /></div>
@@ -645,7 +645,7 @@ function DetalleReserva() {
       {/* Cancel Refund Modal */}
       {showCancelRefundModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md sm:p-6" onClick={(e) => { if (e.target === e.currentTarget && !cancelingRefundRequest) setShowCancelRefundModal(false); }}>
-          <div className="w-full max-w-md rounded-[28px] bg-card shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="cancel-refund-title" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-md lg:max-w-lg rounded-[28px] bg-card shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="cancel-refund-title" onClick={(e) => e.stopPropagation()}>
             <div className="p-5 sm:p-6">
               <div className="text-center">
                 <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300"><Clock className="h-7 w-7" aria-hidden="true" /></div>
@@ -690,13 +690,13 @@ function DetalleReserva() {
 
 function InfoRow({ icon: Icon, label, value, highlight }) {
   return (
-    <div className="flex items-center gap-3 px-5 py-4">
-      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${highlight ? 'bg-brand-50 text-brand-600' : 'bg-surface text-muted-foreground'}`}>
+    <div className="flex items-center gap-3 px-5 py-4 lg:gap-4 lg:px-6 lg:py-5">
+      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl lg:h-10 lg:w-10 ${highlight ? 'bg-brand-50 text-brand-600' : 'bg-surface text-muted-foreground'}`}>
         <Icon size={17} />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted">{label}</p>
-        <p className={`truncate font-bold ${highlight ? 'text-brand-600' : 'text-foreground'}`}>{value}</p>
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted lg:text-[13px]">{label}</p>
+        <p className={`truncate font-bold ${highlight ? 'text-brand-600' : 'text-foreground'} lg:text-base`}>{value}</p>
       </div>
     </div>
   );

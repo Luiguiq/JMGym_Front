@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Drawer } from 'vaul';
 import {
   ArrowLeft, Check, CheckCircle, Dumbbell, MapPin,
   Clock, Lock, User, XCircle, ArrowRight, ChevronRight,
@@ -80,7 +79,7 @@ function CambiarAsiento() {
   const isCurrent = (seat) => seat.id_espacio === reservation?.id_espacio;
   const isSelected = (seat) => selectedSeat?.id_espacio === seat.id_espacio;
 
-  const cols = seats.length >= 40 ? 'grid-cols-6 sm:grid-cols-8' : seats.length >= 30 ? 'grid-cols-5 sm:grid-cols-6' : 'grid-cols-5';
+  const cols = seats.length >= 40 ? 'grid-cols-6 sm:grid-cols-8 lg:grid-cols-10' : seats.length >= 30 ? 'grid-cols-5 sm:grid-cols-6 lg:grid-cols-8' : 'grid-cols-5 lg:grid-cols-7';
 
   if (loading) {
     return (
@@ -126,8 +125,8 @@ function CambiarAsiento() {
   }
 
   return (
-    <main className="min-h-dvh bg-surface pb-36 max-md:landscape:pb-8">
-      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5 max-md:landscape:pt-3">
+    <main className="min-h-dvh bg-surface pb-36 max-md:landscape:pb-8 lg:pb-12">
+      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5 lg:max-w-5xl max-md:landscape:pt-3">
 
         {/* Back + title */}
         <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}>
@@ -212,7 +211,7 @@ function CambiarAsiento() {
             <p className="text-xs font-black text-primary-foreground">Frente del salón</p>
           </div>
 
-          <div className={`grid ${cols} gap-1.5 sm:gap-2`}>
+          <div className={`grid ${cols} gap-1.5 sm:gap-2 lg:gap-2`}>
             {seats.map((seat) => {
               const current = isCurrent(seat);
               const selected = isSelected(seat);
@@ -258,63 +257,80 @@ function CambiarAsiento() {
         {selectedSeat && <div className="h-4" />}
       </div>
 
-      {/* ─── Vaul Drawer ─── */}
-      <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" />
-          <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-3xl bg-card shadow-xl outline-none max-h-[82dvh] overflow-y-auto">
-            <div className="px-5 pb-[max(env(safe-area-inset-bottom),1.5rem)] pt-3 sm:px-6">
-              <Drawer.Handle className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-border-light" />
-
-              <AnimatePresence mode="wait">
-                {selectedSeat && (
-                  <motion.div
-                    key={selectedSeat.id_espacio}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.25 }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-primary-foreground shadow-md">
-                        <MapPin size={22} />
-                      </div>
-                      <div>
-                        <p className="text-lg font-black text-foreground">Espacio {selectedSeat.codigo_espacio}</p>
-                        <p className="text-[13px] text-muted">Cambiarás del espacio {currentSeatCode} al {selectedSeat.codigo_espacio}. El espacio {currentSeatCode} quedará disponible para otra persona.</p>
-                      </div>
-                    </div>
-
-                    {/* Current → New indicator */}
-                    {currentSeatCode && (
-                      <div className="mt-3 flex items-center gap-2 rounded-xl bg-surface px-3 py-2 text-[13px] font-medium text-secondary">
-                        <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-emerald-700">{currentSeatCode}</span>
-                        <ArrowRight size={14} className="text-muted-foreground" />
-                        <span className="rounded-md bg-blue-100 px-2 py-0.5 text-blue-700">{selectedSeat.codigo_espacio}</span>
-                      </div>
-                    )}
-
-                    <div className="mt-4 flex items-center justify-between border-t border-border-light pt-4">
-                      <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Sin costo adicional</p>
-                        <p className="text-sm text-muted">El cambio es gratuito</p>
-                      </div>
-                      <button
-                        onClick={handleChange}
-                        disabled={saving}
-                        className="flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-blue-700 active:scale-[0.97] disabled:opacity-50"
-                      >
-                        {saving ? 'Cambiando...' : 'Confirmar cambio'} <ChevronRight size={16} />
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      {/* ─── Seat change modal ─── */}
+      <AnimatePresence>
+        {drawerOpen && selectedSeat && (
+          <motion.div
+            key="seat-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm p-0 lg:items-center lg:p-6"
+            onClick={() => setDrawerOpen(false)}
+          >
+            <motion.div
+              initial={{ y: 300, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 300, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="w-full max-w-lg rounded-t-3xl bg-card shadow-xl lg:max-w-md lg:rounded-[28px] lg:p-6"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Confirmar cambio de espacio"
+            >
+              <div className="px-5 pb-[max(env(safe-area-inset-bottom),1.5rem)] pt-3 sm:px-6 lg:p-0">
+                <div className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-border-light lg:hidden" />
+                <ChangeSeatConfirmContent
+                  seat={selectedSeat}
+                  currentSeatCode={currentSeatCode}
+                  onConfirm={handleChange}
+                  saving={saving}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
+  );
+}
+
+function ChangeSeatConfirmContent({ seat, currentSeatCode, onConfirm, saving }) {
+  return (
+    <>
+      <div className="flex items-center gap-3">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-primary-foreground shadow-md">
+          <MapPin size={22} />
+        </div>
+        <div>
+          <p className="text-lg font-black text-foreground">Espacio {seat.codigo_espacio}</p>
+          <p className="text-[13px] text-muted">Cambiarás del espacio {currentSeatCode} al {seat.codigo_espacio}. El espacio {currentSeatCode} quedará disponible para otra persona.</p>
+        </div>
+      </div>
+
+      {currentSeatCode && (
+        <div className="mt-3 flex items-center gap-2 rounded-xl bg-surface px-3 py-2 text-[13px] font-medium text-secondary">
+          <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-emerald-700">{currentSeatCode}</span>
+          <ArrowRight size={14} className="text-muted-foreground" />
+          <span className="rounded-md bg-blue-100 px-2 py-0.5 text-blue-700">{seat.codigo_espacio}</span>
+        </div>
+      )}
+
+      <div className="mt-4 flex items-center justify-between border-t border-border-light pt-4">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Sin costo adicional</p>
+          <p className="text-sm text-muted">El cambio es gratuito</p>
+        </div>
+        <button
+          onClick={onConfirm}
+          disabled={saving}
+          className="flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-blue-700 active:scale-[0.97] disabled:opacity-50"
+        >
+          {saving ? 'Cambiando...' : 'Confirmar cambio'} <ChevronRight size={16} />
+        </button>
+      </div>
+    </>
   );
 }
 

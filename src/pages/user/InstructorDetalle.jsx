@@ -192,7 +192,7 @@ export default function InstructorDetalle() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-surface pb-24">
+      <main className="min-h-screen bg-surface pb-24 lg:pb-12">
         <SkeletonHero />
         <section className="mx-auto max-w-lg px-5 -mt-8 relative z-10 space-y-4">
           <SkeletonBlock className="h-8 w-48" />
@@ -221,9 +221,9 @@ export default function InstructorDetalle() {
   }
 
   return (
-    <main className="min-h-screen bg-surface pb-24">
+    <main className="min-h-screen bg-surface pb-24 lg:pb-12">
       {/* ─── Hero ─── */}
-      <div className="relative h-[300px] w-full overflow-hidden sm:h-[380px]">
+      <div className="relative h-[300px] w-full overflow-hidden sm:h-[380px] lg:h-[450px]">
         {instructor.video_presentacion && !videoError ? (
           isYouTubeUrl(instructor.video_presentacion) ? (
             <iframe
@@ -285,8 +285,8 @@ export default function InstructorDetalle() {
       </div>
 
       {/* ─── Content ─── */}
-      <section className="relative -mt-6 rounded-t-3xl bg-surface px-5 pt-6 sm:px-6">
-        <div className="mx-auto max-w-lg space-y-6">
+      <section className="relative -mt-6 rounded-t-3xl bg-surface px-5 pt-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-lg space-y-6 lg:max-w-5xl">
 
           {/* Stats */}
           <motion.div
@@ -350,7 +350,7 @@ export default function InstructorDetalle() {
             <h2 className="mb-3 text-[13px] font-extrabold uppercase tracking-widest text-muted-foreground">Próximas clases</h2>
 
             {classes.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
                 {classes.slice(0, 5).map((cls, i) => {
                   const gc = genreColors[cls.icon] || genreColors.fuerza;
                   const spotsLeft = cls.availableSpots ?? 0;
@@ -407,7 +407,7 @@ export default function InstructorDetalle() {
                 })}
               </div>
             ) : (
-              <div className="rounded-2xl bg-card p-8 text-center shadow-sm">
+              <div className="rounded-2xl bg-card p-8 text-center shadow-sm lg:col-span-2">
                 <p className="font-bold text-muted">Sin clases programadas</p>
                 <p className="mt-1 text-sm text-muted-foreground">Este instructor no tiene clases disponibles por ahora.</p>
               </div>

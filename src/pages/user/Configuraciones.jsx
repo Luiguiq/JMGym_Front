@@ -99,8 +99,8 @@ function Configuraciones() {
   }
 
   return (
-    <main className="min-h-screen bg-surface pb-28">
-      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5">
+    <main className="min-h-screen bg-surface pb-28 lg:pb-12">
+      <div className="mx-auto max-w-lg px-4 pt-5 sm:px-5 lg:max-w-3xl lg:pt-8">
 
         {/* Header */}
         <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} className="mb-5 flex items-center gap-3">
@@ -128,136 +128,142 @@ function Configuraciones() {
           </motion.div>
         )}
 
-        {/* Idioma */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl bg-card shadow-sm"
-        >
-          <div className="flex items-center gap-3 border-b border-border-light px-4 py-3.5">
-            <Globe size={18} className="text-muted" />
-            <h3 className="text-sm font-bold text-foreground">Idioma</h3>
-          </div>
-          <div className="px-4 py-3">
-            <select
-              value={language}
-              onChange={handleLanguageChange}
-              className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-semibold text-secondary outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-primary/20"
+        <div className="lg:flex lg:gap-6">
+          <div className="lg:flex-1 lg:space-y-4">
+            {/* Idioma */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-2xl bg-card shadow-sm"
             >
-              {LANGUAGES.map((l) => (
-                <option key={l.value} value={l.value}>{l.label}</option>
-              ))}
-            </select>
-          </div>
-        </motion.div>
+              <div className="flex items-center gap-3 border-b border-border-light px-4 py-3.5">
+                <Globe size={18} className="text-muted" />
+                <h3 className="text-sm font-bold text-foreground">Idioma</h3>
+              </div>
+              <div className="px-4 py-3">
+                <select
+                  value={language}
+                  onChange={handleLanguageChange}
+                  className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-semibold text-secondary outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-primary/20"
+                >
+                  {LANGUAGES.map((l) => (
+                    <option key={l.value} value={l.value}>{l.label}</option>
+                  ))}
+                </select>
+              </div>
+            </motion.div>
 
-        {/* Apariencia */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="mt-3 rounded-2xl bg-card shadow-sm"
-        >
-          <div className="flex items-center gap-3 border-b border-border-light px-4 py-3.5">
-            {theme === 'dark' ? <Moon size={18} className="text-muted" /> : <Sun size={18} className="text-muted" />}
-            <h3 className="text-sm font-bold text-foreground">Apariencia</h3>
-          </div>
-          <div className="flex items-center justify-between px-4 py-3">
-            <div>
-              <p className="text-sm font-bold text-foreground">Modo oscuro</p>
-              <p className="text-xs text-muted">Cambia entre tema claro y oscuro</p>
-            </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={theme === 'dark'}
-              onClick={toggleTheme}
-              className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${theme === 'dark' ? 'bg-blue-600' : 'bg-border'}`}
+            {/* Apariencia */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="rounded-2xl bg-card shadow-sm"
             >
-              <span className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-card shadow transition ${theme === 'dark' ? 'translate-x-5' : 'translate-x-0'}`} />
-            </button>
-          </div>
-        </motion.div>
-
-        {/* Tamaño de texto */}
-        <TextSizeCard />
-
-        {/* Notificaciones */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="mt-3 rounded-2xl bg-card shadow-sm"
-        >
-          <div className="flex items-center gap-3 border-b border-border-light px-4 py-3.5">
-            <Bell size={18} className="text-muted" />
-            <h3 className="text-sm font-bold text-foreground">Notificaciones</h3>
-          </div>
-          <div className="divide-y divide-border-light">
-            {NOTIF_OPTIONS.map((opt) => {
-              const Icon = opt.icon;
-              const isOn = notifPrefs[opt.key];
-              return (
-                <div key={opt.key} className="flex items-center gap-3 px-4 py-3">
-                  <Icon size={18} className="shrink-0 text-muted-foreground" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold text-foreground">{opt.label}</p>
-                    <p className="text-xs text-muted">{opt.desc}</p>
-                  </div>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={isOn}
-                    onClick={() => toggleNotif(opt.key)}
-                    className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${isOn ? 'bg-blue-600' : 'bg-border'}`}
-                  >
-                    <span className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-card shadow transition ${isOn ? 'translate-x-5' : 'translate-x-0'}`} />
-                  </button>
+              <div className="flex items-center gap-3 border-b border-border-light px-4 py-3.5">
+                {theme === 'dark' ? <Moon size={18} className="text-muted" /> : <Sun size={18} className="text-muted" />}
+                <h3 className="text-sm font-bold text-foreground">Apariencia</h3>
+              </div>
+              <div className="flex items-center justify-between px-4 py-3">
+                <div>
+                  <p className="text-sm font-bold text-foreground">Modo oscuro</p>
+                  <p className="text-xs text-muted">Cambia entre tema claro y oscuro</p>
                 </div>
-              );
-            })}
-          </div>
-        </motion.div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={theme === 'dark'}
+                  onClick={toggleTheme}
+                  className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${theme === 'dark' ? 'bg-blue-600' : 'bg-border'}`}
+                >
+                  <span className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-card shadow transition ${theme === 'dark' ? 'translate-x-5' : 'translate-x-0'}`} />
+                </button>
+              </div>
+            </motion.div>
 
-        {/* Cambiar contraseña */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mt-3 rounded-2xl bg-card shadow-sm"
-        >
-          <div className="flex items-center gap-3 border-b border-border-light px-4 py-3.5">
-            <Lock size={18} className="text-muted" />
-            <h3 className="text-sm font-bold text-foreground">Cambiar contraseña</h3>
+            {/* Tamaño de texto */}
+            <TextSizeCard />
           </div>
-          <form onSubmit={handlePasswordSubmit} className="space-y-3 px-4 py-3">
-            <Field label="Contraseña actual" icon={Lock} error={fieldErrors.oldPassword}>
-              <input
-                className="w-full bg-transparent text-sm outline-none"
-                type="password"
-                placeholder="Ingresa tu contraseña actual"
-                value={oldPassword}
-                onChange={(e) => { setOldPassword(e.target.value); clearError('oldPassword'); }}
-              />
-            </Field>
-            <Field label="Nueva contraseña" icon={Lock} error={fieldErrors.newPassword}>
-              <input
-                className="w-full bg-transparent text-sm outline-none"
-                type="password"
-                placeholder="Mínimo 6 caracteres"
-                value={newPassword}
-                onChange={(e) => { setNewPassword(e.target.value); clearError('newPassword'); }}
-              />
-            </Field>
-            <button
-              className="min-h-12 w-full rounded-xl bg-blue-600 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-              type="submit"
-              disabled={loading}
+
+          <div className="lg:flex-1 lg:space-y-4">
+            {/* Notificaciones */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="mt-3 rounded-2xl bg-card shadow-sm lg:mt-0"
             >
-              {loading ? 'Guardando...' : 'Actualizar contraseña'}
-            </button>
-          </form>
-        </motion.div>
+              <div className="flex items-center gap-3 border-b border-border-light px-4 py-3.5">
+                <Bell size={18} className="text-muted" />
+                <h3 className="text-sm font-bold text-foreground">Notificaciones</h3>
+              </div>
+              <div className="divide-y divide-border-light">
+                {NOTIF_OPTIONS.map((opt) => {
+                  const Icon = opt.icon;
+                  const isOn = notifPrefs[opt.key];
+                  return (
+                    <div key={opt.key} className="flex items-center gap-3 px-4 py-3">
+                      <Icon size={18} className="shrink-0 text-muted-foreground" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold text-foreground">{opt.label}</p>
+                        <p className="text-xs text-muted">{opt.desc}</p>
+                      </div>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={isOn}
+                        onClick={() => toggleNotif(opt.key)}
+                        className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${isOn ? 'bg-blue-600' : 'bg-border'}`}
+                      >
+                        <span className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-card shadow transition ${isOn ? 'translate-x-5' : 'translate-x-0'}`} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+
+            {/* Cambiar contraseña */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mt-3 rounded-2xl bg-card shadow-sm lg:mt-0"
+            >
+              <div className="flex items-center gap-3 border-b border-border-light px-4 py-3.5">
+                <Lock size={18} className="text-muted" />
+                <h3 className="text-sm font-bold text-foreground">Cambiar contraseña</h3>
+              </div>
+              <form onSubmit={handlePasswordSubmit} className="space-y-3 px-4 py-3">
+                <Field label="Contraseña actual" icon={Lock} error={fieldErrors.oldPassword}>
+                  <input
+                    className="w-full bg-transparent text-sm outline-none"
+                    type="password"
+                    placeholder="Ingresa tu contraseña actual"
+                    value={oldPassword}
+                    onChange={(e) => { setOldPassword(e.target.value); clearError('oldPassword'); }}
+                  />
+                </Field>
+                <Field label="Nueva contraseña" icon={Lock} error={fieldErrors.newPassword}>
+                  <input
+                    className="w-full bg-transparent text-sm outline-none"
+                    type="password"
+                    placeholder="Mínimo 6 caracteres"
+                    value={newPassword}
+                    onChange={(e) => { setNewPassword(e.target.value); clearError('newPassword'); }}
+                  />
+                </Field>
+                <button
+                  className="min-h-12 w-full rounded-xl bg-blue-600 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? 'Guardando...' : 'Actualizar contraseña'}
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        </div>
 
       </div>
     </main>
@@ -272,7 +278,7 @@ function TextSizeCard() {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 }}
-      className="mt-3 rounded-2xl bg-card shadow-sm"
+      className="mt-3 rounded-2xl bg-card shadow-sm lg:mt-0"
     >
       <div className="flex items-center gap-3 border-b border-border-light px-4 py-3.5">
         <span className="flex h-[18px] w-[18px] items-center justify-center text-xs font-black text-muted">Tt</span>

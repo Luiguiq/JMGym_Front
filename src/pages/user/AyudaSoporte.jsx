@@ -54,8 +54,8 @@ function AyudaSoporte() {
   }
 
   return (
-    <main className="min-h-screen bg-surface pb-20">
-      <section className="mx-auto max-w-2xl px-4 pt-8 sm:px-6 sm:pt-12">
+    <main className="min-h-screen bg-surface pb-20 lg:pb-12">
+      <section className="mx-auto max-w-2xl px-4 pt-8 sm:px-6 sm:pt-12 lg:max-w-4xl lg:px-8">
         <div className="mb-6 flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
@@ -79,7 +79,7 @@ function AyudaSoporte() {
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
           {FAQS.map((faq, index) => {
             const isOpen = openIndex === index;
             return (

@@ -33,6 +33,9 @@ const ClassTable = ({
   };
 
   const statusColors = {
+    ACTIVA: 'bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-300',
+    COMPLETA: 'bg-blue-100 text-blue-800 dark:bg-blue-500/10 dark:text-blue-300',
+    CANCELADA: 'bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-300',
     activa: 'bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-300',
     inactiva: 'bg-border-light text-foreground',
     pausada: 'bg-amber-100 text-amber-800 dark:bg-amber-500/10 dark:text-amber-300',
