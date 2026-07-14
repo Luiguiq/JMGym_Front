@@ -13,6 +13,27 @@ import zumbaImage from '../../assets/images/zumba.jpg';
 const INTENSIDADES = ['BAJA', 'MEDIA', 'ALTA'];
 const ESTADOS = ['ACTIVA', 'CANCELADA', 'COMPLETA', 'FINALIZADA'];
 
+const defaultClassImages = [
+  { url: cardioImage, label: 'Cardio' },
+  { url: trenSuperiorImage, label: 'Tren Superior' },
+  { url: zumbaImage, label: 'Zumba' },
+];
+
+const defaultImageKeywords = [
+  'zumba', 'baile', 'dance', 'latino', 'ritmo', 'party', 'night', 'gold', 'tonificacion',
+  'cardio', 'hiit', 'core', 'box', 'metabolico', 'resistencia', 'quemagrasa', 'power', 'full body',
+  'tren superior', 'trensuperior', 'tren', 'fuerza', 'funcional', 'pesas', 'express', 'total',
+];
+
+function normalizeImageKey(url = '') {
+  return resolveImageUrl(url).replace(/^https?:\/\/[^/]+/i, '').toLowerCase();
+}
+
+function usesDefaultImageName(className = '') {
+  const normalizedName = className.toLowerCase();
+  return defaultImageKeywords.some((keyword) => normalizedName.includes(keyword));
+}
+
 const todayStr = () => new Date().toISOString().split('T')[0];
 
 const initialForm = {
@@ -87,21 +108,20 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
 
   const loadAvailableImages = useCallback(async () => {
     setLoadingImages(true);
-    const urls = [];
-
-    // Imágenes locales por defecto
-    const defaultImages = [
-      { url: cardioImage, label: 'Cardio' },
-      { url: trenSuperiorImage, label: 'Tren Superior' },
-      { url: zumbaImage, label: 'Zumba' },
-    ];
-    urls.push(...defaultImages);
+    const urls = [...defaultClassImages];
+    const imageKeys = new Set(urls.map((img) => normalizeImageKey(img.url)));
 
     // Imágenes de clases existentes del backend
     try {
       const allClasses = await classService.getAllClasses();
       const existing = allClasses
-        .filter((c) => c.imagen_clase && !urls.some((u) => u.url === c.imagen_clase))
+        .filter((c) => {
+          if (!c.imagen_clase || usesDefaultImageName(c.name)) return false;
+          const imageKey = normalizeImageKey(c.imagen_clase);
+          if (imageKeys.has(imageKey)) return false;
+          imageKeys.add(imageKey);
+          return true;
+        })
         .map((c) => ({ url: c.imagen_clase, label: c.name }));
       urls.push(...existing);
     } catch {
@@ -118,23 +138,7 @@ const ClassForm = ({ onSubmit, onClose, initialData = null, loading = false }) =
   };
 
   const handleSelectImage = async (url) => {
-    const isViteAsset = url.startsWith('/assets/') || url.startsWith('/src/');
-    if (isViteAsset) {
-      setUploadingImage(true);
-      try {
-        const resp = await fetch(url);
-        const blob = await resp.blob();
-        const file = new File([blob], 'default-image.jpg', { type: blob.type });
-        const result = await userService.uploadPhoto(file);
-        setFormData((prev) => ({ ...prev, imagen_clase: result.url }));
-      } catch {
-        setErrors((prev) => ({ ...prev, imagen_clase: 'Error al subir la imagen predeterminada' }));
-      } finally {
-        setUploadingImage(false);
-      }
-    } else {
-      setFormData((prev) => ({ ...prev, imagen_clase: url }));
-    }
+    setFormData((prev) => ({ ...prev, imagen_clase: url }));
     setShowImagePicker(false);
   };
 

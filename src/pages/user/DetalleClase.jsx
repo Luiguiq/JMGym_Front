@@ -230,7 +230,7 @@ function DetalleClase() {
       </div>
 
       {/* ─── Content ─── */}
-      <div className="relative -mt-6 rounded-t-3xl bg-card px-5 pt-6 pb-32 sm:px-6">
+      <div className="relative -mt-6 rounded-t-3xl bg-card px-5 pt-6 pb-56 sm:px-6 lg:pb-32">
         <div className="lg:mx-auto lg:max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
 
@@ -359,7 +359,7 @@ function DetalleClase() {
       </div>
 
       {/* ─── Fixed bottom bar ─── */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border-light bg-card/95 px-5 pb-6 pt-3 shadow-lg backdrop-blur-md sm:px-6 lg:left-64">
+      <div className="fixed inset-x-0 bottom-[5.25rem] z-40 border-t border-border-light bg-card/95 px-5 pb-[max(env(safe-area-inset-bottom),1rem)] pt-3 shadow-lg backdrop-blur-md sm:px-6 lg:bottom-0 lg:left-64 lg:pb-6">
         <div className="lg:mx-auto lg:max-w-4xl lg:px-0">
         <div className="flex items-center justify-between">
           <div>
