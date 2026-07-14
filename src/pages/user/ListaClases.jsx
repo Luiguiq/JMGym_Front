@@ -210,6 +210,8 @@ function ListaClases() {
   const visibleClasses = useMemo(() => {
     let filtered = classes;
 
+    filtered = filtered.filter((c) => c.date >= todayStr);
+
     if (search.trim()) {
       const q = search.toLowerCase();
       filtered = filtered.filter(

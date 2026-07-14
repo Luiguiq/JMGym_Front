@@ -95,6 +95,7 @@ function Home() {
   const todayStr = useMemo(() => toDateStr(new Date()), []);
 
   const displayClasses = (todayClasses.length > 0 ? todayClasses : allClasses).filter((c) => c.date >= todayStr);
+  const todayCount = todayClasses.length;
 
   const activeClasses = useMemo(() => displayClasses.filter(isClassActive), [displayClasses]);
   const nextClass = displayClasses[0];
@@ -170,7 +171,7 @@ function Home() {
               <div className="mb-5 flex items-center gap-6 lg:gap-10">
                 <div className="text-center">
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/60 lg:text-xs">Clases de hoy</p>
-                  <p className="mt-0.5 text-2xl font-black lg:text-3xl">{displayClasses.length}</p>
+                  <p className="mt-0.5 text-2xl font-black lg:text-3xl">{todayCount}</p>
                 </div>
                 <div className="h-8 w-px bg-primary-foreground/15 lg:h-12" />
                 <div className="text-center">
